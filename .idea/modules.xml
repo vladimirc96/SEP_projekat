@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/bank/bank.iml" filepath="$PROJECT_DIR$/bank/bank.iml" />
+      <module fileurl="file://$PROJECT_DIR$/centrala-mock/centrala-mock.iml" filepath="$PROJECT_DIR$/centrala-mock/centrala-mock.iml" />
       <module fileurl="file://$PROJECT_DIR$/koncentrator/koncentrator.iml" filepath="$PROJECT_DIR$/koncentrator/koncentrator.iml" />
       <module fileurl="file://$PROJECT_DIR$/payment-card-center/payment-card-center.iml" filepath="$PROJECT_DIR$/payment-card-center/payment-card-center.iml" />
     </modules>

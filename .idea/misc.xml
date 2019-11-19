@@ -9,6 +9,7 @@
         <option value="$PROJECT_DIR$/bank/pom.xml" />
         <option value="$PROJECT_DIR$/koncentrator/pom.xml" />
         <option value="$PROJECT_DIR$/payment-card-center/pom.xml" />
+        <option value="$PROJECT_DIR$/centrala-mock/pom.xml" />
       </list>
     </option>
   </component>
