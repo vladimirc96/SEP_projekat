@@ -6,6 +6,7 @@
     <file url="file://$PROJECT_DIR$/bank-service" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/bitcoin-service" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/centrala-mock" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/discovery-service" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/koncentrator" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/payment-card-center" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/paypal-service" charset="UTF-8" />

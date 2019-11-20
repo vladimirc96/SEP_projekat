@@ -8,7 +8,11 @@
         <outputRelativeToContentRoot value="true" />
         <module name="centrala-mock" />
         <module name="bank" />
+<<<<<<< HEAD
         <module name="payment-card-center" />
+=======
+        <module name="discovery-service" />
+>>>>>>> ecf8b7c1b11fc3cded8facd87a626667cc74429a
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -17,6 +21,7 @@
       <module name="bank-service" target="1.8" />
       <module name="bitcoin-service" target="1.8" />
       <module name="centrala-mock" target="1.8" />
+      <module name="discovery-service" target="1.8" />
       <module name="koncentrator" target="1.8" />
       <module name="payment-card-center" target="1.8" />
       <module name="paypal-service" target="1.8" />
@@ -29,6 +34,7 @@
       <module name="bank-service" options="-parameters" />
       <module name="bitcoin-service" options="-parameters" />
       <module name="centrala-mock" options="-parameters" />
+      <module name="discovery-service" options="-parameters" />
       <module name="koncentrator" options="-parameters" />
       <module name="payment-card-center" options="-parameters" />
       <module name="paypal-service" options="-parameters" />
