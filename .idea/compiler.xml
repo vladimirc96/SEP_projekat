@@ -10,11 +10,13 @@
         <module name="centrala-mock" />
         <module name="payment-card-center" />
         <module name="bank" />
+        <module name="discovery-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="bank" target="1.8" />
       <module name="centrala-mock" target="1.8" />
+      <module name="discovery-service" target="1.8" />
       <module name="koncentrator" target="1.8" />
       <module name="payment-card-center" target="1.8" />
     </bytecodeTargetLevel>
@@ -23,6 +25,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="bank" options="-parameters" />
       <module name="centrala-mock" options="-parameters" />
+      <module name="discovery-service" options="-parameters" />
       <module name="koncentrator" options="-parameters" />
       <module name="payment-card-center" options="-parameters" />
     </option>

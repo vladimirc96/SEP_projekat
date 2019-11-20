@@ -10,10 +10,11 @@
         <option value="$PROJECT_DIR$/koncentrator/pom.xml" />
         <option value="$PROJECT_DIR$/payment-card-center/pom.xml" />
         <option value="$PROJECT_DIR$/centrala-mock/pom.xml" />
+        <option value="$PROJECT_DIR$/discovery-service/pom.xml" />
       </list>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_12" default="false" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_12" default="false" project-jdk-name="1.8jdk" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>
