@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/bank/bank.iml" filepath="$PROJECT_DIR$/bank/bank.iml" />
+      <module fileurl="file://$PROJECT_DIR$/centrala-mock/centrala-mock.iml" filepath="$PROJECT_DIR$/centrala-mock/centrala-mock.iml" />
+      <module fileurl="file://$PROJECT_DIR$/discovery-service/discovery-service.iml" filepath="$PROJECT_DIR$/discovery-service/discovery-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/payment-card-center/payment-card-center.iml" filepath="$PROJECT_DIR$/payment-card-center/payment-card-center.iml" />
+    </modules>
+  </component>
+</project>
