@@ -10,6 +10,10 @@
         <option value="$PROJECT_DIR$/koncentrator/pom.xml" />
         <option value="$PROJECT_DIR$/payment-card-center/pom.xml" />
         <option value="$PROJECT_DIR$/centrala-mock/pom.xml" />
+        <option value="$PROJECT_DIR$/api-gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/bank-service/pom.xml" />
+        <option value="$PROJECT_DIR$/bitcoin-service/pom.xml" />
+        <option value="$PROJECT_DIR$/paypal-service/pom.xml" />
       </list>
     </option>
   </component>
