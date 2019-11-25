@@ -1,0 +1,2 @@
+// SKRIPTA ZA EXPORT
+keytool -export -alias sep_bitcoinservice -file sep/sep_bitcoinservice.crt -keystore sep/sep_bitcoinservice.jks -storepass mnogodobrasifra
