@@ -1,0 +1,22 @@
+Environment variables:
+
+discovery-service: 
+    SSL_KEY_ALIAS=sep_discovery;SSL_KEY_STORE_PASS=mnogodobrasifra;SSL_STORE=sep/sep_discovery.jks
+
+api-gateway: 
+    SSL_KEY_ALIAS=sep_gateway;SSL_KEY_STORE_PASS=mnogodobrasifra;SSL_STORE=sep/sep_discovery.jks;SSL_TRUST_STORE=keystores/sep_discovery.jks
+
+koncentrator: 
+    SSL_KEY_ALIAS=sep_koncentrator;SSL_KEY_STORE_PASS=mnogodobrasifra;SSL_STORE=keystores/sep_koncentrator.jks;SSL_TRUST_STORE=keystores/sep_discovery.jks
+
+bank-service:
+    SSL_KEY_ALIAS=sep_bankservice;SSL_KEY_STORE_PASS=mnogodobrasifra;SSL_STORE=keystores/sep_bankservice.jks;SSL_TRUST_STORE=keystores/sep_discovery.jks
+
+paypal-service:
+    SSL_KEY_ALIAS=sep_paypalservice;SSL_KEY_STORE_PASS=mnogodobrasifra;SSL_STORE=keystores/sep_paypalservice.jks;SSL_TRUST_STORE=keystores/sep_discovery.jks
+
+bitcoin-service:
+    SSL_KEY_ALIAS=sep_bank;SSL_KEY_STORE_PASS=mnogodobrasifra;SSL_STORE=keystores/sep_bank.jks;SSL_TRUST_STORE=keystores/sep_bank.jks
+
+centrala-mock, bank, pcc:
+    SSL_KEY_ALIAS=sep_bank;SSL_KEY_STORE_PASS=mnogodobrasifra;SSL_STORE=keystores/sep_bank.jks;SSL_TRUST_STORE=keystores/sep_bank.jks
