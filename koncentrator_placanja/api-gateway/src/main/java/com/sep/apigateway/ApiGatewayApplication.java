@@ -45,6 +45,6 @@ public class ApiGatewayApplication {
 			System.setProperty("javax.net.ssl.trustStore", env.getProperty("server.ssl.trust-store"));
 			System.setProperty("javax.net.ssl.trustStorePassword",env.getProperty("server.ssl.trust-store-password"));
 		}
-		}
+	}
 
 }

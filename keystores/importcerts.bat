@@ -6,5 +6,8 @@ keytool -import -noprompt -trustcacerts -alias sep_koncentrator -file sep/sep_ko
 keytool -import -noprompt -trustcacerts -alias sep_bankservice -file sep/sep_bankservice.crt -keystore cacerts -storepass changeit
 keytool -import -noprompt -trustcacerts -alias sep_paypalservice -file sep/sep_paypalservice.crt -keystore cacerts -storepass changeit
 keytool -import -noprompt -trustcacerts -alias sep_bitcoinservice -file sep/sep_bitcoinservice.crt -keystore cacerts -storepass changeit
+keytool -import -noprompt -trustcacerts -alias sep_bank -file sep/sep_bank.crt -keystore cacerts -storepass changeit
+keytool -import -noprompt -trustcacerts -alias sep_centrala -file sep/sep_centrala.crt -keystore cacerts -storepass changeit
+keytool -import -noprompt -trustcacerts -alias sep_ppc -file sep/sep_ppc.crt -keystore cacerts -storepass changeit
 
 PAUSE

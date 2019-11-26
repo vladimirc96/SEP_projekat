@@ -21,7 +21,8 @@ public class MockController {
         String body = "Zahtev za placanje";
         HttpEntity<String> HReq=new HttpEntity<String>(body);
 
-        ResponseEntity<String> response = restTemplate.postForEntity("http://localhost:8440/test", HReq, String.class);
+        // za Banku
+        ResponseEntity<String> response = restTemplate.postForEntity("https://localhost:8450/test", HReq, String.class);
 
         return response;
     }
