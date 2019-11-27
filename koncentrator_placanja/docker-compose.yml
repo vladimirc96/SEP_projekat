@@ -1,0 +1,63 @@
+version: '3'
+services:
+
+  eureka:
+    image: discovery-server
+    container_name: discovery-server
+    build:
+      context: ./discovery-service
+      dockerfile: DockerFile
+    ports:
+      - "8761:8761"
+
+  gateway:
+    image: api-gateway
+    container_name: api-gateway
+    build:
+      context: ./api-gateway
+      dockerfile: DockerFile
+    ports:
+      - "8440:8440"
+    depends_on:
+      - eureka
+    links:
+      - eureka:eureka
+
+  bank:
+    image: bank-service
+    container_name: bank-service
+    build:
+      context: ./bank-service
+      dockerfile: DockerFile
+    ports:
+      - "8442"
+    depends_on:
+      - eureka
+    links:
+      - eureka:eureka
+      
+  paypal:
+    image: paypal-service
+    container_name: paypal-service
+    build:
+      context: ./paypal-service
+      dockerfile: DockerFile
+    ports:
+      - "8443"
+    depends_on:
+      - eureka
+    links:
+      - eureka:eureka
+   
+  bitcoin:
+    image: bitcoin-service
+    container_name: bitcoin-service
+    build:
+      context: ./bitcoin-service
+      dockerfile: DockerFile
+    ports:
+      - "8444"
+    depends_on:
+      - eureka
+    links:
+      - eureka:eureka

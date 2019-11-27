@@ -1,0 +1,11 @@
+compose: 
+
+docker-compose up --build --scale discovery-service=1 --scale api-gateway=1 --scale bank-service=1 --scale bitcoin-service=1 --scale paypal-service=1
+
+pokretanje jedne slike: 
+
+docker run --detach -p 8761:8761 discovery-service:latest
+
+image build: 
+
+docker image build -t discovery-service .

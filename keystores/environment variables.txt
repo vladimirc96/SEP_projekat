@@ -1,10 +1,10 @@
 Environment variables:
 
 discovery-service: 
-    SSL_KEY_ALIAS=sep_discovery;SSL_KEY_STORE_PASS=mnogodobrasifra;SSL_STORE=sep/sep_discovery.jks
+    SSL_KEY_ALIAS=sep_discovery;SSL_KEY_STORE_PASS=mnogodobrasifra;SSL_STORE=keystores/sep_discovery.jks
 
 api-gateway: 
-    SSL_KEY_ALIAS=sep_gateway;SSL_KEY_STORE_PASS=mnogodobrasifra;SSL_STORE=sep/sep_discovery.jks;SSL_TRUST_STORE=keystores/sep_discovery.jks
+    SSL_KEY_ALIAS=sep_gateway;SSL_KEY_STORE_PASS=mnogodobrasifra;SSL_STORE=keystores/sep_gateway.jks;SSL_TRUST_STORE=keystores/sep_discovery.jks
 
 koncentrator: 
     SSL_KEY_ALIAS=sep_koncentrator;SSL_KEY_STORE_PASS=mnogodobrasifra;SSL_STORE=keystores/sep_koncentrator.jks;SSL_TRUST_STORE=keystores/sep_discovery.jks
