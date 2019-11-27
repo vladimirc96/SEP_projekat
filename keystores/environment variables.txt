@@ -16,7 +16,7 @@ paypal-service:
     SSL_KEY_ALIAS=sep_paypalservice;SSL_KEY_STORE_PASS=mnogodobrasifra;SSL_STORE=keystores/sep_paypalservice.jks;SSL_TRUST_STORE=keystores/sep_discovery.jks
 
 bitcoin-service:
-    SSL_KEY_ALIAS=sep_bank;SSL_KEY_STORE_PASS=mnogodobrasifra;SSL_STORE=keystores/sep_bank.jks;SSL_TRUST_STORE=keystores/sep_bank.jks
+    SSL_KEY_ALIAS=sep_bank;SSL_KEY_STORE_PASS=mnogodobrasifra;SSL_STORE=keystores/sep_bitcoinservice.jks;SSL_TRUST_STORE=keystores/sep_bank.jks
 
 centrala-mock, bank, pcc:
     SSL_KEY_ALIAS=sep_bank;SSL_KEY_STORE_PASS=mnogodobrasifra;SSL_STORE=keystores/sep_bank.jks;SSL_TRUST_STORE=keystores/sep_bank.jks
