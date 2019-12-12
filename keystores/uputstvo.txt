@@ -4,6 +4,7 @@
 4. kucati "cd" pa folder gde je java (iz koraka 1), pa vam se otvara u CMD taj folder u koji ste ubacili "sep" folder iz koraka 1
 5. pokrenite importcerts.bat (Run as administrator)
 5. i) ako ne radi otvorite taj fajl preko notepada i kopirajte u CMD linije koje importuju (keytool....)
+
 6. u IntelliJ: Run -> Edit configurations; sa leve strane bi trebalo da vam stoje moduli, ako ne stoje probajte prvo da ih pokrenete (iako nece moci), jer ce se tako inicirati konfiguracije
 7. za svaki modul pasteujte u polje "Environment variables" odgovarajuci string iz "environment variables.txt" fajla
 8. to bi bilo to
