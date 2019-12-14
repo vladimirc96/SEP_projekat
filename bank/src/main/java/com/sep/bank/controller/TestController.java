@@ -1,4 +1,4 @@
-package com.sep.bank;
+package com.sep.bank.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
