@@ -25,6 +25,7 @@ public class DiscoveryServiceApplication {
 		@PostConstruct
 		private void configureSSL() {
 			//set to TLSv1.1 or TLSv1.2
+			System.out.println("********** SSL-TRUST-STORE:" + env.getProperty("server.ssl.trust-store"));
 			System.setProperty("https.protocols", "TLSv1.2");
 
 			//load the 'javax.net.ssl.trustStore' and

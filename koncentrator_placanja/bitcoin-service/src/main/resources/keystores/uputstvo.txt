@@ -1,0 +1,10 @@
+1. kopirati folder "sep" u %JAVA_HOME% direktorijum, to je kod mene C:\Program Files\Java\jdk1.8.0_191\bin (mozete videti ako otvorite CMD i ukucate "Echo %JAVA_HOME%")
+2. u isti folder kopirati i importcerts.bat fajl (verovatno imate od proslog puta isti taj fajl, pa ga overwriteujte samo)
+3. otvoriti CMD kao administrator -> Start, kucaj CMD -> desni klik "Run as administrator"
+4. kucati "cd" pa folder gde je java (iz koraka 1), pa vam se otvara u CMD taj folder u koji ste ubacili "sep" folder iz koraka 1
+5. pokrenite importcerts.bat (Run as administrator)
+5. i) ako ne radi otvorite taj fajl preko notepada i kopirajte u CMD linije koje importuju (keytool....)
+6. u IntelliJ: Run -> Edit configurations; sa leve strane bi trebalo da vam stoje moduli, ako ne stoje probajte prvo da ih pokrenete (iako nece moci), jer ce se tako inicirati konfiguracije
+7. za svaki modul pasteujte u polje "Environment variables" odgovarajuci string iz "environment variables.txt" fajla
+8. to bi bilo to
+9. ako ne radi, probajte da kopirate "keystores" folder u neke od modula jer je pitanje gde vam prepoznaje classpath (iz nekog razloga nekad zna da baguje), meni prepoznajte root folder projekta ("SEP_projekat")
