@@ -9,3 +9,4 @@ docker run --detach -p 8761:8761 discovery-service:latest
 image build: 
 
 docker image build -t discovery-service .
+
