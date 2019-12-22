@@ -15,6 +15,7 @@ public class TestController {
     @Autowired
     public RestTemplate restTemplate;
 
+
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity<String> test(@RequestBody String body){
         HttpEntity<String> HReq=new HttpEntity<String>(body);

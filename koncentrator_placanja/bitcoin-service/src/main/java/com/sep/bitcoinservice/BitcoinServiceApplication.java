@@ -17,6 +17,7 @@ public class BitcoinServiceApplication {
 		SpringApplication.run(BitcoinServiceApplication.class, args);
 	}
 
+
 	@Configuration
 	public class SSLConfig {
 		@Autowired
