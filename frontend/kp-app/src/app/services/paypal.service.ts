@@ -9,4 +9,8 @@ export class PaypalService {
 
     constructor(private http: HttpClient, private router: Router) { }
 
+    pay(orderDTO) {
+        return this.http.post("http://localhost:8443/paypal", orderDTO, {responseType: 'text'});
+    }
+
 }
