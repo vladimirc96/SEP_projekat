@@ -1,12 +1,10 @@
 package com.sep.bankservice.controller;
 
-import com.netflix.discovery.converters.Auto;
 import com.sep.bankservice.dto.PaymentDTO;
 import com.sep.bankservice.dto.PaymentRequestDTO;
-import com.sep.bankservice.model.Client;
+import com.sep.bankservice.model.Customer;
 import com.sep.bankservice.model.Transaction;
-import com.sep.bankservice.repository.TransactionRepository;
-import com.sep.bankservice.service.ClientService;
+import com.sep.bankservice.service.CustomerService;
 import com.sep.bankservice.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @RestController
@@ -30,7 +27,7 @@ public class BankController {
     private TransactionService transactionService;
 
     @Autowired
-    private ClientService clientService;
+    private CustomerService customerService;
 
     @RequestMapping(value = "/payment", method = RequestMethod.POST)
     private ResponseEntity<?> payment(@RequestBody PaymentDTO paymentDTO) {
@@ -38,12 +35,13 @@ public class BankController {
         transaction.setAmount(paymentDTO.getAmount());
         transaction.setTimestamp(new Date());
 
-        Client client = clientService.findByMerchantId(paymentDTO.getMerchantId());
+        Customer customer = customerService.findByMerchantId(paymentDTO.getMerchantId());
 
-        transaction.setClient(client);
+        transaction.setCustomer(customer);
         transaction = transactionService.save(transaction);
 
-        PaymentRequestDTO paymentRequestDTO = new PaymentRequestDTO(client.getMerchanId(), client.getMerchantPassword(),
+        PaymentRequestDTO paymentRequestDTO = new PaymentRequestDTO(customer.getMerchantId(),
+                customer.getMerchantPassword(),
                 paymentDTO.getAmount(), transaction.getId(), transaction.getTimestamp());
 
         // poslati zahtev banci

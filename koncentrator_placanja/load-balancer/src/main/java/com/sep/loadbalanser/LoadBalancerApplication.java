@@ -1,15 +1,36 @@
 package com.sep.loadbalanser;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 
+import javax.annotation.PostConstruct;
+
+@EnableZuulProxy
 @EnableEurekaClient
 @SpringBootApplication
 public class LoadBalancerApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(LoadBalancerApplication.class, args);
+	}
+
+	@Configuration
+	public class SSLConfig {
+		@Autowired
+		private Environment env;
+
+		@PostConstruct
+		private void configureSSL() {
+			System.setProperty("https.protocols", "TLSv1.2");
+
+			System.setProperty("javax.net.ssl.trustStore", env.getProperty("server.ssl.trust-store"));
+			System.setProperty("javax.net.ssl.trustStorePassword",env.getProperty("server.ssl.trust-store-password"));
+		}
 	}
 
 }
