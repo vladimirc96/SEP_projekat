@@ -6,11 +6,13 @@ import com.sep.bank.model.BankAccount;
 import com.sep.bank.model.Customer;
 import com.sep.bank.service.BankAccountService;
 import com.sep.bank.service.BankService;
-import com.sep.bank.service.ClientService;
+import com.sep.bank.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
 
 @CrossOrigin
 @RestController
@@ -28,7 +30,7 @@ public class BankController {
     private BankAccountService bankAccountService;
 
     @Autowired
-    private ClientService clientService;
+    private CustomerService customerService;
 
     @RequestMapping(value = "/check-payment-request", method = RequestMethod.PUT)
     public ResponseEntity<String> check(@RequestBody PaymentRequestDTO paymentRequest){
@@ -41,18 +43,21 @@ public class BankController {
 
     @RequestMapping(value = "/payment", method = RequestMethod.PUT)
     public ResponseEntity<String> payment(@RequestBody BankAccountDTO bankAccountDTO){
-        BankAccount bankAccount = bankAccountService.validate(bankAccountDTO);
-        if(bankAccount == null){
-
+        // prvo proveriti da li je istekla kartica
+        if(isExpired(bankAccountDTO.getExpirationDate())){
+            return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
         }
 
-
-
+        // provera ostalih podataka
+        BankAccount bankAccount = bankAccountService.validate(bankAccountDTO);
+        if(bankAccount == null){
+            return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
 
-
     private boolean isRequestValid(PaymentRequestDTO paymentRequest){
-        Customer customer = clientService.findByMerchantIdAndMerchantPassword(paymentRequest.getMerchantId(), paymentRequest.getMerchantPassword());
+        Customer customer = customerService.findByMerchantIdAndMerchantPassword(paymentRequest.getMerchantId(), paymentRequest.getMerchantPassword());
         if(customer == null){
             return false;
         }
@@ -64,5 +69,13 @@ public class BankController {
         return true;
     }
 
+    private boolean isExpired(Date expirationDate){
+        Date today = new Date();
+        if(today.after(expirationDate)){
+            return true;
+        }else{
+            return false;
+        }
+    }
 
 }

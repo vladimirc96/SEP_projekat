@@ -13,7 +13,7 @@ import java.util.List;
 public class BankService {
 
     @Autowired
-    private ClientService clientService;
+    private CustomerService customerService;
 
     @Autowired
     private BankRepository bankRepo;
@@ -35,7 +35,7 @@ public class BankService {
     }
 
     public boolean isPaymentValid(PaymentRequestDTO paymentRequest){
-        Customer customer = clientService.findByMerchantIdAndMerchantPassword(paymentRequest.getMerchantId(), paymentRequest.getMerchantPassword());
+        Customer customer = customerService.findByMerchantIdAndMerchantPassword(paymentRequest.getMerchantId(), paymentRequest.getMerchantPassword());
         if(customer == null){
             return false;
         }

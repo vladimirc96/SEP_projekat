@@ -35,6 +35,8 @@ public class BankAccount {
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Bank bank;
 
+    public BankAccount() {super();}
+
     public BankAccount(String pan, String cardholderName, Date expirationDate, String serviceCode, double balance, double reserved, Customer customer) {
         this.pan = pan;
         this.cardholderName = cardholderName;
