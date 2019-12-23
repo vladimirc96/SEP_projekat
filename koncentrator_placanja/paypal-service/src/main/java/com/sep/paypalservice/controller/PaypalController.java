@@ -18,11 +18,6 @@ public class PaypalController {
     @Autowired
     PaypalService service;
 
-    @RequestMapping(value = "/cao", method = RequestMethod.GET)
-    private String cao() {
-        return "Cao matori";
-    }
-
     @RequestMapping(value = "", method = RequestMethod.POST)
     private String payment(@RequestBody OrderDTO orderDTO) {
         try {
