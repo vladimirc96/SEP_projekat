@@ -13,8 +13,8 @@ public class Bank {
     @Column(name = "name")
     private String name;
 
-    //private Set<BankAccount> accounts;
-
+    @OneToMany(mappedBy = "bank", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<BankAccount> accounts;
 
     public Bank() {
     }

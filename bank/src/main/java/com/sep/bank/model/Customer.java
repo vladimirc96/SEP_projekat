@@ -4,14 +4,15 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-public class Client {
+public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "customer_id")
     private Long id;
 
     @Column(name = "merchant_id")
-    private String merchanId;
+    private String merchantId;
 
     @Column(name = "merchant_password")
     private String merchantPassword;
@@ -19,14 +20,16 @@ public class Client {
     @Column(name = "name")
     private String name;
 
-    @OneToOne(mappedBy = "client")
+    @OneToOne(mappedBy = "customer")
     private BankAccount bankAccount;
 
-    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Transaction> transactions;
 
-    public Client(String merchanId, String merchantPassword, String name) {
-        this.merchanId = merchanId;
+    public Customer(){super();}
+
+    public Customer(String merchantId, String merchantPassword, String name) {
+        this.merchantId = merchantId;
         this.merchantPassword = merchantPassword;
         this.name = name;
     }
@@ -39,12 +42,12 @@ public class Client {
         this.id = id;
     }
 
-    public String getMerchanId() {
-        return merchanId;
+    public String getmerchantId() {
+        return merchantId;
     }
 
-    public void setMerchanId(String merchanId) {
-        this.merchanId = merchanId;
+    public void setmerchantId(String merchantId) {
+        this.merchantId = merchantId;
     }
 
     public String getMerchantPassword() {

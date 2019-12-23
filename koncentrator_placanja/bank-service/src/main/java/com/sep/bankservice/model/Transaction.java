@@ -10,14 +10,14 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Customer customer;
+    @Column(name = "amount")
+    private double amount;
 
     @Column(name = "timestamp")
     private Date timestamp;
 
-    @Column(name = "amount")
-    private double amount;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Customer customer;
 
     public Transaction() {
     }
