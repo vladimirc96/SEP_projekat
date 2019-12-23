@@ -30,7 +30,7 @@ public class BankController {
     private CustomerService customerService;
 
     @RequestMapping(value = "/payment", method = RequestMethod.POST)
-    private ResponseEntity<?> payment(@RequestBody PaymentDTO paymentDTO) {
+        private ResponseEntity<?> payment(@RequestBody PaymentDTO paymentDTO) {
         Transaction transaction = new Transaction();
         transaction.setAmount(paymentDTO.getAmount());
         transaction.setTimestamp(new Date());
