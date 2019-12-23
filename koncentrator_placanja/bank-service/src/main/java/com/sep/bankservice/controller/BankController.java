@@ -1,11 +1,9 @@
 package com.sep.bankservice.controller;
 
-import com.netflix.discovery.converters.Auto;
 import com.sep.bankservice.dto.PaymentDTO;
 import com.sep.bankservice.dto.PaymentRequestDTO;
 import com.sep.bankservice.model.Client;
 import com.sep.bankservice.model.Transaction;
-import com.sep.bankservice.repository.TransactionRepository;
 import com.sep.bankservice.service.ClientService;
 import com.sep.bankservice.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @RestController

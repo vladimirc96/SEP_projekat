@@ -1,5 +1,6 @@
 package com.sep.bankservice.model;
 
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -30,6 +31,9 @@ public class BankAccount {
     @OneToOne
     @JoinColumn(referencedColumnName = "client_id", name="bank_account_client_id")
     private Client client;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Bank bank;
 
     public BankAccount(String pan, String cardholderName, Date expirationDate, String serviceCode, double balance, double reserved, Client client) {
         this.pan = pan;

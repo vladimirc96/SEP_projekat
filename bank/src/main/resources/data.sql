@@ -1,0 +1,1 @@
+insert into client values (1, "dovla", "dovla", "Vladimir");

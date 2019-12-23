@@ -8,10 +8,11 @@ public class Client {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "client_id")
     private Long id;
 
     @Column(name = "merchant_id")
-    private String merchanId;
+    private String merchantId;
 
     @Column(name = "merchant_password")
     private String merchantPassword;
@@ -25,8 +26,10 @@ public class Client {
     @OneToMany(mappedBy = "client", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Transaction> transactions;
 
-    public Client(String merchanId, String merchantPassword, String name) {
-        this.merchanId = merchanId;
+    public Client(){super();}
+
+    public Client(String merchantId, String merchantPassword, String name) {
+        this.merchantId = merchantId;
         this.merchantPassword = merchantPassword;
         this.name = name;
     }
@@ -39,12 +42,12 @@ public class Client {
         this.id = id;
     }
 
-    public String getMerchanId() {
-        return merchanId;
+    public String getmerchantId() {
+        return merchantId;
     }
 
-    public void setMerchanId(String merchanId) {
-        this.merchanId = merchanId;
+    public void setmerchantId(String merchantId) {
+        this.merchantId = merchantId;
     }
 
     public String getMerchantPassword() {
