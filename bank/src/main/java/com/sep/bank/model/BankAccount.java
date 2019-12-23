@@ -29,17 +29,20 @@ public class BankAccount {
     private double reserved;
 
     @OneToOne
-    @JoinColumn(referencedColumnName = "client_id", name="bank_account_client_id")
-    private Client client;
+    @JoinColumn(referencedColumnName = "customer_id", name="bank_account_customer_id")
+    private Customer customer;
 
-    public BankAccount(String pan, String cardholderName, Date expirationDate, String serviceCode, double balance, double reserved, Client client) {
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Bank bank;
+
+    public BankAccount(String pan, String cardholderName, Date expirationDate, String serviceCode, double balance, double reserved, Customer customer) {
         this.pan = pan;
         this.cardholderName = cardholderName;
         this.expirationDate = expirationDate;
         this.serviceCode = serviceCode;
         this.balance = balance;
         this.reserved = reserved;
-        this.client = client;
+        this.customer = customer;
     }
 
     public Long getId() {
@@ -98,11 +101,11 @@ public class BankAccount {
         this.reserved = reserved;
     }
 
-    public Client getClient() {
-        return client;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 }

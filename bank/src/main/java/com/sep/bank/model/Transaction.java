@@ -1,6 +1,7 @@
 package com.sep.bank.model;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 public class Transaction {
@@ -9,8 +10,14 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(name = "amount")
+    private double amount;
+
+    @Column(name = "timestamp")
+    private Date timestamp;
+
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Client client;
+    private Customer customer;
 
     public Transaction() {
     }
@@ -21,5 +28,29 @@ public class Transaction {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public Date getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
     }
 }

@@ -7,14 +7,25 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
 
 @RestController
 @RequestMapping("/bitcoin-test")
 public class BitcoinTestController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public ResponseEntity<?> getTestResponse()
+    public ResponseEntity<?> getTestResponse(HttpServletRequest request)
     {
-        return new ResponseEntity<>("All OK.",HttpStatus.OK);
+
+        Enumeration<String> headers = request.getHeaderNames();
+        while (headers.hasMoreElements()) {
+            System.out.println(headers.nextElement());
+        }
+
+        System.out.println(request.getHeader("user-agent"));
+        System.out.println(request.getHeader("user-agent"));
+
+
+        return new ResponseEntity<>("All Ok.", HttpStatus.OK);
     }
 }

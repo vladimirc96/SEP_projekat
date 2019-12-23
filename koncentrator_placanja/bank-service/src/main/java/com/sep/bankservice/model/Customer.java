@@ -8,6 +8,7 @@ public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "client_id")
     private Long id;
 
     @Column(name = "merchant_id")
@@ -46,8 +47,8 @@ public class Customer {
         return merchantId;
     }
 
-    public void setMerchantId(String merchanId) {
-        this.merchantId = merchanId;
+    public void setmerchantId(String merchantId) {
+        this.merchantId = merchantId;
     }
 
     public String getMerchantPassword() {

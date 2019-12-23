@@ -31,6 +31,10 @@ public class BankAccount {
     @OneToOne(fetch = FetchType.LAZY)
     private Customer customer;
 
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Bank bank;
+
+
     public BankAccount() {
     }
 
@@ -107,4 +111,7 @@ public class BankAccount {
     public void setCustomer(Customer customer) {
         this.customer = customer;
     }
+
+
+
 }
