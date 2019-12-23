@@ -25,6 +25,7 @@ public class BitcoinServiceApplication {
 
 		@PostConstruct
 		private void configureSSL() {
+
 			//set to TLSv1.1 or TLSv1.2
 			System.setProperty("https.protocols", "TLSv1.2");
 
