@@ -2,5 +2,6 @@ package com.sep.bitcoinservice.enums;
 
 public class Enums {
 
-    public static enum Currency { RSD, EUR, BTC }
+    public enum Currency { RSD, EUR, BTC }
+
 }
