@@ -11,6 +11,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { PaymentSuccessComponent } from './payment-success/payment-success.component';
 import { PaymentCancelComponent } from './payment-cancel/payment-cancel.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BankComponent } from './bank/bank.component';
+import { BankService } from './services/bank.service';
 
 @NgModule({
   declarations: [
@@ -18,7 +20,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     SellersComponent,
     PaypalComponent,
     PaymentSuccessComponent,
-    PaymentCancelComponent
+    PaymentCancelComponent,
+    BankComponent
   ],
   imports: [
     BrowserModule,
@@ -27,7 +30,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     FormsModule,
     ReactiveFormsModule
   ],
-  providers: [SellersService, PaypalService],
+  providers: [SellersService, PaypalService, BankService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
