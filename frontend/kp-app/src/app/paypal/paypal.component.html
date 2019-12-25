@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" [ngClass]="status ? 'wait' : 'point'">
     <div class="row"><br></div>
     <div class="row">
         <div class="col-75">
@@ -38,12 +38,10 @@
                             </div>
                         </div>
                         
-                        <!-- <label for="method">Payment Method</label>
-                        <input type="text" id="method" name="method" placeholder="Payment Method" value="paypal"> -->
                     </div>
                     <div class="form-group">
                         <div class="form-field">
-                          <input type="submit" value="Continue to checkout"  class="form-control btn btn-primary">
+                          <input type="submit" value="Continue to checkout"  class="form-control btn btn-primary"  (click)="status=!status" [ngClass]="status ? 'wait' : 'point'">
                         </div>
                     </div>
                 </form>

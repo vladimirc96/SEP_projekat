@@ -8,9 +8,10 @@ import { SellersService } from './services/sellers.service';
 import { PaypalService } from './services/paypal.service';
 import { PaypalComponent } from './paypal/paypal.component';
 import { HttpClientModule } from '@angular/common/http';
-import { PaymentSuccessComponent } from './payment-success/payment-success.component';
-import { PaymentCancelComponent } from './payment-cancel/payment-cancel.component';
+import { PaymentSuccessComponent } from './paypal/payment-success/payment-success.component';
+import { PaymentCancelComponent } from './paypal/payment-cancel/payment-cancel.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { LoadingPaymentComponent } from './paypal/loading-payment/loading-payment.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     SellersComponent,
     PaypalComponent,
     PaymentSuccessComponent,
-    PaymentCancelComponent
+    PaymentCancelComponent,
+    LoadingPaymentComponent
   ],
   imports: [
     BrowserModule,

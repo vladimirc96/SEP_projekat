@@ -3,6 +3,7 @@ package com.sep.paypalservice.service;
 import com.paypal.api.payments.*;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
+import com.sep.paypalservice.dto.OrderDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,14 +18,42 @@ public class PaypalService {
     @Autowired
     private APIContext apiContext;
 
-    public Payment createPayment(
-            Double total,
-            String currency,
-            String method,
-            String intent,
-            String description,
-            String cancelUrl,
-            String successUrl) throws PayPalRESTException {
+    private Logging logger = new Logging(this);
+
+    public String payment(OrderDTO orderDTO) {
+        logger.logInfo("PP_PAYMENT");
+        try {
+            Payment payment = createPayment(orderDTO.getPrice(), orderDTO.getCurrency(),
+                    orderDTO.getIntent(), orderDTO.getDescription());
+            for(Links link:payment.getLinks()) {
+                if(link.getRel().equals("approval_url")) {
+                    return link.getHref();
+                }
+            }
+        } catch (PayPalRESTException e) {
+            logger.logError("PP_PAYMENT_ERR: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return "http://localhost:4200/";
+    }
+
+    public String successPay(String paymentId, String payerId) {
+        logger.logInfo("PP_CONFIRM");
+        try {
+            Payment payment = executePayment(paymentId, payerId);
+            System.out.println(payment.toJSON());
+            if (payment.getState().equals("approved")) {
+                logger.logInfo("PP_CONFIRM_SUCCESS");
+                return "http://localhost:4200/paypal/success";
+            }
+        } catch (PayPalRESTException e) {
+            logger.logError("PP_CONFIRM_ERR: " + e.getMessage());
+            System.out.println(e.getMessage());
+        }
+        return "http://localhost:4200/";
+    }
+
+    public Payment createPayment( Double total, String currency, String intent, String description) throws PayPalRESTException {
         Amount amount = new Amount();
         amount.setCurrency(currency);
         total = new BigDecimal(total).setScale(2, RoundingMode.HALF_UP).doubleValue();
@@ -38,21 +67,21 @@ public class PaypalService {
         transactions.add(transaction);
 
         Payer payer = new Payer();
-        payer.setPaymentMethod(method.toString());
+        payer.setPaymentMethod("paypal");
 
         Payment payment = new Payment();
         payment.setIntent(intent.toString());
         payment.setPayer(payer);
         payment.setTransactions(transactions);
         RedirectUrls redirectUrls = new RedirectUrls();
-        redirectUrls.setCancelUrl(cancelUrl);
-        redirectUrls.setReturnUrl(successUrl);
+        redirectUrls.setCancelUrl("http://localhost:4200/paypal");
+        redirectUrls.setReturnUrl("http://localhost:4200/payment/verifying");
         payment.setRedirectUrls(redirectUrls);
 
         return payment.create(apiContext);
     }
 
-    public Payment executePayment(String paymentId, String payerId) throws PayPalRESTException{
+    public Payment executePayment(String paymentId, String payerId) throws PayPalRESTException {
         Payment payment = new Payment();
         payment.setId(paymentId);
         PaymentExecution paymentExecute = new PaymentExecution();

@@ -15,6 +15,7 @@ export class PaypalComponent implements OnInit {
   currency: FormControl;
   intent: FormControl;
   description: FormControl;
+  status: boolean = false;
 
   ret: any;
   constructor(private palService: PaypalService, private route: ActivatedRoute, private router: Router) { }
@@ -42,9 +43,8 @@ export class PaypalComponent implements OnInit {
 
   onSubmitPay(form: NgForm) {
     let orderDTO = {
-      price: 10,
+      price: 100,
       currency: 'USD',
-      method: 'paypal',
       intent: 'sale',
       description: ''
     }

@@ -55,7 +55,6 @@ body {
   .btn {
     background-color: #4CAF50;
     color: white;
-    padding: 12px;
     margin: 10px 0;
     border: none;
     width: 100%;
@@ -75,4 +74,12 @@ body {
   span.price {
     float: right;
     color: grey;
+  }
+
+  .point {
+    cursor: default;
+  }
+
+  .wait {
+    cursor: wait;
   }

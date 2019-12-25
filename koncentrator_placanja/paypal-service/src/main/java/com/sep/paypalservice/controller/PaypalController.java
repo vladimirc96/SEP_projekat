@@ -20,35 +20,12 @@ public class PaypalController {
 
     @RequestMapping(value = "", method = RequestMethod.POST)
     private String payment(@RequestBody OrderDTO orderDTO) {
-        try {
-            Payment payment = service.createPayment(orderDTO.getPrice(), orderDTO.getCurrency(), orderDTO.getMethod(),
-                    orderDTO.getIntent(), orderDTO.getDescription(), "http://localhost:4200/payment/cancel",
-                    "http://localhost:4200/payment/success");
-            for(Links link:payment.getLinks()) {
-                if(link.getRel().equals("approval_url")) {
-                    return link.getHref();
-                }
-            }
-
-        } catch (PayPalRESTException e) {
-
-            e.printStackTrace();
-        }
-        return "http://localhost:4200/";
+            return service.payment(orderDTO);
     }
 
-    @RequestMapping(value = "/success", method = RequestMethod.GET)
-    public String successPay(@RequestParam("paymentID") String paymentId, @RequestParam("payerID") String payerId) {
-        try {
-            Payment payment = service.executePayment(paymentId, payerId);
-            System.out.println(payment.toJSON());
-            if (payment.getState().equals("approved")) {
-                return "http://localhost:4200/payment/success";
-            }
-        } catch (PayPalRESTException e) {
-            System.out.println(e.getMessage());
-        }
-        return "http://localhost:4200/";
+    @RequestMapping(value = "/success/{payment}/{payer}", method = RequestMethod.GET)
+    public String successPay(@PathVariable("payment") String payment, @PathVariable("payer") String payer) {
+        return service.successPay(payment, payer);
     }
 
 }
