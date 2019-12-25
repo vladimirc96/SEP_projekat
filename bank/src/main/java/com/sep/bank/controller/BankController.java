@@ -1,18 +1,21 @@
 package com.sep.bank.controller;
 
-import com.sep.bank.dto.BankAccountDTO;
-import com.sep.bank.dto.PaymentRequestDTO;
+import com.sep.bank.dto.*;
 import com.sep.bank.model.BankAccount;
 import com.sep.bank.model.Customer;
+import com.sep.bank.model.PaymentStatus;
+import com.sep.bank.model.Transaction;
 import com.sep.bank.service.BankAccountService;
 import com.sep.bank.service.BankService;
 import com.sep.bank.service.CustomerService;
+import com.sep.bank.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Date;
+import org.springframework.web.client.RestTemplate;
 
 @CrossOrigin
 @RestController
@@ -24,6 +27,9 @@ public class BankController {
     private final String ERROR_URL = "";
 
     @Autowired
+    private RestTemplate restTemplate;
+
+    @Autowired
     private BankService bankService;
 
     @Autowired
@@ -32,28 +38,96 @@ public class BankController {
     @Autowired
     private CustomerService customerService;
 
+    @Autowired
+    private TransactionService transactionService;
+
+    // proverava zahtev za placanje
     @RequestMapping(value = "/check-payment-request", method = RequestMethod.PUT)
-    public ResponseEntity<String> check(@RequestBody PaymentRequestDTO paymentRequest){
+    public ResponseEntity<?> check(@RequestBody PaymentRequestDTO paymentRequest){
+        Customer customer = customerService.findByMerchantId(paymentRequest.getMerchantId());
+        Transaction transaction = new Transaction(paymentRequest.getAmount(), paymentRequest.getMerchantTimestamp(), customer);
+        transaction.setId(paymentRequest.getMerchantOrderId());
+
         if(!isRequestValid(paymentRequest)){
-            return new ResponseEntity<>(FAILED_URL, HttpStatus.OK);
+            transaction.setPaymentStatus(PaymentStatus.FAILURE);
+
+            // azuriraj stanje transakcije u KP-u
+            requestUpdateTransaction(transaction);
+
+            return new ResponseEntity<>(new RedirectDTO(FAILED_URL, null), HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(SUCCESS_URL, HttpStatus.OK);
+
+        transaction.setPaymentStatus(PaymentStatus.PROCESSING);
+        transaction = transactionService.save(transaction);
+        return new ResponseEntity<>(new RedirectDTO(SUCCESS_URL, transaction.getId()), HttpStatus.OK);
     }
 
-
-    @RequestMapping(value = "/payment", method = RequestMethod.PUT)
-    public ResponseEntity<String> payment(@RequestBody BankAccountDTO bankAccountDTO){
+    // validira podatke za placanje unete na sajtu banke
+    // naknadno je potrebno dodati proveru da li je bank prodavca i kupca ista
+    @RequestMapping(value = "/validate/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<String> validate(@RequestBody BankAccountDTO bankAccountDTO, @PathVariable("id") String id){
+        Transaction transaction = transactionService.findOneById(Long.parseLong(id));
         // prvo proveriti da li je istekla kartica
-        if(isExpired(bankAccountDTO.getExpirationDate())){
-            return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
+        if(bankAccountService.isExpired(bankAccountDTO.getExpirationDate())){
+            transaction.setPaymentStatus(PaymentStatus.FAILURE);
+            transaction = transactionService.save(transaction);
+
+            // azuriraj stanje transakcije u KP-u
+            requestUpdateTransaction(transaction);
+
+            return new ResponseEntity<>("CARD IS EXPIRED", HttpStatus.BAD_REQUEST);
         }
 
         // provera ostalih podataka
         BankAccount bankAccount = bankAccountService.validate(bankAccountDTO);
         if(bankAccount == null){
-            return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
+            transaction.setPaymentStatus(PaymentStatus.FAILURE);
+            transaction = transactionService.save(transaction);
+
+            // azuriraj stanje transakcije u KP-u
+            requestUpdateTransaction(transaction);
+
+
+            return new ResponseEntity<>("FAIL: THE DATA ENTERED IS NOT VALID", HttpStatus.BAD_REQUEST);
         }
+
         return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+    }
+
+
+    // izvrsava placanje
+    @RequestMapping(value = "/payment/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<PaymentResponseDTO> payment(@RequestBody BankAccountDTO bankAccountDTO, @PathVariable("id") String id){
+        Transaction transaction = transactionService.findOneById(Long.parseLong(id));
+        BankAccount bankAccount = bankAccountService.findOneById(bankAccountDTO.getId());
+
+        //provera raspolozivih sredstava
+        if(!bankAccountService.hasFunds(bankAccount.getBalance(), transaction.getAmount())){
+            transaction.setPaymentStatus(PaymentStatus.INSUFFCIENT_FUNDS);
+            transaction = transactionService.save(transaction);
+            PaymentResponseDTO paymentResponseDTO = new PaymentResponseDTO(transaction.getId(), transaction.getId(),
+                    transaction.getId(), null, transaction.getPaymentStatus());
+
+            return new ResponseEntity<>(paymentResponseDTO, HttpStatus.BAD_REQUEST);
+        }else{
+            // rezervisi sredstva
+            bankAccount.setReserved(transaction.getAmount());
+        }
+
+        // skinuti sredstva sa racuna
+        bankAccount.setBalance(bankAccount.getBalance()-bankAccount.getReserved());
+        bankAccount = bankAccountService.save(bankAccount);
+
+        // obraditi transakciju i proslediti podatke MERCHANT_ORDER_ID, ACQUIRER_ORDER_ID, ACQUIRER_TIMESTAMP i PAYMENT_ID
+        // ne salju se za sada svi ti podaci posto nema Issuer banke
+        transaction.setPaymentStatus(PaymentStatus.SUCCESS);
+        transaction = transactionService.save(transaction);
+
+        PaymentResponseDTO paymentResponseDTO = new PaymentResponseDTO(transaction.getId(), transaction.getId(),
+                transaction.getId(), null, transaction.getPaymentStatus());
+
+
+        return new ResponseEntity<>(paymentResponseDTO, HttpStatus.OK);
     }
 
     private boolean isRequestValid(PaymentRequestDTO paymentRequest){
@@ -69,13 +143,10 @@ public class BankController {
         return true;
     }
 
-    private boolean isExpired(Date expirationDate){
-        Date today = new Date();
-        if(today.after(expirationDate)){
-            return true;
-        }else{
-            return false;
-        }
+    private void requestUpdateTransaction(Transaction transaction){
+        HttpEntity<PaymentStatusDTO> entity = new HttpEntity<PaymentStatusDTO>(new PaymentStatusDTO(transaction.getPaymentStatus()));
+        ResponseEntity<String> responseEntity = restTemplate.exchange("https://localhost:8500/bank-service/bank/transaction/" + transaction.getId(),
+                HttpMethod.PUT, entity, String.class);
     }
 
 }
