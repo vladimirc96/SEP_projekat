@@ -12,6 +12,8 @@ import { PaymentSuccessComponent } from './paypal/payment-success/payment-succes
 import { PaymentCancelComponent } from './paypal/payment-cancel/payment-cancel.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LoadingPaymentComponent } from './paypal/loading-payment/loading-payment.component';
+import { CentralaMockComponent } from './centrala-mock/centrala-mock.component';
+import { RadComponent } from './centrala-mock/rad/rad.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +22,9 @@ import { LoadingPaymentComponent } from './paypal/loading-payment/loading-paymen
     PaypalComponent,
     PaymentSuccessComponent,
     PaymentCancelComponent,
-    LoadingPaymentComponent
+    LoadingPaymentComponent,
+    CentralaMockComponent,
+    RadComponent
   ],
   imports: [
     BrowserModule,

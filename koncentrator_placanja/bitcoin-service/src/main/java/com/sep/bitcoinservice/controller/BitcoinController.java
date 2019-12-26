@@ -21,6 +21,11 @@ public class BitcoinController {
         return new ResponseEntity<>(_transactionService.getTransaction(id), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/")
+    public ResponseEntity<?> getTransactions() {
+        return new ResponseEntity<>(_transactionService.getTransactions(), HttpStatus.OK);
+    }
+
     @GetMapping(value = "/{id}/status")
     public ResponseEntity<?> getTransactionStatus(@PathVariable long id) {
         return new ResponseEntity<>(_transactionService.getTransactionStatusDto(id), HttpStatus.OK);

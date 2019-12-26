@@ -62,11 +62,13 @@ public class Transaction {
 
         t.createdAt = cgDTO.getCreated_at();
         t.amount = cgDTO.getPrice_amount();
+        t.amountDifference = cgDTO.getOverpaid_amount() + cgDTO.getUnderpaid_amount();
         t.currency = cgDTO.getPrice_currency();
         t.orderId = cgDTO.getId();
         t.status = cgDTO.getStatus();
         t.paymentAddress = cgDTO.getPayment_address();
         t.paymentUrl = cgDTO.getPayment_url();
+
 
         return t;
     }

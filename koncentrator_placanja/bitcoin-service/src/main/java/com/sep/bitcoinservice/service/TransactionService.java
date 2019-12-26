@@ -79,7 +79,7 @@ public class TransactionService implements ITransactionService {
                 checkoutRequest,
                 CGOrderFullDTO.class);
 
-        Transaction t = Transaction.convertObjects(new Transaction(), (CGOrderFullDTO) response.getBody());
+        Transaction t = Transaction.convertObjects(new Transaction(), response.getBody());
 
         if (transactionRepo.existsById(t.getOrderId())) {
             throw new InstanceAlreadyExistsException("Order is already created.");
