@@ -9,7 +9,6 @@ import java.util.Set;
 public class Seller {
 
     @Id
-    @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private long id;
 
     @Column

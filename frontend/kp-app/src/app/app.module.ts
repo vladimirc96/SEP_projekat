@@ -14,6 +14,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LoadingPaymentComponent } from './paypal/loading-payment/loading-payment.component';
 import { CentralaMockComponent } from './centrala-mock/centrala-mock.component';
 import { RadComponent } from './centrala-mock/rad/rad.component';
+import { SellerMethodsComponent } from './sellers/seller-methods/seller-methods.component';
+import { BitcoinComponent } from './bitcoin/bitcoin.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,9 @@ import { RadComponent } from './centrala-mock/rad/rad.component';
     PaymentCancelComponent,
     LoadingPaymentComponent,
     CentralaMockComponent,
-    RadComponent
+    RadComponent,
+    SellerMethodsComponent,
+    BitcoinComponent
   ],
   imports: [
     BrowserModule,

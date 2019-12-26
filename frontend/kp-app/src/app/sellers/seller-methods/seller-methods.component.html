@@ -1,0 +1,9 @@
+<div class="container">
+    <h4 class="mt-5">Izaberite opciju plaćanja</h4>
+
+    <div class="card mt-5" style="width: 18rem;" *ngIf="seller">
+        <ul class="list-group list-group-flush">
+          <li *ngFor="let pm of seller.paymentMethods" class="list-group-item" (click)="onClickPM(pm)">{{pm}}</li>
+        </ul>
+      </div>
+</div>
