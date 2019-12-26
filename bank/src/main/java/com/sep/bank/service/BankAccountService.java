@@ -9,11 +9,13 @@ import com.sep.bank.repository.BankAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
 public class BankAccountService {
 
+    public Logging logger = new Logging(this);
 
     @Autowired
     private BankAccountRepository bankAccountRepo;
@@ -37,6 +39,23 @@ public class BankAccountService {
     public BankAccount validate(BankAccountDTO bankAccountDTO){
         return bankAccountRepo.validate(bankAccountDTO.getPan(), bankAccountDTO.getServiceCode(),
                 bankAccountDTO.getCardholderName(), bankAccountDTO.getExpirationDate());
+    }
+
+    public boolean isExpired(Date expirationDate){
+        Date today = new Date();
+        if(today.after(expirationDate)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public boolean hasFunds(double balance, double amount){
+        if(balance >= amount){
+            return true;
+        }else{
+            return false;
+        }
     }
 
 }

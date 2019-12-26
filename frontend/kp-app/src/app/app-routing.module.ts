@@ -9,6 +9,7 @@ import { CentralaMockComponent } from './centrala-mock/centrala-mock.component';
 import { RadComponent } from './centrala-mock/rad/rad.component';
 import { SellerMethodsComponent } from './sellers/seller-methods/seller-methods.component';
 import { BitcoinComponent } from './bitcoin/bitcoin.component';
+import { BankComponent } from './bank/bank.component';
 
 const appRoutes: Routes = [
 	{ path: '', redirectTo: '/home', pathMatch: 'full'},
@@ -20,8 +21,8 @@ const appRoutes: Routes = [
 	{ path: 'centrala', component: CentralaMockComponent},
 	{ path: 'centrala/rad/:id', component: RadComponent},
 	{ path: 'sellers/:id', component: SellerMethodsComponent},
-	{ path: 'bitcoin', component: BitcoinComponent }
-
+	{ path: 'bitcoin', component: BitcoinComponent },
+	{ path: 'bank', component: BankComponent }
 
 ]
 

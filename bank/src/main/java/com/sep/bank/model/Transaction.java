@@ -16,10 +16,20 @@ public class Transaction {
     @Column(name = "timestamp")
     private Date timestamp;
 
+    @Column(name = "payment_status")
+    @Enumerated(EnumType.STRING) // omogucava cuvanje enum vrednosti kao string u bazi
+    private PaymentStatus paymentStatus;
+
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Customer customer;
 
     public Transaction() {
+    }
+
+    public Transaction(double amount, Date timestamp, Customer customer) {
+        this.amount = amount;
+        this.timestamp = timestamp;
+        this.customer = customer;
     }
 
     public Long getId() {
@@ -52,5 +62,13 @@ public class Transaction {
 
     public void setAmount(double amount) {
         this.amount = amount;
+    }
+
+    public PaymentStatus getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(PaymentStatus paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
 }

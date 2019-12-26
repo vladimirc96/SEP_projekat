@@ -16,6 +16,8 @@ import { CentralaMockComponent } from './centrala-mock/centrala-mock.component';
 import { RadComponent } from './centrala-mock/rad/rad.component';
 import { SellerMethodsComponent } from './sellers/seller-methods/seller-methods.component';
 import { BitcoinComponent } from './bitcoin/bitcoin.component';
+import { BankComponent } from './bank/bank.component';
+import { BankService } from './services/bank.service';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,8 @@ import { BitcoinComponent } from './bitcoin/bitcoin.component';
     CentralaMockComponent,
     RadComponent,
     SellerMethodsComponent,
-    BitcoinComponent
+    BitcoinComponent,
+    BankComponent
   ],
   imports: [
     BrowserModule,
@@ -37,7 +40,7 @@ import { BitcoinComponent } from './bitcoin/bitcoin.component';
     FormsModule,
     ReactiveFormsModule
   ],
-  providers: [SellersService, PaypalService],
+  providers: [SellersService, PaypalService, BankService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
