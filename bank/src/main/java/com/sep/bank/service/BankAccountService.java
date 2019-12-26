@@ -15,6 +15,7 @@ import java.util.List;
 @Service
 public class BankAccountService {
 
+    public Logging logger = new Logging(this);
 
     @Autowired
     private BankAccountRepository bankAccountRepo;

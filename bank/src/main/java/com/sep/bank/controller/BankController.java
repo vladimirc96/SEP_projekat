@@ -52,7 +52,7 @@ public class BankController {
             transaction.setPaymentStatus(PaymentStatus.FAILURE);
 
             // azuriraj stanje transakcije u KP-u
-            requestUpdateTransaction(transaction);
+            // requestUpdateTransaction(transaction);
 
             return new ResponseEntity<>(new RedirectDTO(FAILED_URL, null), HttpStatus.BAD_REQUEST);
         }
@@ -67,16 +67,6 @@ public class BankController {
     @RequestMapping(value = "/validate/{id}", method = RequestMethod.PUT)
     public ResponseEntity<String> validate(@RequestBody BankAccountDTO bankAccountDTO, @PathVariable("id") String id){
         Transaction transaction = transactionService.findOneById(Long.parseLong(id));
-        // prvo proveriti da li je istekla kartica
-        if(bankAccountService.isExpired(bankAccountDTO.getExpirationDate())){
-            transaction.setPaymentStatus(PaymentStatus.FAILURE);
-            transaction = transactionService.save(transaction);
-
-            // azuriraj stanje transakcije u KP-u
-            requestUpdateTransaction(transaction);
-
-            return new ResponseEntity<>("CARD IS EXPIRED", HttpStatus.BAD_REQUEST);
-        }
 
         // provera ostalih podataka
         BankAccount bankAccount = bankAccountService.validate(bankAccountDTO);
@@ -85,10 +75,20 @@ public class BankController {
             transaction = transactionService.save(transaction);
 
             // azuriraj stanje transakcije u KP-u
-            requestUpdateTransaction(transaction);
-
+            // requestUpdateTransaction(transaction);
 
             return new ResponseEntity<>("FAIL: THE DATA ENTERED IS NOT VALID", HttpStatus.BAD_REQUEST);
+        }
+
+        // proveriti da li je istekla kartica
+        if(bankAccountService.isExpired(bankAccountDTO.getExpirationDate())){
+            transaction.setPaymentStatus(PaymentStatus.FAILURE);
+            transaction = transactionService.save(transaction);
+
+            // azuriraj stanje transakcije u KP-u
+            // requestUpdateTransaction(transaction);
+
+            return new ResponseEntity<>("CARD IS EXPIRED", HttpStatus.BAD_REQUEST);
         }
 
         return new ResponseEntity<>("SUCCESS", HttpStatus.OK);

@@ -17,6 +17,7 @@ public class Transaction {
     private Date timestamp;
 
     @Column(name = "payment_status")
+    @Enumerated(EnumType.STRING) // omogucava cuvanje enum vrednosti kao string u bazi
     private PaymentStatus paymentStatus;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
