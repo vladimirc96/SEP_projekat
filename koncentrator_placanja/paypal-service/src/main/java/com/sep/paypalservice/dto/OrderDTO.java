@@ -4,18 +4,18 @@ public class OrderDTO {
 
     private double price;
     private String currency;
-    private String intent;
     private String description;
+    private Long id;
 
     public OrderDTO() {
 
     }
 
-    public OrderDTO(double price, String currency, String intent, String description) {
+    public OrderDTO(double price, String currency, String description, Long id) {
         this.price = price;
         this.currency = currency;
-        this.intent = intent;
         this.description = description;
+        this.id = id;
     }
 
     public double getPrice() {
@@ -24,10 +24,6 @@ public class OrderDTO {
 
     public String getCurrency() {
         return currency;
-    }
-
-    public String getIntent() {
-        return intent;
     }
 
     public String getDescription() {
@@ -42,11 +38,13 @@ public class OrderDTO {
         this.currency = currency;
     }
 
-    public void setIntent(String intent) {
-        this.intent = intent;
-    }
-
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) { this.id = id; }
 }

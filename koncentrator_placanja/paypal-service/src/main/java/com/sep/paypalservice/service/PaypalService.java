@@ -4,6 +4,8 @@ import com.paypal.api.payments.*;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
 import com.sep.paypalservice.dto.OrderDTO;
+import com.sep.paypalservice.model.PPClient;
+import com.sep.paypalservice.repository.ClientsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,15 +18,15 @@ import java.util.List;
 public class PaypalService {
 
     @Autowired
-    private APIContext apiContext;
+    private ClientsRepository repo;
+    private Long ide;
 
     private Logging logger = new Logging(this);
 
     public String payment(OrderDTO orderDTO) {
         logger.logInfo("PP_PAYMENT");
         try {
-            Payment payment = createPayment(orderDTO.getPrice(), orderDTO.getCurrency(),
-                    orderDTO.getIntent(), orderDTO.getDescription());
+            Payment payment = createPayment(orderDTO.getPrice(), orderDTO.getCurrency(), orderDTO.getDescription(), orderDTO.getId());
             for(Links link:payment.getLinks()) {
                 if(link.getRel().equals("approval_url")) {
                     return link.getHref();
@@ -53,7 +55,13 @@ public class PaypalService {
         return "http://localhost:4200/";
     }
 
-    public Payment createPayment( Double total, String currency, String intent, String description) throws PayPalRESTException {
+    private APIContext getContextAndMerchant(Long id) {
+        PPClient cl = repo.findOneById(id);
+        APIContext context = new APIContext(cl.getClientId(), cl.getClientSecret(), "sandbox");
+        return context;
+    }
+
+    public Payment createPayment( Double total, String currency, String description, Long id) throws PayPalRESTException {
         Amount amount = new Amount();
         amount.setCurrency(currency);
         total = new BigDecimal(total).setScale(2, RoundingMode.HALF_UP).doubleValue();
@@ -70,13 +78,16 @@ public class PaypalService {
         payer.setPaymentMethod("paypal");
 
         Payment payment = new Payment();
-        payment.setIntent(intent.toString());
+        payment.setIntent("sale");
         payment.setPayer(payer);
         payment.setTransactions(transactions);
         RedirectUrls redirectUrls = new RedirectUrls();
-        redirectUrls.setCancelUrl("http://localhost:4200/paypal");
+        redirectUrls.setCancelUrl("http://localhost:4200/centrala");
         redirectUrls.setReturnUrl("http://localhost:4200/payment/verifying");
         payment.setRedirectUrls(redirectUrls);
+
+        ide = id;
+        APIContext apiContext = getContextAndMerchant(id);
 
         return payment.create(apiContext);
     }
@@ -86,6 +97,8 @@ public class PaypalService {
         payment.setId(paymentId);
         PaymentExecution paymentExecute = new PaymentExecution();
         paymentExecute.setPayerId(payerId);
+        APIContext apiContext = getContextAndMerchant(ide);
+
         return payment.execute(apiContext, paymentExecute);
     }
 

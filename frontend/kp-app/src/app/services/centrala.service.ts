@@ -5,6 +5,8 @@ import { Injectable } from '@angular/core';
 })
 export class CentralaService {
 
+	id: any;
+
   radovi: any[] = [
 		{
 			title: "Humanizacija razvoja softvera",

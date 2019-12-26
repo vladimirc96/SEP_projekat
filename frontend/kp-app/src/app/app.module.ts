@@ -18,6 +18,7 @@ import { SellerMethodsComponent } from './sellers/seller-methods/seller-methods.
 import { BitcoinComponent } from './bitcoin/bitcoin.component';
 import { BankComponent } from './bank/bank.component';
 import { BankService } from './services/bank.service';
+import { AngularFontAwesomeModule } from 'angular-font-awesome';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { BankService } from './services/bank.service';
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    AngularFontAwesomeModule
   ],
   providers: [SellersService, PaypalService, BankService],
   bootstrap: [AppComponent]

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PaypalService } from '../services/paypal.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgForm, FormGroup, Validators, FormControl} from '@angular/forms';
+import { CentralaService } from '../services/centrala.service';
 
 @Component({
   selector: 'app-paypal',
@@ -10,44 +10,27 @@ import { NgForm, FormGroup, Validators, FormControl} from '@angular/forms';
 })
 export class PaypalComponent implements OnInit {
 
-  payForm: FormGroup;
-  total: FormControl;
-  currency: FormControl;
-  intent: FormControl;
-  description: FormControl;
   status: boolean = false;
-
+  rad: any = null;
   ret: any;
-  constructor(private palService: PaypalService, private route: ActivatedRoute, private router: Router) { }
+  desc: String = "";
+
+  constructor(private palService: PaypalService, private route: ActivatedRoute, private router: Router, private centralaService: CentralaService) {
+    this.rad = this.centralaService.activeRad;
+  }
 
   ngOnInit() {
-    this.createFormControls();
-    this.createForm();
   }
 
-  createFormControls() {
-    this.total = new FormControl('');
-    this.currency = new FormControl('');
-    this.intent = new FormControl('');
-    this.description = new FormControl('');
-  }
-
-  createForm() {
-    this.payForm = new FormGroup({
-      total: this.total,
-      currency: this.currency,
-      intent: this.intent,
-      description: this.description
-    });
-  }
-
-  onSubmitPay(form: NgForm) {
+  procceed() {
+    this.status!=this.status;
     let orderDTO = {
-      price: 100,
+      price: this.rad.price,
       currency: 'USD',
-      intent: 'sale',
-      description: ''
+      description: this.desc,
+      id: this.centralaService.id
     }
+
     this.palService.pay(orderDTO).subscribe(
       (data) => {
         this.ret = data;

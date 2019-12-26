@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { SellersService } from 'src/app/services/sellers.service';
+import { CentralaService } from 'src/app/services/centrala.service';
 
 @Component({
   selector: "app-seller-methods",
@@ -12,7 +13,7 @@ export class SellerMethodsComponent implements OnInit {
 	id: number;
 	seller: any = null;
 
-	constructor(private route: ActivatedRoute, private router: Router, private sellerService: SellersService) {
+	constructor(private route: ActivatedRoute, private router: Router, private sellerService: SellersService, private centralaService: CentralaService) {
 		this.route.params.subscribe((params: Params) => {
 			const param = +params["id"];
 
@@ -26,7 +27,7 @@ export class SellerMethodsComponent implements OnInit {
 	}
 
 	ngOnInit() {
-
+		this.centralaService.id = this.id;
 	}
 
 	fetchSeller() {

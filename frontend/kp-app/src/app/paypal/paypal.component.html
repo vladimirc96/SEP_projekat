@@ -1,62 +1,13 @@
 <div class="container" [ngClass]="status ? 'wait' : 'point'">
-    <div class="row"><br></div>
-    <div class="row">
-        <div class="col-75">
-            <div class="container">
-                <form [formGroup]="payForm" (ngSubmit)="onSubmitPay(f)" #f="ngForm">
-                    <div class="col-50">
-                        <h3>Payment</h3>
-                        <label>Accepted Cards</label>
-                        <div class="icon-container">
-                            <i class="fa fa-cc-visa" style="color:navy;"></i>
-                            <i class="fa fa-cc-amex" style="color:blue;"></i>
-                            <i class="fa fa-cc-mastercard" style="color:red;"></i>
-                            <i class="fa fa-cc-discover" style="color:orange;"></i>
-                        </div>
-                        <div class="form-group">
-                            <label for="price">Total</label>
-                            <div class="form-field">
-                                <input type="number" formControlName="total" class="form-control" id="price" name="price" value="10"> 
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="currency">Currency</label>
-                            <div class="form-field">
-                                <input type="text" id="currency" formControlName="currency" class="form-control" name="currency" placeholder="Enter Currency">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="intent">Intent</label>
-                            <div class="form-field">
-                                <input type="text" id="intent" formControlName="intent" class="form-control" name="intent" value="sale">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="description">Payment Description</label>
-                            <div class="form-field">
-                                <input type="text" id="description" formControlName="description" class="form-control" name="description" placeholder="Payment Description">
-                            </div>
-                        </div>
-                        
-                    </div>
-                    <div class="form-group">
-                        <div class="form-field">
-                          <input type="submit" value="Continue to checkout"  class="form-control btn btn-primary"  (click)="status=!status" [ngClass]="status ? 'wait' : 'point'">
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <div class="col-25">
-            <div class="container">
-                <h4>Cart <span class="price" style="color:black"><i class="fa fa-shopping-cart"></i> <b>4</b></span></h4>
-                <p><a href="#">Product 1</a> <span class="price">$1</span></p>
-                <p><a href="#">Product 2</a> <span class="price">$4</span></p>
-                <p><a href="#">Product 3</a> <span class="price">$3</span></p>
-                <p><a href="#">Product 4</a> <span class="price">$2</span></p>
-                <hr>
-                <p>Total <span class="price" style="color:black"><b>$10</b></span></p>
-            </div>
-        </div>
-    </div>
+    <h4 class="mt-5">Vaša porudžbina:</h4>
+    <p class="detalji">
+        {{ rad.title }}<br>
+        {{ rad.price }} USD
+    </p>
+
+    <label for="description">Opis transakcije (opciono)</label>
+    <input type="text" id="description" [(ngModel)] = 'desc' class="form-control" name="description" placeholder="Opis...">
+
+    <button class="btn btn-primary polja" (click)="procceed()" [ngClass]="status ? 'wait' : 'point'"><i class="fa fa-paypal"></i> Continue to checkout</button>
+
 </div>

@@ -12,4 +12,8 @@ export class PaymentSuccessComponent implements OnInit {
   ngOnInit() {
   }
 
+  goHome() {
+    window.location.href = "http://localhost:4200/centrala";
+  }
+
 }
