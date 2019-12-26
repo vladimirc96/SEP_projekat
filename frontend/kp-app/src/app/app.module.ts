@@ -14,6 +14,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LoadingPaymentComponent } from './paypal/loading-payment/loading-payment.component';
 import { CentralaMockComponent } from './centrala-mock/centrala-mock.component';
 import { RadComponent } from './centrala-mock/rad/rad.component';
+import { BankComponent } from './bank/bank.component';
+import { BankService } from './services/bank.service';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,8 @@ import { RadComponent } from './centrala-mock/rad/rad.component';
     PaymentCancelComponent,
     LoadingPaymentComponent,
     CentralaMockComponent,
-    RadComponent
+    RadComponent,
+    BankComponent
   ],
   imports: [
     BrowserModule,
@@ -33,7 +36,7 @@ import { RadComponent } from './centrala-mock/rad/rad.component';
     FormsModule,
     ReactiveFormsModule
   ],
-  providers: [SellersService, PaypalService],
+  providers: [SellersService, PaypalService, BankService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

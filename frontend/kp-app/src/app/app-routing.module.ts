@@ -7,6 +7,7 @@ import { PaymentCancelComponent } from './paypal/payment-cancel/payment-cancel.c
 import { LoadingPaymentComponent } from './paypal/loading-payment/loading-payment.component';
 import { CentralaMockComponent } from './centrala-mock/centrala-mock.component';
 import { RadComponent } from './centrala-mock/rad/rad.component';
+import { BankComponent } from './bank/bank.component';
 
 const appRoutes: Routes = [
 	{ path: '', redirectTo: '/home', pathMatch: 'full'},
@@ -17,6 +18,7 @@ const appRoutes: Routes = [
 	{ path: 'payment/verifying', component: LoadingPaymentComponent},
 	{ path: 'centrala', component: CentralaMockComponent},
 	{ path: 'centrala/rad/:id', component: RadComponent},
+	{ path: 'bank', component: BankComponent }
 
 ]
 
