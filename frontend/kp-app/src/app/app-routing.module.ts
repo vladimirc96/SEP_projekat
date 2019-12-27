@@ -11,8 +11,9 @@ import { SellerMethodsComponent } from './sellers/seller-methods/seller-methods.
 import { BitcoinComponent } from './bitcoin/bitcoin.component';
 import { BankComponent } from './bank/bank.component';
 import { BankPaymentComponent } from './bank/bank-payment/bank-payment.component';
-import { BankPaymentSuccessComponent } from './bank/bank-payment/bank-payment-success/bank-payment-success.component';
-import { BankPaymentFailureComponent } from './bank/bank-payment/bank-payment-failure/bank-payment-failure.component';
+import { BankPaymentSuccessComponent } from './bank/bank-payment-success/bank-payment-success.component';
+import { BankPaymentFailureComponent } from './bank/bank-payment-failure/bank-payment-failure.component';
+import { BankPaymentFormComponent } from './bank/bank-payment-form/bank-payment-form.component';
 
 const appRoutes: Routes = [
 	{ path: '', redirectTo: '/home', pathMatch: 'full'},
@@ -25,13 +26,13 @@ const appRoutes: Routes = [
 	{ path: 'centrala/rad/:id', component: RadComponent},
 	{ path: 'sellers/:id', component: SellerMethodsComponent},
 	{ path: 'bitcoin', component: BitcoinComponent },
-	{ path: 'bank/:id', component: BankComponent },
-	{ path: 'bank-payment/:id', component: BankPaymentComponent, children: [
-		{ path: '/success', component: BankPaymentSuccessComponent },
-		{ path: '/failure', component: BankPaymentFailureComponent },
+	{ path: 'bank/:id', component: BankComponent, children: [
+		{ path: '', component: BankPaymentComponent },
+		{ path: 'form', component: BankPaymentFormComponent },
+		{ path: 'success', component: BankPaymentSuccessComponent },
+		{ path: 'failure', component: BankPaymentFailureComponent },
 	]
 	}
-
 ]
 
 @NgModule({
