@@ -44,11 +44,13 @@ export class BankPaymentComponent implements OnInit {
 
     this.bankService.paymentRequest(paymentDTO).subscribe(
       (response: any) => {
-        this.router.navigate([response.url + "/" + response.paymentId + '/form']);
+        this.router.navigate([response.url + "/" + response.paymentId + "/form"]);
         this.spinner.hide();
       },
       (error) => {
         alert("Could not form the payment request.");
+        this.spinner.hide();
+        this.router.navigate(['']);
       }
     )
 

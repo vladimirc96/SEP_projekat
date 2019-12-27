@@ -22,7 +22,7 @@ export class BankPaymentFormComponent implements OnInit {
   
   constructor(private route: ActivatedRoute, private router: Router, private bankService: BankService) { 
 
-    this.route.params.subscribe((params: Params) => {
+    this.route.parent.params.subscribe((params: Params) => {
 			const param = +params["id"];
 
 			if (!isNaN(param)) {
@@ -73,14 +73,13 @@ export class BankPaymentFormComponent implements OnInit {
 
     this.bankService.payment(bankAccountDTO, this.transactionId).subscribe(
       (response: any) => { 
-        this.router.navigate(['bank-payment/' + this.transactionId + '/success']);
+        this.router.navigate(['bank/' + this.transactionId + '/success']);
       },
       (error) => {
-        this.router.navigate(['bank-payment/' + this.transactionId + '/failure']);
+        this.router.navigate(['bank/' + this.transactionId + '/failure']);
       }
     )
   }
-
 
 
 }

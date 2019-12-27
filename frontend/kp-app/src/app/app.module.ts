@@ -41,7 +41,7 @@ import { BankPaymentFormComponent } from './bank/bank-payment-form/bank-payment-
     BankPaymentComponent,
     BankPaymentSuccessComponent,
     BankPaymentFailureComponent,
-    BankPaymentFormComponent
+    BankPaymentFormComponent,
   ],
   imports: [
     BrowserModule,
