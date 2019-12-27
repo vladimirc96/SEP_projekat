@@ -111,6 +111,7 @@ public class BankController {
         if(!bankAccountService.hasFunds(bankAccount.getBalance(), transaction.getAmount())){
             transaction.setPaymentStatus(PaymentStatus.INSUFFCIENT_FUNDS);
             transaction = transactionService.save(transaction);
+            requestUpdateTransaction(transaction);
             PaymentResponseDTO paymentResponseDTO = new PaymentResponseDTO(transaction.getId(), transaction.getId(),
                     transaction.getId(), null, transaction.getPaymentStatus());
 
@@ -128,6 +129,7 @@ public class BankController {
         // ne salju se za sada svi ti podaci posto nema Issuer banke
         transaction.setPaymentStatus(PaymentStatus.SUCCESS);
         transaction = transactionService.save(transaction);
+        requestUpdateTransaction(transaction);
 
         PaymentResponseDTO paymentResponseDTO = new PaymentResponseDTO(transaction.getId(), transaction.getId(),
                 transaction.getId(), null, transaction.getPaymentStatus());
@@ -137,7 +139,7 @@ public class BankController {
     }
 
     private boolean isRequestValid(PaymentRequestDTO paymentRequest){
-        String merchantPassEncrypted = cryptoService.decrypt(paymentRequest.getMerchantPassword());
+        String merchantPassEncrypted = cryptoService.encrypt(paymentRequest.getMerchantPassword());
         Customer customer = customerService.findByMerchantIdAndMerchantPassword(paymentRequest.getMerchantId(), merchantPassEncrypted);
         if(customer == null){
             return false;

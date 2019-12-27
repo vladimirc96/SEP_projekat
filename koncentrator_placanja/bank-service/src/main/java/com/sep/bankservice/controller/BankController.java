@@ -55,11 +55,9 @@ public class BankController {
         transaction.setCustomer(customer);
         transaction = transactionService.save(transaction);
 
-        // sifrovati AES algoritmom merchantPassword
-        String merchantPassEncrypted = cryptoService.encrypt(customer.getMerchantPassword());
-
+        String merchantPasswordDecrypted = cryptoService.decrypt(customer.getMerchantPassword());
         PaymentRequestDTO paymentRequestDTO = new PaymentRequestDTO(customer.getMerchantId(),
-                merchantPassEncrypted,
+                merchantPasswordDecrypted,
                 paymentDTO.getAmount(), transaction.getId(), transaction.getTimestamp());
 
         // poslati zahtev banci
