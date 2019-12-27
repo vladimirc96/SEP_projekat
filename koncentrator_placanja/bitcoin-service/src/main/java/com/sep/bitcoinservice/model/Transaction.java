@@ -156,16 +156,16 @@ public class Transaction {
     @Override
     public String toString() {
         return "Transaction{" +
-                "id=" + id +
-                ", orderId=" + orderId +
-                ", status='" + status + '\'' +
-                ", amount=" + amount +
-                ", amountDifference=" + amountDifference +
-                ", paymentUrl='" + paymentUrl + '\'' +
-                ", paymentAddress='" + paymentAddress + '\'' +
-                ", currency=" + currency +
-                ", createdAt=" + createdAt +
-                ", seller=" + seller +
+                "  id=" + id  +
+                ",orderId=" + orderId +
+                ",\\n status='" + status + '\'' +
+                ",\\n amount=" + amount +
+                ",\\n amountDifference=" + amountDifference +
+                ",\\n paymentUrl='" + paymentUrl + '\'' +
+                ",\\n paymentAddress='" + paymentAddress + '\'' +
+                ",\\n currency=" + currency +
+                ",\\n createdAt=" + createdAt +
+                ",\\n seller=" + seller.getId() +
                 '}';
     }
 }

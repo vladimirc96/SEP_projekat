@@ -13,7 +13,7 @@ public class CryptoService {
     private static String alias = "jceksaes";
     private static String keystorePass = "mystorepass";
     private static String keyPass = "mykeypass";
-    private static String keystoreLocation = "D:\\git\\SEP_projekat\\keystores\\symmetric\\aes-keystore.jck";
+    private static String keystoreLocation = "keystores/symmetric/aes-keystore.jck";
     private Crypto crypto;
 
     public String encrypt(String message){

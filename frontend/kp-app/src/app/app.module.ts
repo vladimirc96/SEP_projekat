@@ -19,6 +19,9 @@ import { BitcoinComponent } from './bitcoin/bitcoin.component';
 import { BankComponent } from './bank/bank.component';
 import { BankService } from './services/bank.service';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
+import { SucccessComponent } from './succcess/succcess.component';
+import { CancelComponent } from './cancel/cancel.component';
+
 import { BankPaymentComponent } from './bank/bank-payment/bank-payment.component';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -38,6 +41,8 @@ import { BankPaymentFormComponent } from './bank/bank-payment-form/bank-payment-
     SellerMethodsComponent,
     BitcoinComponent,
     BankComponent,
+    SucccessComponent,
+    CancelComponent,
     BankPaymentComponent,
     BankPaymentSuccessComponent,
     BankPaymentFailureComponent,
