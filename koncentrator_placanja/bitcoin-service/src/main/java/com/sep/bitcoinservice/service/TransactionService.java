@@ -49,6 +49,11 @@ public class TransactionService implements ITransactionService {
     @Autowired
     HttpComponentsClientHttpRequestFactory requestFactory;
 
+    @Autowired
+    CryptoService cryptoService;
+
+    private Logging logger = new Logging(this);
+
     private final String CoinGateAPI = "https://api-sandbox.coingate.com/v2/orders";
     private final String CoinGateExchangeRateAPI = "https://api-sandbox.coingate.com/v2/rates/merchant";
 
@@ -122,6 +127,7 @@ public class TransactionService implements ITransactionService {
 
         t.setSeller(s);
         t = transactionRepo.save(t);
+        logger.logInfo("Transaction saved: " + t.getId());
 
         return TransactionDTO.formDto(t);
     }
@@ -130,10 +136,18 @@ public class TransactionService implements ITransactionService {
     public TransactionStatusDTO getTransactionStatusDto(long id) {
 
         Transaction t = transactionRepo.findById(id).get();
+        String statusBefore = t.getStatus();
 
         t = getTransactionStatus(t);
 
-        t = transactionRepo.save(t);
+        String statusAfter = t.getStatus();
+
+        if (!statusAfter.equals(statusBefore)) {
+            t = transactionRepo.save(t);
+            logger.logInfo("Transaction (id: " + t.getId() + ") status changed from '" + statusBefore +
+                    "' to '" + statusAfter + "'");
+        }
+
 
         return new TransactionStatusDTO(t.getId(), t.getStatus(), t.getAmountDifference());
     }
@@ -171,6 +185,9 @@ public class TransactionService implements ITransactionService {
 
     private HttpEntity<?> formPostRequest(String authToken, Object obj) {
         if (!authToken.equals("")) {
+
+            authToken = cryptoService.decrypt(authToken);
+
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + authToken);
 
@@ -181,6 +198,8 @@ public class TransactionService implements ITransactionService {
     }
 
     private HttpEntity<?> formGetRequest(String authToken) {
+
+        authToken = cryptoService.decrypt(authToken);
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + authToken);

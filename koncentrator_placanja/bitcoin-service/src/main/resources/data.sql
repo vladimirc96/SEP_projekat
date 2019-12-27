@@ -21,7 +21,7 @@
 
 LOCK TABLES `seller_` WRITE;
 /*!40000 ALTER TABLE `seller_` DISABLE KEYS */;
-INSERT INTO `seller_` (`id`, `auth_token`) VALUES (1,'9p_kDRFexoygEz9_Y7P-TiTpSzs4ESvNpXirSWQ3'),(2,'zRdGa8eASSeLsmMgzVf6v7XmiZfFmfwzk-fkxopa');
+INSERT INTO `seller_` (`id`, `auth_token`) VALUES (1,'Gw60sOcmLawsKQxop7/xUQ==:jo8a5SfyOnN5nXOx/uKfNS1uuJJeZrUxiNg4rtV8ofsjit/gzATOQ1+Tnscs2v+Y'),(2,'8wXxsqhP2/KymtzPnFU7dA==:aFjQbX87MmqSKz6aRJUg24N63va62vMJwL2DReV/NhebnqhRUXONnzgW7LUKDqgZ');
 /*!40000 ALTER TABLE `seller_` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

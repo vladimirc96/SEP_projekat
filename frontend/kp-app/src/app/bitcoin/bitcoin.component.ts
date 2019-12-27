@@ -12,6 +12,7 @@ export class BitcoinComponent implements OnInit {
 	rad: any = null;
 	btcPrice = null;
 	desc: string = "";
+	math = Math;
 
 	transaction: any = null;
 
@@ -64,10 +65,16 @@ export class BitcoinComponent implements OnInit {
 		}, 10000);
 	}
 
+	goHome() {
+		window.location.href = "https://localhost:4200/centrala";
+	}
+	
+
 	checkTransactionStatus() {
 		this.bitcoinService.getTransactionStatus(this.transaction.id).subscribe(
 			(success:any) => {
 				this.transaction.status = success.status;
+				this.transaction.amountDifference = success.amountDifference;
 				if (this.transaction.status == "paid") {
 					clearInterval(this.transaction.interval);
 					this.loadingMessage = false;
@@ -75,14 +82,15 @@ export class BitcoinComponent implements OnInit {
 					setInterval(() => {
 						this.router.navigate(['/success']);
 					}, 5000)
-				} else if (this.transaction.status == "invalid" || this.transaction.status == "experexpiredied" || this.transaction.status == "canceled") {
-					
+				} else if (this.transaction.status == "invalid" || this.transaction.status == "canceled") {
 					clearInterval(this.transaction.interval);
 					this.loadingMessage = false;
 					this.errorMessage = "Transakcija nije uspešna!"
-					setInterval(() => {
-						this.router.navigate(['/cancel']);
-					}, 5000)
+				} else if (this.transaction.status == "expired") {
+					clearInterval(this.transaction.interval);
+					this.loadingMessage = false;
+					this.errorMessage = "Transakcija nije uspešna! Predviđeno vreme za uplatu je isteklo."
+					
 				}
 			}
 		)

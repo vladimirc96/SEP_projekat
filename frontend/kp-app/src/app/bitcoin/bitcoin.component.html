@@ -27,6 +27,12 @@
                 </span>
                 <img  class="spinner" src="../../assets/loading.gif" alt="">
             </div>
+            <div *ngIf="transaction.amountDifference < 0">
+                Preostalo za uplatu <strong>{{math.abs(transaction.amountDifference)}}</strong> BTC
+            </div>
+            <div *ngIf="transaction.amountDifference == 0">
+                Sredstva su prihvaćena, čeka se validacija bloka.
+            </div>
 
             <div *ngIf="redirectMessage">
                 <span class="loading">
@@ -38,6 +44,9 @@
                 <span class="loading">
                     {{ errorMessage }}
                 </span>
+                <div>
+                    <button class="btn btn-primary mt-3" (click)="goHome()">Povratak na početnu stranu</button>
+                </div>
             </div>
 
             <div class="status mt-4">
