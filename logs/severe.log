@@ -1,0 +1,2 @@
+2019-12-27 20:12:48,540 ERROR com.sep.paypalservice.service.Logging [http-nio-8443-exec-3] PP_CONFIRM_ERR: Unparseable date: "2019-12-27T19:12:11Z"
+2019-12-27 20:22:12,940 ERROR com.sep.paypalservice.service.Logging [http-nio-8443-exec-7] PP_CONFIRM_ERR: Unparseable date: "2019-12-27T19:21:41Z"

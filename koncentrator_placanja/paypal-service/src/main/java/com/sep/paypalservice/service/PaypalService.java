@@ -5,13 +5,18 @@ import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
 import com.sep.paypalservice.dto.OrderDTO;
 import com.sep.paypalservice.model.PPClient;
+import com.sep.paypalservice.model.PPTransaction;
 import com.sep.paypalservice.repository.ClientsRepository;
+import com.sep.paypalservice.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -19,6 +24,13 @@ public class PaypalService {
 
     @Autowired
     private ClientsRepository repo;
+
+    @Autowired
+    private CryptoService cryptoService;
+
+    @Autowired
+    private TransactionRepository transacRepo;
+
     private Long ide;
 
     private Logging logger = new Logging(this);
@@ -46,6 +58,8 @@ public class PaypalService {
             System.out.println(payment.toJSON());
             if (payment.getState().equals("approved")) {
                 logger.logInfo("PP_CONFIRM_SUCCESS");
+                PPTransaction tr = new PPTransaction(payment.getId(), payment.getPayer().getPayerInfo().getPayerId(), payment.getPayer().getPayerInfo().getEmail(), payment.getTransactions().get(0).getAmount().getCurrency(), Double.parseDouble(payment.getTransactions().get(0).getAmount().getTotal()), payment.getState(), payment.getTransactions().get(0).getPayee().getEmail(), payment.getCreateTime());
+                transacRepo.save(tr);
                 return "http://localhost:4200/paypal/success";
             }
         } catch (PayPalRESTException e) {
@@ -57,7 +71,8 @@ public class PaypalService {
 
     private APIContext getContextAndMerchant(Long id) {
         PPClient cl = repo.findOneById(id);
-        APIContext context = new APIContext(cl.getClientId(), cl.getClientSecret(), "sandbox");
+        String secret = cryptoService.decrypt(cl.getClientSecret());
+        APIContext context = new APIContext(cl.getClientId(), secret, "sandbox");
         return context;
     }
 

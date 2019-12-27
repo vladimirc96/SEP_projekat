@@ -31,7 +31,7 @@ export class LoadingPaymentComponent implements OnInit {
         this.ret = data;
         window.location.href = this.ret;
       }, (error) => {
-        alert("error count");
+        alert("error");
       }
     )
   }
