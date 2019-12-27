@@ -39,7 +39,7 @@ export class SellerMethodsComponent implements OnInit {
 	onClickPM(pm) {
 		switch (pm) {
 			case "Credit/Debit Card":
-				this.router.navigate(["/bank"]);
+				this.router.navigate(["/bank/" + this.id]);
 				break;
 			case "PayPal":
 				this.router.navigate(["/paypal"]);

@@ -18,8 +18,6 @@ public class BankServiceApplication {
 		SpringApplication.run(BankServiceApplication.class, args);
 	}
 
-
-
 	@Configuration
 	public class SSLConfig {
 		@Bean
