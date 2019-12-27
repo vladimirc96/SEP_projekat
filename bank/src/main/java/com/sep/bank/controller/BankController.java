@@ -25,7 +25,7 @@ import java.security.Key;
 @RequestMapping(value = "/bank")
 public class BankController {
 
-    private final String SUCCESS_URL = "/bank-payment";
+    private final String SUCCESS_URL = "/bank";
     private final String FAILED_URL = "FAILED";
     private final String ERROR_URL = "";
 

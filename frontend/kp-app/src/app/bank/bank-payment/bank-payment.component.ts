@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { BankService } from 'src/app/services/bank.service';
+import { CentralaService } from 'src/app/services/centrala.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-bank-payment',
@@ -10,23 +12,17 @@ import { BankService } from 'src/app/services/bank.service';
 })
 export class BankPaymentComponent implements OnInit {
   
-  infoForm = new FormGroup({
-    pan: new FormControl(''),
-    serviceCode: new FormControl(''),
-    cardholderName: new FormControl(''),
-    expirationDate: new FormControl('')
-  })
+  rad: any = null;
+  sellerId: any;
 
-  isValid: boolean = false;
-  transactionId: any;
-  
-  constructor(private route: ActivatedRoute, private router: Router, private bankService: BankService) { 
+  constructor(private centralaService: CentralaService, private route: ActivatedRoute, private router: Router, private bankService: BankService, private spinner: NgxSpinnerService) { 
+    this.rad = this.centralaService.activeRad;
 
     this.route.params.subscribe((params: Params) => {
 			const param = +params["id"];
 
 			if (!isNaN(param)) {
-				this.transactionId = param;
+				this.sellerId = param;
 			} else {
 				this.router.navigate(["/"]);
 			}
@@ -38,49 +34,26 @@ export class BankPaymentComponent implements OnInit {
   }
 
 
-  onValidate(){
-    let bankAccountDTO = {
-      pan: this.infoForm.value.pan,
-      serviceCode: this.infoForm.value.serviceCode,
-      cardholderName: this.infoForm.value.cardholderName,
-      expirationDate: this.infoForm.value.expirationDate
+  redirect(){
+    this.spinner.show();
+
+    let paymentDTO = {
+      sellerId: this.sellerId,
+      amount: this.rad.price
     }
 
-    this.validate(bankAccountDTO);
-
-  }
-
-  validate(bankAccountDTO){
-    setTimeout(() =>{
-      this.isValid = true;
-      alert("The information are valid");
-    },1000)
-    this.bankService.validate(bankAccountDTO, this.transactionId).subscribe(
-      (success) => {
-        this.isValid = true;
-        alert("The information are valid");
-      }
-    )
-  }
-
-  onPay(){
-    let bankAccountDTO = {
-      pan: this.infoForm.value.pan,
-      serviceCode: this.infoForm.value.serviceCode,
-      cardholderName: this.infoForm.value.cardholderName,
-      expirationDate: this.infoForm.value.expirationDate
-    }
-
-    this.bankService.payment(bankAccountDTO, this.transactionId).subscribe(
-      (response: any) => { 
-        this.router.navigate(['bank-payment/' + this.transactionId + '/success']);
+    this.bankService.paymentRequest(paymentDTO).subscribe(
+      (response: any) => {
+        this.router.navigate([response.url + "/" + response.paymentId + '/form']);
+        this.spinner.hide();
       },
       (error) => {
-        this.router.navigate(['bank-payment/' + this.transactionId + '/failure']);
+        alert("Could not form the payment request.");
       }
     )
+
+
+
   }
-
-
 
 }
