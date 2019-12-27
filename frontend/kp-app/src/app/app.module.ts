@@ -22,8 +22,9 @@ import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { BankPaymentComponent } from './bank/bank-payment/bank-payment.component';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { BankPaymentSuccessComponent } from './bank/bank-payment/bank-payment-success/bank-payment-success.component';
-import { BankPaymentFailureComponent } from './bank/bank-payment/bank-payment-failure/bank-payment-failure.component';
+import { BankPaymentSuccessComponent } from './bank/bank-payment-success/bank-payment-success.component';
+import { BankPaymentFailureComponent } from './bank/bank-payment-failure/bank-payment-failure.component';
+import { BankPaymentFormComponent } from './bank/bank-payment-form/bank-payment-form.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -39,7 +40,8 @@ import { BankPaymentFailureComponent } from './bank/bank-payment/bank-payment-fa
     BankComponent,
     BankPaymentComponent,
     BankPaymentSuccessComponent,
-    BankPaymentFailureComponent
+    BankPaymentFailureComponent,
+    BankPaymentFormComponent
   ],
   imports: [
     BrowserModule,
