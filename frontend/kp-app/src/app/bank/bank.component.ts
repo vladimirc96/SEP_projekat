@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, FormControlDirective } from '@angular/forms';
 import { BankService } from '../services/bank.service';
+import { CentralaService } from '../services/centrala.service';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-bank',
@@ -9,16 +12,11 @@ import { BankService } from '../services/bank.service';
 })
 export class BankComponent implements OnInit {
 
-  infoForm = new FormGroup({
-    pan: new FormControl(''),
-    securityCode: new FormControl(''),
-    cardholderName: new FormControl(''),
-    expirationDate: new FormControl('')
-  })
-
-  constructor(private bankService: BankService) { }
+  constructor() { 
+  }
 
   ngOnInit() {
   }
+
 
 }

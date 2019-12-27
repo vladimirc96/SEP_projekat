@@ -23,12 +23,13 @@ export class PaypalComponent implements OnInit {
   }
 
   procceed() {
-    this.status!=this.status;
+    this.status = true;
+
     let orderDTO = {
       price: this.rad.price,
       currency: 'USD',
       description: this.desc,
-      id: this.centralaService.id
+      id: this.rad.sellerId
     }
 
     this.palService.pay(orderDTO).subscribe(
@@ -36,7 +37,7 @@ export class PaypalComponent implements OnInit {
         this.ret = data;
         window.location.href = this.ret;
       }, (error) => {
-        alert("error count");
+        alert("error");
       }
     )
   }

@@ -41,6 +41,10 @@ public class BankAccountService {
                 bankAccountDTO.getCardholderName(), bankAccountDTO.getExpirationDate());
     }
 
+    public BankAccount findOneByPan(String pan){
+        return bankAccountRepo.findOneByPan(pan);
+    }
+
     public boolean isExpired(Date expirationDate){
         Date today = new Date();
         if(today.after(expirationDate)){
