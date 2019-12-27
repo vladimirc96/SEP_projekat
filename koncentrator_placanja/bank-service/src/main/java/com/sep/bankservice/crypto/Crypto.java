@@ -21,8 +21,6 @@ public class Crypto {
 
 
     public Crypto(){
-
-
         // init za Cipher objekat
         try {
             cipher = Cipher.getInstance(ALGORITHM);
@@ -73,7 +71,6 @@ public class Crypto {
 
         String originalMessage = null;
         try {
-
 
             cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivspec);
             byte[] encryptedTextBytes = BaseEncoding.base64().decode(msg);

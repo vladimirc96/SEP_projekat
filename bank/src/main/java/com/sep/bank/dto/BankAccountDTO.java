@@ -4,7 +4,6 @@ import java.util.Date;
 
 public class BankAccountDTO {
 
-    private Long id;
     private String pan;
     private String serviceCode;
     private String cardholderName;
@@ -13,20 +12,11 @@ public class BankAccountDTO {
     public BankAccountDTO() {
     }
 
-    public BankAccountDTO(Long id, String pan, String serviceCode, String cardholderName, Date expirationDate) {
-        this.id = id;
+    public BankAccountDTO(String pan, String serviceCode, String cardholderName, Date expirationDate) {
         this.pan = pan;
         this.serviceCode = serviceCode;
         this.cardholderName = cardholderName;
         this.expirationDate = expirationDate;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getPan() {

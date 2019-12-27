@@ -11,6 +11,7 @@ import java.util.Date;
 public interface BankAccountRepository extends JpaRepository<BankAccount, Long> {
 
     BankAccount findOneById(Long id);
+    BankAccount findOneByPan(String pan);
 
     @Query("select bank_account from BankAccount bank_account where bank_account.pan = :pan and bank_account.serviceCode = :serviceCode" +
             " and  bank_account.cardholderName = :cardholderName and bank_account.expirationDate = :expirationDate")

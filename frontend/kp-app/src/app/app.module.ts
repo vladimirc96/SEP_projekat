@@ -19,7 +19,11 @@ import { BitcoinComponent } from './bitcoin/bitcoin.component';
 import { BankComponent } from './bank/bank.component';
 import { BankService } from './services/bank.service';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
-
+import { BankPaymentComponent } from './bank/bank-payment/bank-payment.component';
+import { NgxSpinnerModule } from "ngx-spinner";
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BankPaymentSuccessComponent } from './bank/bank-payment/bank-payment-success/bank-payment-success.component';
+import { BankPaymentFailureComponent } from './bank/bank-payment/bank-payment-failure/bank-payment-failure.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -32,7 +36,10 @@ import { AngularFontAwesomeModule } from 'angular-font-awesome';
     RadComponent,
     SellerMethodsComponent,
     BitcoinComponent,
-    BankComponent
+    BankComponent,
+    BankPaymentComponent,
+    BankPaymentSuccessComponent,
+    BankPaymentFailureComponent
   ],
   imports: [
     BrowserModule,
@@ -40,7 +47,9 @@ import { AngularFontAwesomeModule } from 'angular-font-awesome';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    AngularFontAwesomeModule
+    AngularFontAwesomeModule,
+    NgxSpinnerModule,
+    BrowserAnimationsModule
   ],
   providers: [SellersService, PaypalService, BankService],
   bootstrap: [AppComponent]

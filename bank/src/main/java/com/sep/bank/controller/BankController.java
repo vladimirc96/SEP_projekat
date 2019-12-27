@@ -7,10 +7,7 @@ import com.sep.bank.model.BankAccount;
 import com.sep.bank.model.Customer;
 import com.sep.bank.model.PaymentStatus;
 import com.sep.bank.model.Transaction;
-import com.sep.bank.service.BankAccountService;
-import com.sep.bank.service.BankService;
-import com.sep.bank.service.CustomerService;
-import com.sep.bank.service.TransactionService;
+import com.sep.bank.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -28,19 +25,7 @@ import java.security.Key;
 @RequestMapping(value = "/bank")
 public class BankController {
 
-    @Value("${SECRET_KEY_ALIAS}")
-    private static String alias;
-
-    @Value("${SECRET_KEY_STORE_PASS}")
-    private static String keystorePass;
-
-    @Value("${SECRET_KEY_PASS}")
-    private static String keyPass;
-
-    @Value("${SECRET_KEY_LOCATION}")
-    private static String keystoreLocation;
-
-    private final String SUCCESS_URL = "SUCCESS";
+    private final String SUCCESS_URL = "/bank-payment";
     private final String FAILED_URL = "FAILED";
     private final String ERROR_URL = "";
 
@@ -58,6 +43,9 @@ public class BankController {
 
     @Autowired
     private TransactionService transactionService;
+
+    @Autowired
+    private CryptoService cryptoService;
 
     // proverava zahtev za placanje
     @RequestMapping(value = "/check-payment-request", method = RequestMethod.PUT)
@@ -117,7 +105,7 @@ public class BankController {
     @RequestMapping(value = "/payment/{id}", method = RequestMethod.PUT)
     public ResponseEntity<PaymentResponseDTO> payment(@RequestBody BankAccountDTO bankAccountDTO, @PathVariable("id") String id){
         Transaction transaction = transactionService.findOneById(Long.parseLong(id));
-        BankAccount bankAccount = bankAccountService.findOneById(bankAccountDTO.getId());
+        BankAccount bankAccount = bankAccountService.findOneByPan(bankAccountDTO.getPan());
 
         //provera raspolozivih sredstava
         if(!bankAccountService.hasFunds(bankAccount.getBalance(), transaction.getAmount())){
@@ -149,12 +137,7 @@ public class BankController {
     }
 
     private boolean isRequestValid(PaymentRequestDTO paymentRequest){
-        Crypto crypto = new Crypto();
-        Key key = KeyStoreUtil.getKeyFromKeyStore(keystoreLocation, keystorePass, alias, keyPass);
-        SecretKeySpec secretKeySpecification = new SecretKeySpec(key.getEncoded(), "AES");
-
-        String merchantPassEncrypted = crypto.decrypt(paymentRequest.getMerchantPassword(), secretKeySpecification);
-
+        String merchantPassEncrypted = cryptoService.decrypt(paymentRequest.getMerchantPassword());
         Customer customer = customerService.findByMerchantIdAndMerchantPassword(paymentRequest.getMerchantId(), merchantPassEncrypted);
         if(customer == null){
             return false;
