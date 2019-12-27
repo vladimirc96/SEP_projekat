@@ -48,7 +48,7 @@ public class PaypalService {
             logger.logError("PP_PAYMENT_ERR: " + e.getMessage());
             e.printStackTrace();
         }
-        return "http://localhost:4200/";
+        return "https://localhost:4200/";
     }
 
     public String successPay(String paymentId, String payerId) {
@@ -60,13 +60,13 @@ public class PaypalService {
                 logger.logInfo("PP_CONFIRM_SUCCESS");
                 PPTransaction tr = new PPTransaction(payment.getId(), payment.getPayer().getPayerInfo().getPayerId(), payment.getPayer().getPayerInfo().getEmail(), payment.getTransactions().get(0).getAmount().getCurrency(), Double.parseDouble(payment.getTransactions().get(0).getAmount().getTotal()), payment.getState(), payment.getTransactions().get(0).getPayee().getEmail(), payment.getCreateTime());
                 transacRepo.save(tr);
-                return "http://localhost:4200/paypal/success";
+                return "https://localhost:4200/paypal/success";
             }
         } catch (PayPalRESTException e) {
             logger.logError("PP_CONFIRM_ERR: " + e.getMessage());
             System.out.println(e.getMessage());
         }
-        return "http://localhost:4200/";
+        return "https://localhost:4200/";
     }
 
     private APIContext getContextAndMerchant(Long id) {
@@ -97,8 +97,8 @@ public class PaypalService {
         payment.setPayer(payer);
         payment.setTransactions(transactions);
         RedirectUrls redirectUrls = new RedirectUrls();
-        redirectUrls.setCancelUrl("http://localhost:4200/centrala");
-        redirectUrls.setReturnUrl("http://localhost:4200/payment/verifying");
+        redirectUrls.setCancelUrl("https://localhost:4200/centrala");
+        redirectUrls.setReturnUrl("https://localhost:4200/payment/verifying");
         payment.setRedirectUrls(redirectUrls);
 
         ide = id;

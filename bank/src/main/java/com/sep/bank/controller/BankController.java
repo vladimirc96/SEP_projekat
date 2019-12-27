@@ -139,8 +139,8 @@ public class BankController {
     }
 
     private boolean isRequestValid(PaymentRequestDTO paymentRequest){
-        String merchantPassEncrypted = cryptoService.encrypt(paymentRequest.getMerchantPassword());
-        Customer customer = customerService.findByMerchantIdAndMerchantPassword(paymentRequest.getMerchantId(), merchantPassEncrypted);
+         Customer customer = customerService.findByMerchantIdAndMerchantPassword(paymentRequest.getMerchantId(),
+                 paymentRequest.getMerchantPassword());
         if(customer == null){
             return false;
         }

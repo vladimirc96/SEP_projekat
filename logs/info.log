@@ -94,3 +94,33 @@
 2019-12-27 20:26:21,911 INFO com.sep.paypalservice.service.Logging [http-nio-8443-exec-3] PP_CONFIRM
 2019-12-27 20:26:24,636 INFO com.sep.paypalservice.service.Logging [http-nio-8443-exec-3] PP_CONFIRM_SUCCESS
 >>>>>>> 5d6452421eb6052264bd24e0b19722d3b9243952
+2019-12-27 20:36:59,274 INFO org.springframework.boot.StartupInfoLogger [main] Starting PaypalServiceApplication on Milan with PID 17100 (C:\Users\lazic\Documents\GitHub\SEP_projekat\koncentrator_placanja\paypal-service\target\classes started by Milan in C:\Users\lazic\Documents\GitHub\SEP_projekat)
+2019-12-27 20:36:59,295 DEBUG org.springframework.boot.StartupInfoLogger [main] Running with Spring Boot v2.1.5.RELEASE, Spring v5.1.7.RELEASE
+2019-12-27 20:36:59,302 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2019-12-27 20:37:00,871 DEBUG org.springframework.web.filter.GenericFilterBean [main] Filter 'CORS Filter' configured for use
+2019-12-27 20:39:54,329 INFO org.springframework.boot.StartupInfoLogger [main] Starting PaypalServiceApplication on Milan with PID 13464 (C:\Users\lazic\Documents\GitHub\SEP_projekat\koncentrator_placanja\paypal-service\target\classes started by Milan in C:\Users\lazic\Documents\GitHub\SEP_projekat)
+2019-12-27 20:39:54,339 DEBUG org.springframework.boot.StartupInfoLogger [main] Running with Spring Boot v2.1.5.RELEASE, Spring v5.1.7.RELEASE
+2019-12-27 20:39:54,339 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2019-12-27 20:39:55,711 DEBUG org.springframework.web.filter.GenericFilterBean [main] Filter 'CORS Filter' configured for use
+2019-12-27 20:39:57,329 INFO org.springframework.boot.StartupInfoLogger [main] Started PaypalServiceApplication in 3.397 seconds (JVM running for 4.13)
+2019-12-27 20:44:41,178 INFO com.sep.paypalservice.service.Logging [http-nio-8443-exec-2] PP_PAYMENT
+2019-12-27 20:46:22,485 INFO org.springframework.boot.StartupInfoLogger [main] Starting PaypalServiceApplication on Milan with PID 7612 (C:\Users\lazic\Documents\GitHub\SEP_projekat\koncentrator_placanja\paypal-service\target\classes started by Milan in C:\Users\lazic\Documents\GitHub\SEP_projekat)
+2019-12-27 20:46:22,494 DEBUG org.springframework.boot.StartupInfoLogger [main] Running with Spring Boot v2.1.5.RELEASE, Spring v5.1.7.RELEASE
+2019-12-27 20:46:22,495 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2019-12-27 20:46:23,899 DEBUG org.springframework.web.filter.GenericFilterBean [main] Filter 'CORS Filter' configured for use
+2019-12-27 20:46:25,477 INFO org.springframework.boot.StartupInfoLogger [main] Started PaypalServiceApplication in 3.408 seconds (JVM running for 4.233)
+2019-12-27 20:46:42,733 INFO com.sep.paypalservice.service.Logging [http-nio-8443-exec-3] PP_PAYMENT
+2019-12-27 20:48:11,308 INFO com.sep.paypalservice.service.Logging [http-nio-8443-exec-6] PP_CONFIRM
+2019-12-27 20:48:14,627 INFO com.sep.paypalservice.service.Logging [http-nio-8443-exec-6] PP_CONFIRM_SUCCESS
+2019-12-27 20:48:58,584 INFO org.springframework.boot.StartupInfoLogger [main] Starting PaypalServiceApplication on Milan with PID 21312 (C:\Users\lazic\Documents\GitHub\SEP_projekat\koncentrator_placanja\paypal-service\target\classes started by Milan in C:\Users\lazic\Documents\GitHub\SEP_projekat)
+2019-12-27 20:48:58,587 DEBUG org.springframework.boot.StartupInfoLogger [main] Running with Spring Boot v2.1.5.RELEASE, Spring v5.1.7.RELEASE
+2019-12-27 20:48:58,588 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2019-12-27 20:48:59,991 DEBUG org.springframework.web.filter.GenericFilterBean [main] Filter 'CORS Filter' configured for use
+2019-12-27 20:49:01,761 INFO org.springframework.boot.StartupInfoLogger [main] Started PaypalServiceApplication in 3.604 seconds (JVM running for 4.39)
+2019-12-27 20:50:15,411 INFO com.sep.paypalservice.service.Logging [http-nio-8443-exec-3] PP_PAYMENT
+2019-12-27 20:50:36,888 INFO com.sep.paypalservice.service.Logging [http-nio-8443-exec-2] PP_CONFIRM
+2019-12-27 20:50:40,738 INFO com.sep.paypalservice.service.Logging [http-nio-8443-exec-2] PP_CONFIRM_SUCCESS
+2019-12-27 20:50:57,778 INFO com.sep.paypalservice.service.Logging [http-nio-8443-exec-5] PP_PAYMENT
+2019-12-27 20:52:08,237 INFO com.sep.paypalservice.service.Logging [http-nio-8443-exec-8] PP_PAYMENT
+2019-12-27 20:52:38,178 INFO com.sep.paypalservice.service.Logging [http-nio-8443-exec-9] PP_CONFIRM
+2019-12-27 20:52:40,925 INFO com.sep.paypalservice.service.Logging [http-nio-8443-exec-9] PP_CONFIRM_SUCCESS

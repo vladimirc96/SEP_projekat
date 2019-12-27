@@ -48,8 +48,8 @@ public class Crypto {
             base64EncodedEncryptedMsg = BaseEncoding.base64().encode(encryptedMessageInBytes);
             base64EncodedEncryptedIV = BaseEncoding.base64().encode(ivspec.getIV());
 
-            System.out.println("******************** MERCHANT PASSWORD: " + message);
-            System.out.println("******************** MERCHANT PASSWORD CRYPT: " + base64EncodedEncryptedIV + ":" + base64EncodedEncryptedMsg);
+//            System.out.println("******************** MERCHANT PASSWORD: " + message);
+//            System.out.println("******************** MERCHANT PASSWORD CRYPT: " + base64EncodedEncryptedIV + ":" + base64EncodedEncryptedMsg);
 
         } catch(InvalidKeyException | InvalidAlgorithmParameterException | UnsupportedEncodingException | IllegalBlockSizeException | BadPaddingException e){
 
@@ -77,8 +77,8 @@ public class Crypto {
             byte[] decryptedTextBytes = cipher.doFinal(encryptedTextBytes);
             originalMessage = new String(decryptedTextBytes);
 
-            System.out.println("******************** MERCHANT PASSWORD: " + originalMessage);
-            System.out.println("******************** MERCHANT PASSWORD CRYPT: " + msg);
+//            System.out.println("******************** MERCHANT PASSWORD: " + originalMessage);
+//            System.out.println("******************** MERCHANT PASSWORD CRYPT: " + msg);
 
         }catch(InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException  e){
             throw Throwables.propagate(e);

@@ -73,6 +73,7 @@ public class BankController {
         Transaction transaction = transactionService.findOneById(Long.parseLong(id));
         transaction.setPaymentStatus(paymentStatusDTO.getPaymentStatus());
         transaction = transactionService.save(transaction);
+        System.out.println(transaction);
         return new ResponseEntity<>("Updated", HttpStatus.OK);
     }
 

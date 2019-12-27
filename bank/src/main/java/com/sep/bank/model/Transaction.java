@@ -71,4 +71,15 @@ public class Transaction {
     public void setPaymentStatus(PaymentStatus paymentStatus) {
         this.paymentStatus = paymentStatus;
     }
+
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "id=" + id +
+                ", amount=" + amount +
+                ", timestamp=" + timestamp +
+                ", paymentStatus=" + paymentStatus +
+                ", customer=" + customer.getId() +
+                '}';
+    }
 }

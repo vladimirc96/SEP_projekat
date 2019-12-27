@@ -19,18 +19,15 @@ import { BitcoinComponent } from './bitcoin/bitcoin.component';
 import { BankComponent } from './bank/bank.component';
 import { BankService } from './services/bank.service';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
-<<<<<<< HEAD
 import { SucccessComponent } from './succcess/succcess.component';
 import { CancelComponent } from './cancel/cancel.component';
 
-=======
 import { BankPaymentComponent } from './bank/bank-payment/bank-payment.component';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BankPaymentSuccessComponent } from './bank/bank-payment-success/bank-payment-success.component';
 import { BankPaymentFailureComponent } from './bank/bank-payment-failure/bank-payment-failure.component';
 import { BankPaymentFormComponent } from './bank/bank-payment-form/bank-payment-form.component';
->>>>>>> 5d6452421eb6052264bd24e0b19722d3b9243952
 @NgModule({
   declarations: [
     AppComponent,
@@ -44,15 +41,12 @@ import { BankPaymentFormComponent } from './bank/bank-payment-form/bank-payment-
     SellerMethodsComponent,
     BitcoinComponent,
     BankComponent,
-<<<<<<< HEAD
     SucccessComponent,
-    CancelComponent
-=======
+    CancelComponent,
     BankPaymentComponent,
     BankPaymentSuccessComponent,
     BankPaymentFailureComponent,
     BankPaymentFormComponent,
->>>>>>> 5d6452421eb6052264bd24e0b19722d3b9243952
   ],
   imports: [
     BrowserModule,
