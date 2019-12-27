@@ -9,6 +9,7 @@ import com.sep.bankservice.dto.RedirectDTO;
 import com.sep.bankservice.model.Customer;
 import com.sep.bankservice.model.PaymentStatus;
 import com.sep.bankservice.model.Transaction;
+import com.sep.bankservice.service.CryptoService;
 import com.sep.bankservice.service.CustomerService;
 import com.sep.bankservice.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,17 +29,6 @@ import java.util.Date;
 @RequestMapping(value="/bank")
 public class BankController {
 
-    @Value("${SECRET_KEY_ALIAS}")
-    private static String alias;
-
-    @Value("${SECRET_KEY_STORE_PASS}")
-    private static String keystorePass;
-
-    @Value("${SECRET_KEY_PASS}")
-    private static String keyPass;
-
-    @Value("${SECRET_KEY_LOCATION}")
-    private static String keystoreLocation;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -48,6 +38,9 @@ public class BankController {
 
     @Autowired
     private CustomerService customerService;
+
+    @Autowired
+    private CryptoService cryptoService;
 
     // metoda koja prihvata zahtev za placanje i prosledjuje banci na proveru
     @RequestMapping(value = "/payment-request", method = RequestMethod.POST)
@@ -63,11 +56,7 @@ public class BankController {
         transaction = transactionService.save(transaction);
 
         // sifrovati AES algoritmom merchantPassword
-        Crypto crypto = new Crypto();
-        Key key = KeyStoreUtil.getKeyFromKeyStore(keystoreLocation, keystorePass, alias, keyPass);
-        SecretKeySpec secretKeySpecification = new SecretKeySpec(key.getEncoded(), "AES");
-
-        String merchantPassEncrypted = crypto.encrypt(customer.getMerchantPassword(), secretKeySpecification);
+        String merchantPassEncrypted = cryptoService.encrypt(customer.getMerchantPassword());
 
         PaymentRequestDTO paymentRequestDTO = new PaymentRequestDTO(customer.getMerchantId(),
                 merchantPassEncrypted,
