@@ -10,9 +10,11 @@ import { RadComponent } from './centrala-mock/rad/rad.component';
 import { SellerMethodsComponent } from './sellers/seller-methods/seller-methods.component';
 import { BitcoinComponent } from './bitcoin/bitcoin.component';
 import { BankComponent } from './bank/bank.component';
+import { SucccessComponent } from './succcess/succcess.component';
+import { CancelComponent } from './cancel/cancel.component';
 
 const appRoutes: Routes = [
-	{ path: '', redirectTo: '/home', pathMatch: 'full'},
+	{ path: '', redirectTo: '/centrala', pathMatch: 'full'},
     { path: 'home', component: SellersComponent},
 	{ path: 'paypal', component: PaypalComponent},
 	{ path: 'paypal/success', component: PaymentSuccessComponent},
@@ -22,7 +24,9 @@ const appRoutes: Routes = [
 	{ path: 'centrala/rad/:id', component: RadComponent},
 	{ path: 'sellers/:id', component: SellerMethodsComponent},
 	{ path: 'bitcoin', component: BitcoinComponent },
-	{ path: 'bank', component: BankComponent }
+	{ path: 'bank', component: BankComponent },
+	{ path: 'success', component: SucccessComponent },
+	{ path: 'cancel', component: CancelComponent }
 
 ]
 

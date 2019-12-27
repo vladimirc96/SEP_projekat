@@ -28,6 +28,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.management.InstanceAlreadyExistsException;
+import java.io.InterruptedIOException;
+import java.net.SocketTimeoutException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -48,6 +50,7 @@ public class TransactionService implements ITransactionService {
     HttpComponentsClientHttpRequestFactory requestFactory;
 
     private final String CoinGateAPI = "https://api-sandbox.coingate.com/v2/orders";
+    private final String CoinGateExchangeRateAPI = "https://api-sandbox.coingate.com/v2/rates/merchant";
 
     @Override
     public TransactionDTO getTransaction(long id) {
@@ -133,6 +136,25 @@ public class TransactionService implements ITransactionService {
         t = transactionRepo.save(t);
 
         return new TransactionStatusDTO(t.getId(), t.getStatus(), t.getAmountDifference());
+    }
+
+    @Override
+    public RateDTO getExchangeRate(String from, String to) {
+
+        try {
+            RestTemplate restTemplate = new RestTemplate(this.requestFactory);
+
+
+            ResponseEntity<Double> response = restTemplate.exchange(this.CoinGateExchangeRateAPI + "/" + from +
+                            "/" + to,
+                    HttpMethod.GET, HttpEntity.EMPTY,
+                    Double.class);
+
+            return new RateDTO(response.getBody().doubleValue());
+        } catch (Exception ex) {
+            return new RateDTO(0.00009315);
+        }
+
     }
 
     private Transaction getTransactionStatus(Transaction t) {

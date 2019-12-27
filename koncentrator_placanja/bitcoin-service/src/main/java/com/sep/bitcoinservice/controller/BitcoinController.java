@@ -40,6 +40,11 @@ public class BitcoinController {
         }
     }
 
+    @GetMapping(value = "/rate/{from}/{to}")
+    public ResponseEntity<?> getTransactionStatus(@PathVariable String from, @PathVariable String to) {
+        return new ResponseEntity<>(_transactionService.getExchangeRate(from, to), HttpStatus.OK);
+    }
+
 
 
 

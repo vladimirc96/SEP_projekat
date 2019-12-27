@@ -1,11 +1,49 @@
 <div class="container pt-5">
-    {{ rad.title }}
+    <h4 class="mb-4">Vaša porudžbina:</h4>
+    <strong class="mb-1">{{ rad.title }}</strong>
     <br>
-    {{ rad.author }}
+    Originalna cena: <strong>{{ rad.price }}</strong> USD
     <br>
-    {{ rad.price }} USD
+    <span *ngIf="btcPrice">
+        Konvertovana cena: <strong>{{ btcPrice }}</strong> BTC
+    </span>
     <br>
+
+    <div class="row">
+        <div class="col-5">
+            <label for="description" class="mt-4">Opis transakcije (opciono)</label>
+            <input type="text" id="description" [(ngModel)] = 'desc' class="form-control" name="description" placeholder="Opis...">
+        </div>
+    </div>
+
     
-    <button class="btn btn-primary mt-5">Generiši adresu za plaćanje</button>
+    <button class="btn btn-primary mt-5" (click)="onContinue()" *ngIf="rad && btcPrice && !transaction"><i class="fa fa-btc"></i>  Generiši adresu za plaćanje</button>
+
+    <div *ngIf="transaction" class="mt-5">
+        <div>
+            <div *ngIf="loadingMessage">
+                <span class="loading">
+                    Obrada u toku...
+                </span>
+                <img  class="spinner" src="../../assets/loading.gif" alt="">
+            </div>
+
+            <div *ngIf="redirectMessage">
+                <span class="loading">
+                    Vaša transakcija je uspešna!
+                </span>
+            </div>
+
+            <div *ngIf="errorMessage">
+                <span class="loading">
+                    {{ errorMessage }}
+                </span>
+            </div>
+
+            <div class="status mt-4">
+                Status transakcije: <span class="badge badge-primary">{{transaction.status}}</span>
+            </div>
+        </div>
+    </div>
 
 </div>

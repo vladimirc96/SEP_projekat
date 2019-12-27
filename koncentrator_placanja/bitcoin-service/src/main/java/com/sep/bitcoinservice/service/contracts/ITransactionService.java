@@ -1,6 +1,7 @@
 package com.sep.bitcoinservice.service.contracts;
 
 import com.sep.bitcoinservice.dto.OrderDTO;
+import com.sep.bitcoinservice.dto.RateDTO;
 import com.sep.bitcoinservice.dto.TransactionDTO;
 import com.sep.bitcoinservice.dto.TransactionStatusDTO;
 import com.sep.bitcoinservice.enums.Enums;
@@ -18,5 +19,5 @@ public interface ITransactionService {
 
     TransactionStatusDTO getTransactionStatusDto(long id);
 
-
+    RateDTO getExchangeRate(String from, String to);
 }

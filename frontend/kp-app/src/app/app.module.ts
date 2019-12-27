@@ -19,6 +19,8 @@ import { BitcoinComponent } from './bitcoin/bitcoin.component';
 import { BankComponent } from './bank/bank.component';
 import { BankService } from './services/bank.service';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
+import { SucccessComponent } from './succcess/succcess.component';
+import { CancelComponent } from './cancel/cancel.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +34,9 @@ import { AngularFontAwesomeModule } from 'angular-font-awesome';
     RadComponent,
     SellerMethodsComponent,
     BitcoinComponent,
-    BankComponent
+    BankComponent,
+    SucccessComponent,
+    CancelComponent
   ],
   imports: [
     BrowserModule,

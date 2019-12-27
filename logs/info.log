@@ -19,3 +19,5 @@
 2019-12-26 22:58:20,988 INFO com.sep.paypalservice.service.Logging [http-nio-8443-exec-3] PP_PAYMENT
 2019-12-26 23:05:55,680 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
 2019-12-26 23:06:01,914 DEBUG org.springframework.web.filter.GenericFilterBean [main] Filter 'CORS Filter' configured for use
+2019-12-27 17:43:50,589 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2019-12-27 17:43:51,538 DEBUG org.springframework.web.filter.GenericFilterBean [main] Filter 'CORS Filter' configured for use

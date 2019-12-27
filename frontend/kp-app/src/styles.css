@@ -1,1 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
+.btn {
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn .fa,
+.btn .fas {
+    margin-right: 4px;
+
+}
