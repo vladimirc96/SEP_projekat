@@ -3,3 +3,68 @@
 2019-12-25 21:14:48,991 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
 2019-12-25 21:14:53,560 DEBUG org.springframework.web.filter.GenericFilterBean [main] Filter 'CORS Filter' configured for use
 2019-12-25 21:14:59,587 INFO org.springframework.boot.StartupInfoLogger [main] Started BankApplication in 11.835 seconds (JVM running for 14.218)
+2019-12-26 14:32:16,687 INFO org.springframework.boot.StartupInfoLogger [main] Starting BankApplication on DESKTOP-7EFKHD1 with PID 1816 (C:\GITHUB\SEP_PROJEKAT\bank\target\classes started by Vladimir in C:\GITHUB\SEP_PROJEKAT)
+2019-12-26 14:32:16,888 DEBUG org.springframework.boot.StartupInfoLogger [main] Running with Spring Boot v2.1.5.RELEASE, Spring v5.1.7.RELEASE
+2019-12-26 14:32:16,890 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2019-12-26 14:32:20,683 DEBUG org.springframework.web.filter.GenericFilterBean [main] Filter 'CORS Filter' configured for use
+2019-12-26 14:32:25,722 INFO org.springframework.boot.StartupInfoLogger [main] Started BankApplication in 10.366 seconds (JVM running for 13.228)
+2019-12-26 14:42:01,232 INFO org.springframework.boot.StartupInfoLogger [main] Starting BankApplication on DESKTOP-7EFKHD1 with PID 3516 (C:\GITHUB\SEP_PROJEKAT\bank\target\classes started by Vladimir in C:\GITHUB\SEP_PROJEKAT)
+2019-12-26 14:42:01,240 DEBUG org.springframework.boot.StartupInfoLogger [main] Running with Spring Boot v2.1.5.RELEASE, Spring v5.1.7.RELEASE
+2019-12-26 14:42:01,241 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2019-12-26 14:42:06,432 DEBUG org.springframework.web.filter.GenericFilterBean [main] Filter 'CORS Filter' configured for use
+2019-12-26 14:42:17,982 INFO org.springframework.boot.StartupInfoLogger [main] Started BankApplication in 17.633 seconds (JVM running for 19.654)
+2019-12-26 14:46:33,785 INFO org.springframework.boot.StartupInfoLogger [main] Starting BankApplication on DESKTOP-7EFKHD1 with PID 2932 (C:\GITHUB\SEP_PROJEKAT\bank\target\classes started by Vladimir in C:\GITHUB\SEP_PROJEKAT)
+2019-12-26 14:46:33,792 DEBUG org.springframework.boot.StartupInfoLogger [main] Running with Spring Boot v2.1.5.RELEASE, Spring v5.1.7.RELEASE
+2019-12-26 14:46:33,793 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2019-12-26 14:46:37,284 DEBUG org.springframework.web.filter.GenericFilterBean [main] Filter 'CORS Filter' configured for use
+2019-12-26 14:46:41,632 INFO org.springframework.boot.StartupInfoLogger [main] Started BankApplication in 8.89 seconds (JVM running for 11.315)
+2019-12-26 17:32:52,070 INFO org.springframework.boot.StartupInfoLogger [main] Starting BankApplication on DESKTOP-7EFKHD1 with PID 13952 (C:\GITHUB\SEP_PROJEKAT\bank\target\classes started by Vladimir in C:\GITHUB\SEP_PROJEKAT)
+2019-12-26 17:32:52,109 DEBUG org.springframework.boot.StartupInfoLogger [main] Running with Spring Boot v2.1.5.RELEASE, Spring v5.1.7.RELEASE
+2019-12-26 17:32:52,110 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2019-12-26 17:32:56,577 DEBUG org.springframework.web.filter.GenericFilterBean [main] Filter 'CORS Filter' configured for use
+2019-12-26 17:33:02,308 INFO org.springframework.boot.StartupInfoLogger [main] Started BankApplication in 11.244 seconds (JVM running for 13.672)
+2019-12-26 18:28:55,218 INFO org.springframework.boot.StartupInfoLogger [main] Starting BankApplication on DESKTOP-7EFKHD1 with PID 14148 (C:\GITHUB\SEP_PROJEKAT\bank\target\classes started by Vladimir in C:\GITHUB\SEP_PROJEKAT)
+2019-12-26 18:28:55,223 DEBUG org.springframework.boot.StartupInfoLogger [main] Running with Spring Boot v2.1.5.RELEASE, Spring v5.1.7.RELEASE
+2019-12-26 18:28:55,224 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2019-12-26 18:28:58,147 DEBUG org.springframework.web.filter.GenericFilterBean [main] Filter 'CORS Filter' configured for use
+2019-12-26 18:29:03,907 INFO org.springframework.boot.StartupInfoLogger [main] Started BankApplication in 9.485 seconds (JVM running for 11.381)
+2019-12-26 18:43:44,825 INFO org.springframework.boot.StartupInfoLogger [main] Starting BankApplication on DESKTOP-7EFKHD1 with PID 7184 (C:\GITHUB\SEP_PROJEKAT\bank\target\classes started by Vladimir in C:\GITHUB\SEP_PROJEKAT)
+2019-12-26 18:43:44,831 DEBUG org.springframework.boot.StartupInfoLogger [main] Running with Spring Boot v2.1.5.RELEASE, Spring v5.1.7.RELEASE
+2019-12-26 18:43:44,832 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2019-12-26 18:43:47,859 DEBUG org.springframework.web.filter.GenericFilterBean [main] Filter 'CORS Filter' configured for use
+2019-12-26 18:43:52,841 INFO org.springframework.boot.StartupInfoLogger [main] Started BankApplication in 8.601 seconds (JVM running for 10.292)
+2019-12-26 18:45:51,120 INFO org.springframework.boot.StartupInfoLogger [main] Starting BankApplication on DESKTOP-7EFKHD1 with PID 6084 (C:\GITHUB\SEP_PROJEKAT\bank\target\classes started by Vladimir in C:\GITHUB\SEP_PROJEKAT)
+2019-12-26 18:45:51,126 DEBUG org.springframework.boot.StartupInfoLogger [main] Running with Spring Boot v2.1.5.RELEASE, Spring v5.1.7.RELEASE
+2019-12-26 18:45:51,127 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2019-12-26 18:45:54,483 DEBUG org.springframework.web.filter.GenericFilterBean [main] Filter 'CORS Filter' configured for use
+2019-12-26 18:45:59,739 INFO org.springframework.boot.StartupInfoLogger [main] Started BankApplication in 9.281 seconds (JVM running for 12.035)
+2019-12-26 18:58:00,862 INFO org.springframework.boot.StartupInfoLogger [main] Starting BankApplication on DESKTOP-7EFKHD1 with PID 9980 (C:\GITHUB\SEP_PROJEKAT\bank\target\classes started by Vladimir in C:\GITHUB\SEP_PROJEKAT)
+2019-12-26 18:58:00,867 DEBUG org.springframework.boot.StartupInfoLogger [main] Running with Spring Boot v2.1.5.RELEASE, Spring v5.1.7.RELEASE
+2019-12-26 18:58:00,868 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2019-12-26 18:58:04,025 DEBUG org.springframework.web.filter.GenericFilterBean [main] Filter 'CORS Filter' configured for use
+2019-12-26 18:58:09,137 INFO org.springframework.boot.StartupInfoLogger [main] Started BankApplication in 8.976 seconds (JVM running for 10.672)
+2019-12-26 18:59:15,128 INFO org.springframework.boot.StartupInfoLogger [main] Starting BankApplication on DESKTOP-7EFKHD1 with PID 14256 (C:\GITHUB\SEP_PROJEKAT\bank\target\classes started by Vladimir in C:\GITHUB\SEP_PROJEKAT)
+2019-12-26 18:59:15,134 DEBUG org.springframework.boot.StartupInfoLogger [main] Running with Spring Boot v2.1.5.RELEASE, Spring v5.1.7.RELEASE
+2019-12-26 18:59:15,136 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2019-12-26 18:59:18,041 DEBUG org.springframework.web.filter.GenericFilterBean [main] Filter 'CORS Filter' configured for use
+2019-12-26 18:59:23,050 INFO org.springframework.boot.StartupInfoLogger [main] Started BankApplication in 8.612 seconds (JVM running for 10.34)
+2019-12-26 19:01:10,684 INFO org.springframework.boot.StartupInfoLogger [main] Starting BankApplication on DESKTOP-7EFKHD1 with PID 10260 (C:\GITHUB\SEP_PROJEKAT\bank\target\classes started by Vladimir in C:\GITHUB\SEP_PROJEKAT)
+2019-12-26 19:01:10,691 DEBUG org.springframework.boot.StartupInfoLogger [main] Running with Spring Boot v2.1.5.RELEASE, Spring v5.1.7.RELEASE
+2019-12-26 19:01:10,698 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2019-12-26 19:01:13,911 DEBUG org.springframework.web.filter.GenericFilterBean [main] Filter 'CORS Filter' configured for use
+2019-12-26 19:01:19,999 INFO org.springframework.boot.StartupInfoLogger [main] Started BankApplication in 10.341 seconds (JVM running for 12.372)
+2019-12-26 19:03:15,002 INFO org.springframework.boot.StartupInfoLogger [main] Starting BankApplication on DESKTOP-7EFKHD1 with PID 5096 (C:\GITHUB\SEP_PROJEKAT\bank\target\classes started by Vladimir in C:\GITHUB\SEP_PROJEKAT)
+2019-12-26 19:03:15,008 DEBUG org.springframework.boot.StartupInfoLogger [main] Running with Spring Boot v2.1.5.RELEASE, Spring v5.1.7.RELEASE
+2019-12-26 19:03:15,009 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2019-12-26 19:03:17,970 DEBUG org.springframework.web.filter.GenericFilterBean [main] Filter 'CORS Filter' configured for use
+2019-12-26 19:03:22,986 INFO org.springframework.boot.StartupInfoLogger [main] Started BankApplication in 8.572 seconds (JVM running for 10.245)
+2019-12-26 19:10:45,077 INFO org.springframework.boot.StartupInfoLogger [main] Starting BankApplication on DESKTOP-7EFKHD1 with PID 6020 (C:\GITHUB\SEP_PROJEKAT\bank\target\classes started by Vladimir in C:\GITHUB\SEP_PROJEKAT)
+2019-12-26 19:10:45,083 DEBUG org.springframework.boot.StartupInfoLogger [main] Running with Spring Boot v2.1.5.RELEASE, Spring v5.1.7.RELEASE
+2019-12-26 19:10:45,084 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2019-12-26 19:10:48,340 DEBUG org.springframework.web.filter.GenericFilterBean [main] Filter 'CORS Filter' configured for use
+2019-12-26 19:10:58,544 INFO org.springframework.boot.StartupInfoLogger [main] Started BankApplication in 14.395 seconds (JVM running for 16.492)
+2019-12-26 19:58:19,564 INFO org.springframework.boot.StartupInfoLogger [main] Starting BankApplication on DESKTOP-7EFKHD1 with PID 14232 (C:\GITHUB\SEP_PROJEKAT\bank\target\classes started by Vladimir in C:\GITHUB\SEP_PROJEKAT)
+2019-12-26 19:58:19,570 DEBUG org.springframework.boot.StartupInfoLogger [main] Running with Spring Boot v2.1.5.RELEASE, Spring v5.1.7.RELEASE
+2019-12-26 19:58:19,571 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2019-12-26 19:58:23,551 DEBUG org.springframework.web.filter.GenericFilterBean [main] Filter 'CORS Filter' configured for use
+2019-12-26 19:58:31,102 INFO org.springframework.boot.StartupInfoLogger [main] Started BankApplication in 12.848 seconds (JVM running for 16.154)

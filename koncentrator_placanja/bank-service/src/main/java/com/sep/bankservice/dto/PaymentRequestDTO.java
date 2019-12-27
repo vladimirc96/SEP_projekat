@@ -1,5 +1,11 @@
 package com.sep.bankservice.dto;
 
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.security.KeyStore;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
 public class PaymentRequestDTO {
@@ -49,7 +55,6 @@ public class PaymentRequestDTO {
     public void setMerchantOrderId(Long merchantOrderId) {
         this.merchantOrderId = merchantOrderId;
     }
-
     public Date getMerchantTimestamp() {
         return merchantTimestamp;
     }
@@ -57,4 +62,5 @@ public class PaymentRequestDTO {
     public void setMerchantTimestamp(Date merchantTimestamp) {
         this.merchantTimestamp = merchantTimestamp;
     }
+
 }

@@ -2,20 +2,20 @@ package com.sep.bankservice.dto;
 
 public class PaymentDTO {
 
-    private String merchantId;
+    private Long sellerId;
     private double amount;
 
-    public PaymentDTO(String merchantId, double amount) {
-        this.merchantId = merchantId;
+    public PaymentDTO(Long merchantId, double amount) {
+        this.sellerId = merchantId;
         this.amount = amount;
     }
 
-    public String getMerchantId() {
-        return merchantId;
+    public Long getSellerId() {
+        return sellerId;
     }
 
-    public void setMerchantId(String merchantId) {
-        this.merchantId = merchantId;
+    public void setSellerId(Long sellerId) {
+        this.sellerId = sellerId;
     }
 
     public double getAmount() {
