@@ -19,3 +19,22 @@
 2019-12-26 22:58:20,988 INFO com.sep.paypalservice.service.Logging [http-nio-8443-exec-3] PP_PAYMENT
 2019-12-26 23:05:55,680 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
 2019-12-26 23:06:01,914 DEBUG org.springframework.web.filter.GenericFilterBean [main] Filter 'CORS Filter' configured for use
+2019-12-26 23:07:49,564 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2019-12-26 23:07:51,564 DEBUG org.springframework.web.filter.GenericFilterBean [main] Filter 'CORS Filter' configured for use
+2019-12-26 23:08:03,298 INFO org.springframework.boot.StartupInfoLogger [main] Started PaypalServiceApplication in 21.609 seconds (JVM running for 24.718)
+2019-12-26 23:08:22,738 INFO com.sep.paypalservice.service.Logging [http-nio-8443-exec-1] PP_PAYMENT
+2019-12-26 23:09:07,673 INFO com.sep.paypalservice.service.Logging [http-nio-8443-exec-2] PP_CONFIRM
+2019-12-26 23:09:10,402 INFO com.sep.paypalservice.service.Logging [http-nio-8443-exec-2] PP_CONFIRM_SUCCESS
+2019-12-26 23:12:57,849 INFO com.sep.paypalservice.service.Logging [http-nio-8443-exec-5] PP_PAYMENT
+2019-12-27 16:11:07,931 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2019-12-27 16:11:13,364 DEBUG org.springframework.web.filter.GenericFilterBean [main] Filter 'CORS Filter' configured for use
+2019-12-27 16:11:32,915 INFO org.springframework.boot.StartupInfoLogger [main] Started PaypalServiceApplication in 39.426 seconds (JVM running for 47.129)
+2019-12-27 16:15:08,909 INFO com.sep.paypalservice.service.Logging [http-nio-8443-exec-2] PP_PAYMENT
+2019-12-27 16:16:48,548 INFO com.sep.paypalservice.service.Logging [http-nio-8443-exec-4] PP_CONFIRM
+2019-12-27 16:16:51,179 INFO com.sep.paypalservice.service.Logging [http-nio-8443-exec-4] PP_CONFIRM_SUCCESS
+2019-12-27 16:22:30,649 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2019-12-27 16:22:34,575 DEBUG org.springframework.web.filter.GenericFilterBean [main] Filter 'CORS Filter' configured for use
+2019-12-27 16:22:52,499 INFO org.springframework.boot.StartupInfoLogger [main] Started PaypalServiceApplication in 34.446 seconds (JVM running for 43.621)
+2019-12-27 16:24:17,024 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2019-12-27 16:24:19,944 DEBUG org.springframework.web.filter.GenericFilterBean [main] Filter 'CORS Filter' configured for use
+2019-12-27 16:24:33,554 INFO org.springframework.boot.StartupInfoLogger [main] Started PaypalServiceApplication in 26.105 seconds (JVM running for 29.802)

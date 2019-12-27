@@ -27,7 +27,6 @@ export class SellerMethodsComponent implements OnInit {
 	}
 
 	ngOnInit() {
-		this.centralaService.id = this.id;
 	}
 
 	fetchSeller() {

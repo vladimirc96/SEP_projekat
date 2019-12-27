@@ -3,7 +3,7 @@ package com.sep.paypalservice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+//import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -11,7 +11,7 @@ import org.springframework.core.env.Environment;
 import javax.annotation.PostConstruct;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 
-@EnableEurekaClient
+//@EnableEurekaClient
 @SpringBootApplication
 public class PaypalServiceApplication {
 
