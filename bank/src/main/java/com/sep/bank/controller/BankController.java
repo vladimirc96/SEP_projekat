@@ -1,5 +1,7 @@
 package com.sep.bank.controller;
 
+import com.sep.bank.crypto.Crypto;
+import com.sep.bank.crypto.KeyStoreUtil;
 import com.sep.bank.dto.*;
 import com.sep.bank.model.BankAccount;
 import com.sep.bank.model.Customer;
@@ -10,6 +12,7 @@ import com.sep.bank.service.BankService;
 import com.sep.bank.service.CustomerService;
 import com.sep.bank.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -17,10 +20,25 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import javax.crypto.spec.SecretKeySpec;
+import java.security.Key;
+
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/bank")
 public class BankController {
+
+    @Value("${SECRET_KEY_ALIAS}")
+    private static String alias;
+
+    @Value("${SECRET_KEY_STORE_PASS}")
+    private static String keystorePass;
+
+    @Value("${SECRET_KEY_PASS}")
+    private static String keyPass;
+
+    @Value("${SECRET_KEY_LOCATION}")
+    private static String keystoreLocation;
 
     private final String SUCCESS_URL = "SUCCESS";
     private final String FAILED_URL = "FAILED";
@@ -52,7 +70,7 @@ public class BankController {
             transaction.setPaymentStatus(PaymentStatus.FAILURE);
 
             // azuriraj stanje transakcije u KP-u
-            // requestUpdateTransaction(transaction);
+            requestUpdateTransaction(transaction);
 
             return new ResponseEntity<>(new RedirectDTO(FAILED_URL, null), HttpStatus.BAD_REQUEST);
         }
@@ -75,7 +93,7 @@ public class BankController {
             transaction = transactionService.save(transaction);
 
             // azuriraj stanje transakcije u KP-u
-            // requestUpdateTransaction(transaction);
+            requestUpdateTransaction(transaction);
 
             return new ResponseEntity<>("FAIL: THE DATA ENTERED IS NOT VALID", HttpStatus.BAD_REQUEST);
         }
@@ -86,7 +104,7 @@ public class BankController {
             transaction = transactionService.save(transaction);
 
             // azuriraj stanje transakcije u KP-u
-            // requestUpdateTransaction(transaction);
+            requestUpdateTransaction(transaction);
 
             return new ResponseEntity<>("CARD IS EXPIRED", HttpStatus.BAD_REQUEST);
         }
@@ -131,7 +149,13 @@ public class BankController {
     }
 
     private boolean isRequestValid(PaymentRequestDTO paymentRequest){
-        Customer customer = customerService.findByMerchantIdAndMerchantPassword(paymentRequest.getMerchantId(), paymentRequest.getMerchantPassword());
+        Crypto crypto = new Crypto();
+        Key key = KeyStoreUtil.getKeyFromKeyStore(keystoreLocation, keystorePass, alias, keyPass);
+        SecretKeySpec secretKeySpecification = new SecretKeySpec(key.getEncoded(), "AES");
+
+        String merchantPassEncrypted = crypto.decrypt(paymentRequest.getMerchantPassword(), secretKeySpecification);
+
+        Customer customer = customerService.findByMerchantIdAndMerchantPassword(paymentRequest.getMerchantId(), merchantPassEncrypted);
         if(customer == null){
             return false;
         }

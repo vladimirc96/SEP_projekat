@@ -20,9 +20,6 @@ public class Customer {
     @Column(name = "name")
     private String name;
 
-    @OneToOne(mappedBy = "customer")
-    private BankAccount bankAccount;
-
     @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Transaction> transactions;
 
@@ -65,14 +62,6 @@ public class Customer {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public BankAccount getBankAccount() {
-        return bankAccount;
-    }
-
-    public void setBankAccount(BankAccount bankAccount) {
-        this.bankAccount = bankAccount;
     }
 
     public Set<Transaction> getTransactions() {

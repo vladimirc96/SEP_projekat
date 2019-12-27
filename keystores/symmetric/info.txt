@@ -1,0 +1,8 @@
+store: mystorepass
+key: mykeypass
+keytool -genseckey -keystore aes-keystore.jck -storetype jceks -storepass mystorepass -keyalg AES -keysize 128 -alias jceksaes -keypass mykeypass 
+
+------------
+
+https://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html
+mozda ce morati ovo da skidaju ? 

@@ -1,5 +1,7 @@
 package com.sep.bankservice.controller;
 
+import com.sep.bankservice.crypto.Crypto;
+import com.sep.bankservice.crypto.KeyStoreUtil;
 import com.sep.bankservice.dto.PaymentDTO;
 import com.sep.bankservice.dto.PaymentRequestDTO;
 import com.sep.bankservice.dto.PaymentStatusDTO;
@@ -10,6 +12,7 @@ import com.sep.bankservice.model.Transaction;
 import com.sep.bankservice.service.CustomerService;
 import com.sep.bankservice.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -17,11 +20,25 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import javax.crypto.spec.SecretKeySpec;
+import java.security.Key;
 import java.util.Date;
 
 @RestController
 @RequestMapping(value="/bank")
 public class BankController {
+
+    @Value("${SECRET_KEY_ALIAS}")
+    private static String alias;
+
+    @Value("${SECRET_KEY_STORE_PASS}")
+    private static String keystorePass;
+
+    @Value("${SECRET_KEY_PASS}")
+    private static String keyPass;
+
+    @Value("${SECRET_KEY_LOCATION}")
+    private static String keystoreLocation;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -35,18 +52,25 @@ public class BankController {
     // metoda koja prihvata zahtev za placanje i prosledjuje banci na proveru
     @RequestMapping(value = "/payment-request", method = RequestMethod.POST)
         private ResponseEntity<RedirectDTO> payment(@RequestBody PaymentDTO paymentDTO) {
+
         Transaction transaction = new Transaction();
         transaction.setAmount(paymentDTO.getAmount());
         transaction.setTimestamp(new Date());
         transaction.setPaymentStatus(PaymentStatus.PROCESSING);
 
-        Customer customer = customerService.findByMerchantId(paymentDTO.getMerchantId());
-
+        Customer customer = customerService.findOneById(paymentDTO.getSellerId());
         transaction.setCustomer(customer);
         transaction = transactionService.save(transaction);
 
+        // sifrovati AES algoritmom merchantPassword
+        Crypto crypto = new Crypto();
+        Key key = KeyStoreUtil.getKeyFromKeyStore(keystoreLocation, keystorePass, alias, keyPass);
+        SecretKeySpec secretKeySpecification = new SecretKeySpec(key.getEncoded(), "AES");
+
+        String merchantPassEncrypted = crypto.encrypt(customer.getMerchantPassword(), secretKeySpecification);
+
         PaymentRequestDTO paymentRequestDTO = new PaymentRequestDTO(customer.getMerchantId(),
-                customer.getMerchantPassword(),
+                merchantPassEncrypted,
                 paymentDTO.getAmount(), transaction.getId(), transaction.getTimestamp());
 
         // poslati zahtev banci

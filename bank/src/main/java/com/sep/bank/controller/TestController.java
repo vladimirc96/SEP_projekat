@@ -17,8 +17,8 @@ public class TestController {
     @Autowired
     public RestTemplate restTemplate;
 
-    @RequestMapping(value = "", method = RequestMethod.POST)
-    public ResponseEntity<String> test(@RequestBody String body){
+    @RequestMapping(value = "/test", method = RequestMethod.GET)
+    public ResponseEntity<String> test(){
         String requestBody = "Uspesno placeno";
         return new ResponseEntity<>(requestBody, HttpStatus.OK);
     }
