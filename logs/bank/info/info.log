@@ -131,3 +131,4 @@
 2019-12-27 18:14:24,483 DEBUG org.springframework.boot.StartupInfoLogger [main] Running with Spring Boot v2.1.5.RELEASE, Spring v5.1.7.RELEASE
 2019-12-27 18:14:24,484 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
 2019-12-27 18:14:31,306 DEBUG org.springframework.web.filter.GenericFilterBean [main] Filter 'CORS Filter' configured for use
+2019-12-27 18:14:47,875 INFO org.springframework.boot.StartupInfoLogger [main] Started BankApplication in 24.443 seconds (JVM running for 28.169)
