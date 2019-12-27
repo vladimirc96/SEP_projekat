@@ -8,3 +8,11 @@
 2019-12-28 00:10:01,197 INFO com.sep.bitcoinservice.service.Logging [https-jsse-nio-8444-exec-6] Transaction (id: 3) status changed from 'pending' to 'expired'
 2019-12-28 00:11:05,483 INFO com.sep.bitcoinservice.service.Logging [https-jsse-nio-8444-exec-2] Transaction saved: 4
 2019-12-28 00:11:10,752 INFO com.sep.bitcoinservice.service.Logging [Timer-3] Transaction (id: 4) status changed from 'pending' to 'invalid'
+2019-12-28 00:13:33,170 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2019-12-28 00:13:38,433 INFO org.springframework.boot.StartupInfoLogger [main] Started BitcoinServiceApplication in 6.635 seconds (JVM running for 7.59)
+2019-12-28 00:18:51,224 INFO com.sep.bitcoinservice.service.Logging [https-jsse-nio-8444-exec-6] Transaction saved: 1
+2019-12-28 00:19:26,376 INFO com.sep.bitcoinservice.service.Logging [Timer-0] Transaction (id: 1) status changed from 'pending' to 'confirming'
+2019-12-28 00:19:50,513 INFO com.sep.bitcoinservice.service.Logging [https-jsse-nio-8444-exec-5] Transaction saved: 2
+2019-12-28 00:21:25,691 INFO com.sep.bitcoinservice.service.Logging [Timer-1] Transaction (id: 2) status changed from 'pending' to 'invalid'
+2019-12-28 00:22:43,570 INFO com.sep.bitcoinservice.service.Logging [https-jsse-nio-8444-exec-5] Transaction saved: 3
+2019-12-28 00:22:48,752 INFO com.sep.bitcoinservice.service.Logging [Timer-2] Transaction (id: 3) status changed from 'pending' to 'paid'

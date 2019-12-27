@@ -62,7 +62,7 @@ export class BitcoinComponent implements OnInit {
 	setRefreshInterval() {
 		this.transaction.interval = setInterval(() => {
 			this.checkTransactionStatus();
-		}, 10000);
+		}, 6000);
 	}
 
 	goHome() {
@@ -79,9 +79,9 @@ export class BitcoinComponent implements OnInit {
 					clearInterval(this.transaction.interval);
 					this.loadingMessage = false;
 					this.redirectMessage = true;
-					setInterval(() => {
+					setTimeout(() => {
 						this.router.navigate(['/success']);
-					}, 5000)
+					}, 3000)
 				} else if (this.transaction.status == "invalid" || this.transaction.status == "canceled") {
 					clearInterval(this.transaction.interval);
 					this.loadingMessage = false;
