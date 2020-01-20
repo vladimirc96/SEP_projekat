@@ -14,6 +14,11 @@ export class PaypalService {
         return this.http.post("http://localhost:8443/paypal", orderDTO, {responseType: 'text'});
     }
 
+    checkStatus(payment) {
+        // return this.http.get("api/paypal-service/paypal/status/".concat(payment), {responseType: 'text'});
+        return this.http.get("http://localhost:8443/paypal/status/".concat(payment), {responseType: 'text'});
+    }
+
     completePayment(paymentID, payerID) {
         // return this.http.get("api/paypal-service/paypal/success/"+ paymentID + "/" + payerID, {responseType: 'text'});
         return this.http.get("http://localhost:8443/paypal/success/"+ paymentID + "/" + payerID, {responseType: 'text'});

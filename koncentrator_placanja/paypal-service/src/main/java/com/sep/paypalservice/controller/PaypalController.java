@@ -28,4 +28,9 @@ public class PaypalController {
         return service.successPay(payment, payer);
     }
 
+    @RequestMapping(value = "/status/{paymentId}", method = RequestMethod.GET)
+    public String paymentStatus(@PathVariable("paymentId") String payment) {
+        return service.checkStatus(payment);
+    }
+
 }

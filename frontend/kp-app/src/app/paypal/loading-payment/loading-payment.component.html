@@ -1,8 +1,12 @@
 <div class="container">
-    <div class="row">
+    <div class="row" *ngIf="!showInvalid">
         <div class="cekaj">
             <img src="/assets/loading.gif">
             <p class="tekst">Verifying your payment</p>
         </div>
+    </div>
+    <div class="row" *ngIf="showInvalid">
+        <p class="tekst">Unfortunatelly, your payment got suspended after 10 minutes of not being completed.</p>
+        <button class="btn btn-primary" (click)="goHome()">Go to home</button>
     </div>
 </div>

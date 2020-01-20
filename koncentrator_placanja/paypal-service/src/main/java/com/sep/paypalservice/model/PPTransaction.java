@@ -36,8 +36,7 @@ public class PPTransaction {
     @Column
     private String createdAt;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_id", nullable = false)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private PPClient client;
 
     public PPTransaction() {
