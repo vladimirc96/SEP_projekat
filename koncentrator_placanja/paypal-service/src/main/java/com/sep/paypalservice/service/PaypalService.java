@@ -31,14 +31,19 @@ public class PaypalService {
     @Autowired
     private TransactionRepository transacRepo;
 
-    private Long ide;
-
     private Logging logger = new Logging(this);
 
     public String payment(OrderDTO orderDTO) {
         logger.logInfo("PP_PAYMENT");
         try {
             Payment payment = createPayment(orderDTO.getPrice(), orderDTO.getCurrency(), orderDTO.getDescription(), orderDTO.getId());
+            PPTransaction tr = new PPTransaction();
+            tr.setOrderId(payment.getId());
+            tr.setCreatedAt(payment.getCreateTime());
+            tr.setStatus(payment.getState());
+            PPClient cl = repo.findOneById(orderDTO.getId());
+            tr.setClient(cl);
+            transacRepo.save(tr);
             for(Links link:payment.getLinks()) {
                 if(link.getRel().equals("approval_url")) {
                     return link.getHref();
@@ -58,8 +63,14 @@ public class PaypalService {
             System.out.println(payment.toJSON());
             if (payment.getState().equals("approved")) {
                 logger.logInfo("PP_CONFIRM_SUCCESS");
-                PPTransaction tr = new PPTransaction(payment.getId(), payment.getPayer().getPayerInfo().getPayerId(), payment.getPayer().getPayerInfo().getEmail(), payment.getTransactions().get(0).getAmount().getCurrency(), Double.parseDouble(payment.getTransactions().get(0).getAmount().getTotal()), payment.getState(), payment.getTransactions().get(0).getPayee().getEmail(), payment.getCreateTime());
-                transacRepo.save(tr);
+                PPTransaction tran = transacRepo.findOneByOrderId(paymentId);
+                tran.setPayerId(payment.getPayer().getPayerInfo().getPayerId());
+                tran.setPayerEmail(payment.getPayer().getPayerInfo().getEmail());
+                tran.setCurrency(payment.getTransactions().get(0).getAmount().getCurrency());
+                tran.setAmount(Double.parseDouble(payment.getTransactions().get(0).getAmount().getTotal()));
+                tran.setStatus(payment.getState());
+                tran.setPayee(payment.getTransactions().get(0).getPayee().getEmail());
+                transacRepo.save(tran);
                 return "https://localhost:4200/paypal/success";
             }
         } catch (PayPalRESTException e) {
@@ -101,7 +112,6 @@ public class PaypalService {
         redirectUrls.setReturnUrl("https://localhost:4200/payment/verifying");
         payment.setRedirectUrls(redirectUrls);
 
-        ide = id;
         APIContext apiContext = getContextAndMerchant(id);
 
         return payment.create(apiContext);
@@ -112,7 +122,9 @@ public class PaypalService {
         payment.setId(paymentId);
         PaymentExecution paymentExecute = new PaymentExecution();
         paymentExecute.setPayerId(payerId);
-        APIContext apiContext = getContextAndMerchant(ide);
+
+        PPTransaction transaction = transacRepo.findOneByOrderId(paymentId);
+        APIContext apiContext = getContextAndMerchant(transaction.getClient().getId());
 
         return payment.execute(apiContext, paymentExecute);
     }

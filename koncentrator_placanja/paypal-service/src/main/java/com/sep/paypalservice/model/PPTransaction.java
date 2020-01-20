@@ -2,6 +2,7 @@ package com.sep.paypalservice.model;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "pptransactions")
@@ -35,8 +36,9 @@ public class PPTransaction {
     @Column
     private String createdAt;
 
-//    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
-//    private Seller seller;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "client_id", nullable = false)
+    private PPClient client;
 
     public PPTransaction() {
     }
@@ -119,4 +121,12 @@ public class PPTransaction {
     }
 
     public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
+
+    public PPClient getClient() {
+        return client;
+    }
+
+    public void setClient(PPClient client) {
+        this.client = client;
+    }
 }
