@@ -29,7 +29,7 @@ public class BankAccount {
     private double reserved;
 
     @OneToOne
-    @JoinColumn(referencedColumnName = "customer_id", name="bank_account_customer_id")
+    @JoinColumn(referencedColumnName = "customer_id", name="customer_id")
     private Customer customer;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -109,5 +109,13 @@ public class BankAccount {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+    }
+
+    public Bank getBank() {
+        return bank;
+    }
+
+    public void setBank(Bank bank) {
+        this.bank = bank;
     }
 }

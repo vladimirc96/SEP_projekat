@@ -44,26 +44,17 @@ public class BankController {
 
     // metoda koja prihvata zahtev za placanje i prosledjuje banci na proveru
     @RequestMapping(value = "/payment-request", method = RequestMethod.POST)
-        private ResponseEntity<RedirectDTO> payment(@RequestBody PaymentDTO paymentDTO) {
-
-        Transaction transaction = new Transaction();
-        transaction.setAmount(paymentDTO.getAmount());
-        transaction.setTimestamp(new Date());
-        transaction.setPaymentStatus(PaymentStatus.PROCESSING);
-
+    private ResponseEntity<RedirectDTO> payment(@RequestBody PaymentDTO paymentDTO) {
         Customer customer = customerService.findOneById(paymentDTO.getSellerId());
-        transaction.setCustomer(customer);
-        transaction = transactionService.save(transaction);
+        Transaction transaction = transactionService.create(paymentDTO, customer);
 
         String merchantPasswordDecrypted = cryptoService.decrypt(customer.getMerchantPassword());
         PaymentRequestDTO paymentRequestDTO = new PaymentRequestDTO(customer.getMerchantId(),
                 merchantPasswordDecrypted,
                 paymentDTO.getAmount(), transaction.getId(), transaction.getTimestamp());
-
         // poslati zahtev banci
         HttpEntity<PaymentRequestDTO> entity = new HttpEntity<>(paymentRequestDTO);
         ResponseEntity<RedirectDTO> responseEntity = restTemplate.exchange("https://localhost:8450/bank/check-payment-request", HttpMethod.PUT, entity, RedirectDTO.class);
-
         return responseEntity;
     }
 

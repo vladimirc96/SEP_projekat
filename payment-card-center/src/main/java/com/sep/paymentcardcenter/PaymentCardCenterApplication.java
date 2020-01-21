@@ -7,6 +7,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
 
@@ -15,6 +16,11 @@ public class PaymentCardCenterApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(PaymentCardCenterApplication.class, args);
+	}
+
+	@Bean
+	public RestTemplate getRestTemplate() {
+		return new RestTemplate();
 	}
 
 	@Bean

@@ -1,5 +1,0 @@
-2020-01-20 19:44:51,607 INFO org.springframework.boot.StartupInfoLogger [main] Starting BankApplication on Milan with PID 15388 (C:\Users\lazic\Documents\GitHub\SEP_projekat\bank\target\classes started by Milan in C:\Users\lazic\Documents\GitHub\SEP_projekat)
-2020-01-20 19:44:51,630 DEBUG org.springframework.boot.StartupInfoLogger [main] Running with Spring Boot v2.1.5.RELEASE, Spring v5.1.7.RELEASE
-2020-01-20 19:44:51,632 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
-2020-01-20 19:44:55,840 DEBUG org.springframework.web.filter.GenericFilterBean [main] Filter 'CORS Filter' configured for use
-2020-01-20 19:45:03,983 INFO org.springframework.boot.StartupInfoLogger [main] Started BankApplication in 13.234 seconds (JVM running for 15.575)
