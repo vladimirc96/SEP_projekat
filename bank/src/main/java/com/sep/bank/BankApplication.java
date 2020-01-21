@@ -5,6 +5,7 @@ package com.sep.bank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,13 +13,10 @@ import org.springframework.core.env.Environment;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
-@SpringBootApplication
+@SpringBootApplication(exclude = SecurityAutoConfiguration.class)
 public class BankApplication {
 
-	@Bean
-	public RestTemplate getRestTemplate() {
-		return new RestTemplate();
-	}
+
 
 	public static void main(String[] args) {
 		SpringApplication.run(BankApplication.class, args);
@@ -36,6 +34,11 @@ public class BankApplication {
 
 	@Configuration
 	public class SSLConfig {
+		@Bean
+		public RestTemplate getRestTemplate() {
+			return new RestTemplate();
+		}
+
 		@Autowired
 		private Environment env;
 

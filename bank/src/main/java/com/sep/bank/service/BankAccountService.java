@@ -2,11 +2,11 @@ package com.sep.bank.service;
 
 import com.sep.bank.dto.BankAccountDTO;
 import com.sep.bank.dto.PaymentRequestDTO;
-import com.sep.bank.model.Bank;
-import com.sep.bank.model.BankAccount;
-import com.sep.bank.model.Customer;
+import com.sep.bank.model.*;
 import com.sep.bank.repository.BankAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -19,6 +19,40 @@ public class BankAccountService {
 
     @Autowired
     private BankAccountRepository bankAccountRepo;
+
+    @Autowired
+    private TransactionService transactionService;
+
+
+
+    public void validation(BankAccountDTO bankAccountDTO, BankAccount bankAccount, Transaction transaction) throws Exception {
+        // provera ostalih podataka
+        bankAccount = validate(bankAccountDTO);
+        if(bankAccount == null){
+            transaction.setPaymentStatus(PaymentStatus.FAILURE);
+            transaction = transactionService.save(transaction);
+           throw new Exception("FAIL: THE DATA ENTERED IS NOT VALID");
+        }
+        // proveriti da li je istekla kartica
+        if(isExpired(bankAccountDTO.getExpirationDate())){
+            transaction.setPaymentStatus(PaymentStatus.FAILURE);
+            transaction = transactionService.save(transaction);
+            throw new Exception("CARD IS EXPIRED");
+        }
+    }
+
+    public void reserveFunds(BankAccount bankAccount, Transaction transaction) throws Exception {
+        //provera raspolozivih sredstava
+        if(!hasFunds(bankAccount.getBalance(), transaction.getAmount())){
+            transaction.setPaymentStatus(PaymentStatus.INSUFFCIENT_FUNDS);
+            transaction = transactionService.save(transaction);
+            throw new Exception("NOT ENOUGH FUNDS");
+        }else{
+            // rezervisi sredstva
+            bankAccount.setReserved(transaction.getAmount());
+            bankAccount = bankAccountRepo.save(bankAccount);
+        }
+    }
 
     public BankAccount findOneById(Long id){
         return bankAccountRepo.findOneById(id);
@@ -44,6 +78,7 @@ public class BankAccountService {
     public BankAccount findOneByPan(String pan){
         return bankAccountRepo.findOneByPan(pan);
     }
+
 
     public boolean isExpired(Date expirationDate){
         Date today = new Date();

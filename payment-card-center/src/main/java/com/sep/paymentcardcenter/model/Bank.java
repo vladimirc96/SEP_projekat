@@ -1,4 +1,4 @@
-package com.sep.bank.model;
+package com.sep.paymentcardcenter.model;
 
 import javax.persistence.*;
 import java.util.Set;
