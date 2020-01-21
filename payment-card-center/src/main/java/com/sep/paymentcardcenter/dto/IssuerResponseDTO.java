@@ -12,6 +12,9 @@ public class IssuerResponseDTO {
     private Long issuerOrderId;
     private Date issuerTimestamp;
 
+    public IssuerResponseDTO(){}
+
+
     public IssuerResponseDTO(PaymentStatus paymentStatus, Long acquirerOrderId, Date acquirerTimestamp, Long issuerOrderId, Date issuerTimestamp) {
         this.paymentStatus = paymentStatus;
         this.acquirerOrderId = acquirerOrderId;

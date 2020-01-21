@@ -6,7 +6,6 @@ import com.sep.paymentcardcenter.dto.PaymentStatusDTO;
 import com.sep.paymentcardcenter.dto.PccRequestDTO;
 import com.sep.paymentcardcenter.model.Transaction;
 import com.sep.paymentcardcenter.service.TransactionService;
-import org.hibernate.boot.model.source.spi.IdentifierSourceSimple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -15,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import javax.xml.ws.Response;
+import java.util.Date;
 
 @RestController
 @RequestMapping(value = "/pcc")
@@ -31,7 +30,7 @@ public class PccController {
     public ResponseEntity<?> forward(@RequestBody PccRequestDTO pccRequestDTO){
 
         if(!isValid(pccRequestDTO)){
-            return new ResponseEntity<>("Neuspesno", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
 
         Transaction transaction = new Transaction();
@@ -42,8 +41,8 @@ public class PccController {
         transaction = transactionService.save(transaction);
 
         // proslediti zahtev banci kupca
-        HttpEntity<PccRequestDTO> entity = new HttpEntity<>(pccRequestDTO);
-        ResponseEntity<IssuerResponseDTO> responseEntity = restTemplate.exchange("https://localhost:8451/bank/issuer/validate/" + pccRequestDTO.getAcquirerOrderId(),
+        HttpEntity<BankAccountDTO> entity = new HttpEntity<>(pccRequestDTO.getBankAccountDTO());
+        ResponseEntity<IssuerResponseDTO> responseEntity = restTemplate.exchange("https://localhost:8451/bank/issuer/payment/" + pccRequestDTO.getAcquirerOrderId(),
                 HttpMethod.PUT, entity, IssuerResponseDTO.class);
 
         // responseEntity odgovor proslediti prodavcu
@@ -54,6 +53,9 @@ public class PccController {
     @RequestMapping(value  = "/transaction/{id}", method = RequestMethod.PUT)
     private ResponseEntity<String> updateTransaction(@RequestBody PaymentStatusDTO paymentStatusDTO, @PathVariable("id") String id){
         Transaction transaction = transactionService.findOneById(Long.parseLong(id));
+        if(transaction == null){
+            return new ResponseEntity<>("Transakcija ne postoji.", HttpStatus.NOT_FOUND);
+        }
         transaction.setPaymentStatus(paymentStatusDTO.getPaymentStatus());
         transaction = transactionService.save(transaction);
         System.out.println(transaction);

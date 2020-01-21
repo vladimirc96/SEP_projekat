@@ -18,10 +18,6 @@ public class PaymentCardCenterApplication {
 		SpringApplication.run(PaymentCardCenterApplication.class, args);
 	}
 
-	@Bean
-	public RestTemplate getRestTemplate() {
-		return new RestTemplate();
-	}
 
 	@Bean
 	public FilterRegistrationBean corsFilterRegistration() {
@@ -35,6 +31,13 @@ public class PaymentCardCenterApplication {
 
 	@Configuration
 	public class SSLConfig {
+
+		@Bean
+		public RestTemplate getRestTemplate() {
+			return new RestTemplate();
+		}
+
+
 		@Autowired
 		private Environment env;
 
