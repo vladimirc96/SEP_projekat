@@ -124,7 +124,6 @@ public class TransactionService implements ITransactionService {
             return "OK";
         });
 
-
         t.setSeller(s);
         t = transactionRepo.save(t);
         logger.logInfo("Transaction saved: " + t.getId());

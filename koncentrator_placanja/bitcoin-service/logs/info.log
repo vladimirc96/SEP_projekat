@@ -1,2 +1,6 @@
 2020-01-20 19:44:58,725 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
 2020-01-20 19:45:24,161 INFO org.springframework.boot.StartupInfoLogger [main] Started BitcoinServiceApplication in 28.543 seconds (JVM running for 31.075)
+2020-01-20 20:01:56,631 INFO com.sep.bitcoinservice.service.Logging [https-jsse-nio-8444-exec-1] Transaction saved: 1
+2020-01-20 20:02:31,873 INFO com.sep.bitcoinservice.service.Logging [Timer-0] Transaction (id: 1) status changed from 'pending' to 'invalid'
+2020-01-20 20:08:18,679 INFO com.sep.bitcoinservice.service.Logging [https-jsse-nio-8444-exec-4] Transaction saved: 2
+2020-01-20 20:14:37,063 INFO com.sep.bitcoinservice.service.Logging [https-jsse-nio-8444-exec-1] Transaction (id: 2) status changed from 'pending' to 'paid'
