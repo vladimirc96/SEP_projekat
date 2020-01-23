@@ -1,5 +1,7 @@
 package com.sep.paypalservice.dto;
 
+import com.sep.paypalservice.model.PPClient;
+
 import javax.persistence.Column;
 
 public class PPClientDTO {
@@ -17,6 +19,10 @@ public class PPClientDTO {
         this.password = password;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
+    }
+
+    public static PPClientDTO formDTO(PPClient ppClient){
+        return new PPClientDTO(ppClient.getId(), "", "", "");
     }
 
     public String getPassword() {
