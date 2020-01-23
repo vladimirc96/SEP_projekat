@@ -1,0 +1,111 @@
+<div class="fw-container pt-5">
+    <div class="row">
+        <div class="col">
+            <h2 class="text-uppercase">Registracija prodavca</h2>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-5">
+            <h5 class="">Osnovne informacije</h5>
+            <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" *ngIf="!registerResponse" >
+                <div class="form-group mt-4">
+                    <label for="id">ID prodavca</label>
+                    <input
+                        type="number"
+                        class="form-control"
+                        formControlName="id"
+                        disabled
+                    />
+                </div>
+                <div class="form-group mt-4">
+                    <label for="email">Email *</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Unesite email"
+                        formControlName="email"
+                    />
+                </div>
+                <div class="form-group mt-4">
+                    <label for="email">Lozinka *</label>
+                    <input
+                        type="password"
+                        class="form-control"
+                        placeholder="Unesite lozinku koju ćete koristi pri registraciji servisa plaćanja"
+                        formControlName="password"
+                    />
+                </div>
+                <div class="form-group mt-4">
+                    <label for="organization">Organizacija</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Unesite naziv organizacije (opciono)"
+                        formControlName="organization"
+                    />
+                </div>
+                <div class="form-group mt-4 mb-5">
+                    <label for="organization">Ime i prezime</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Unesite ime i prezime prodavca (opciono)"
+                        formControlName="name"
+                    />
+                </div>
+                <hr />
+                <div class="mt-4"  *ngIf="paymentMethods">
+                    <div class="mb-3"><strong>Servisi koje želite da registrujete</strong></div>
+                    
+                    
+                    <div
+                        formArrayName="paymentMethods"
+                    >
+                        <div
+                            *ngFor="let pm of paymentMethods; let k = index"
+                            [formGroupName]="k"
+                        >
+                            <label class="cb-container">
+                                <input type="checkbox" formControlName="selected" />
+                                <span class="checkmark"></span>
+                                {{ pm.name }}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row mt-5">
+                    <div class="col-md-5">
+                        <button type="submit" class="btn btn-dark" [disabled]="!registrationForm.valid" >Nastavi sa registracijom</button>
+                    </div>
+                    <div class="col-md-7">
+                        <div *ngIf="errorMessage">
+                            <div class="alert alert-danger">
+                                {{ errorMessage }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                
+            </form>
+            <div class="info" *ngIf="registerResponse">
+                <div>ID: <strong>{{registerResponse.id}}</strong></div>
+                <div>Email: <strong>{{registerResponse.email}}</strong></div>
+
+
+                <div class="mt-5 mb-4">
+                    <strong>Nastavite sa registracijom: </strong>
+                </div>
+
+                <div *ngFor="let pm of registerResponse.paymentMethods" class="mb-2">
+                    <button class="btn btn-primary" (click)="continueRegistration(pm)">{{pm.name}}</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-1"></div>
+
+        <div class="col-md-5"></div>
+    </div>
+</div>

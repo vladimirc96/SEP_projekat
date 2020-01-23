@@ -1,39 +1,66 @@
 package com.sep.sellers.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 public class PaymentMethod {
 
     @Id
-    private String method;
+    private long id;
 
-    @ManyToMany(mappedBy = "paymentMethods")
-    private Set<Seller> seller = new HashSet<>();
+    @Column(nullable = false)
+    private String name;
+
+    @Column
+    private String registrationUrl;
+
+
+    @OneToMany(mappedBy = "paymentMethod", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<SellerPaymentMethod> sellerPaymentMethods = new ArrayList<>();
 
     public PaymentMethod() {
     }
 
-    public PaymentMethod(String method, Set<Seller> seller) {
-        this.method = method;
-        this.seller = seller;
+    public PaymentMethod(long id, String name, String registrationUrl, List<SellerPaymentMethod> sellerPaymentMethods) {
+        this.id = id;
+        this.name = name;
+        this.registrationUrl = registrationUrl;
+        this.sellerPaymentMethods = sellerPaymentMethods;
     }
 
-    public String getMethod() {
-        return method;
+    public String getName() {
+        return name;
     }
 
-    public void setMethod(String method) {
-        this.method = method;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public Set<Seller> getSeller() {
-        return seller;
+    public List<SellerPaymentMethod> getSellerPaymentMethods() {
+        return sellerPaymentMethods;
     }
 
-    public void setSeller(Set<Seller> seller) {
-        this.seller = seller;
+    public void setSellerPaymentMethods(List<SellerPaymentMethod> sellerPaymentMethods) {
+        this.sellerPaymentMethods = sellerPaymentMethods;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getRegistrationUrl() {
+        return registrationUrl;
+    }
+
+    public void setRegistrationUrl(String registrationUrl) {
+        this.registrationUrl = registrationUrl;
     }
 }

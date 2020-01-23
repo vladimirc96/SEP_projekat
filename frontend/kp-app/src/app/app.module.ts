@@ -28,6 +28,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BankPaymentSuccessComponent } from './bank/bank-payment-success/bank-payment-success.component';
 import { BankPaymentFailureComponent } from './bank/bank-payment-failure/bank-payment-failure.component';
 import { BankPaymentFormComponent } from './bank/bank-payment-form/bank-payment-form.component';
+import { BitcoinRegistrationComponent } from './registrations/bitcoin-registration/bitcoin-registration.component';
+import { PaypalRegistrationComponent } from './registrations/paypal-registration/paypal-registration.component';
+import { BankRegistrationComponent } from './registrations/bank-registration/bank-registration.component';
+import { SellerRegistrationComponent } from './registrations/seller-registration/seller-registration.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -47,6 +51,10 @@ import { BankPaymentFormComponent } from './bank/bank-payment-form/bank-payment-
     BankPaymentSuccessComponent,
     BankPaymentFailureComponent,
     BankPaymentFormComponent,
+    BitcoinRegistrationComponent,
+    PaypalRegistrationComponent,
+    BankRegistrationComponent,
+    SellerRegistrationComponent,
   ],
   imports: [
     BrowserModule,

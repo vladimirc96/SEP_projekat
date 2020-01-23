@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
 
@@ -40,8 +41,15 @@ public class BitcoinServiceApplication {
 		@Autowired
 		private Environment env;
 
+		@Bean
+		public RestTemplate getRestTemplate() {
+			return new RestTemplate();
+		}
+
 		@PostConstruct
 		private void configureSSL() {
+
+
 
 			//set to TLSv1.1 or TLSv1.2
 			System.setProperty("https.protocols", "TLSv1.2");

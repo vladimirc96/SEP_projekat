@@ -16,6 +16,10 @@ import { BankPaymentComponent } from './bank/bank-payment/bank-payment.component
 import { BankPaymentSuccessComponent } from './bank/bank-payment-success/bank-payment-success.component';
 import { BankPaymentFailureComponent } from './bank/bank-payment-failure/bank-payment-failure.component';
 import { BankPaymentFormComponent } from './bank/bank-payment-form/bank-payment-form.component';
+import { BitcoinRegistrationComponent } from './registrations/bitcoin-registration/bitcoin-registration.component';
+import { PaypalRegistrationComponent } from './registrations/paypal-registration/paypal-registration.component';
+import { BankRegistrationComponent } from './registrations/bank-registration/bank-registration.component';
+import { SellerRegistrationComponent } from './registrations/seller-registration/seller-registration.component';
 
 const appRoutes: Routes = [
 	{ path: '', redirectTo: '/centrala', pathMatch: 'full'},
@@ -38,7 +42,8 @@ const appRoutes: Routes = [
 		{ path: 'success', component: BankPaymentSuccessComponent },
 		{ path: 'failure', component: BankPaymentFailureComponent },
 	]
-	}
+	},
+	{ path: 'reg/:sellerId', component: SellerRegistrationComponent }
 ]
 
 @NgModule({
