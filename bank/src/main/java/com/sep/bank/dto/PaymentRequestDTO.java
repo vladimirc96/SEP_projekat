@@ -57,4 +57,15 @@ public class PaymentRequestDTO {
     public void setMerchantTimestamp(Date merchantTimestamp) {
         this.merchantTimestamp = merchantTimestamp;
     }
+
+    @Override
+    public String toString() {
+        return "PaymentRequestDTO{" +
+                "merchantId='" + merchantId + '\'' +
+                ", merchantPassword='" + merchantPassword + '\'' +
+                ", amount=" + amount +
+                ", merchantOrderId=" + merchantOrderId +
+                ", merchantTimestamp=" + merchantTimestamp +
+                '}';
+    }
 }
