@@ -30,6 +30,10 @@ export class SellersService {
         return this.http.get(this.ENDPOINT_URI + "/sellers/" + id);
     }
 
+    initRegister() {
+        return this.http.get(this.ENDPOINT_URI + "/sellers/register");
+    }
+
     register(dto) {
         return this.http.post(this.ENDPOINT_URI + "/sellers/register", dto);
     }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { SellersService } from 'src/app/services/sellers.service';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { FormBuilder, Validators } from '@angular/forms';
 
 @Component({
@@ -13,8 +13,14 @@ export class SellerRegistrationComponent implements OnInit {
 	sellerId: number;
 	paymentMethods = [];
 	errorMessage = null;
-	showInfo = false;
-	showForm = true;
+
+
+	showBankForm = false;
+	showPPForm = false;
+	showBTCForm = false;
+
+	activePm = null;
+	
 
 	registerResponse: any = null;
 
@@ -29,10 +35,11 @@ export class SellerRegistrationComponent implements OnInit {
 		
 	  });
 
-    constructor(private route: ActivatedRoute, private sellersService: SellersService, private fb: FormBuilder) {
+    constructor(private route: ActivatedRoute, private sellersService: SellersService, private fb: FormBuilder, private router: Router) {
 		this.route.params.subscribe(
 			(params: Params) => {
 			  this.sellerId = +params['sellerId'];
+			  this.fetchSeller();
 			  this.fillForm();
 			}
 		  );
@@ -42,6 +49,18 @@ export class SellerRegistrationComponent implements OnInit {
 
     ngOnInit() {
 		this.renderPMCheckboxes();
+	}
+
+	fetchSeller() {
+		this.sellersService.getSeller(this.sellerId).subscribe(
+			(res: any) => {
+				if (res.email) {
+					this.router.navigate(['/']);
+				}
+			}, err =>{
+				this.router.navigate(['/']);
+			}
+		)
 	}
 
 
@@ -86,10 +105,10 @@ export class SellerRegistrationComponent implements OnInit {
 			paymentMethods: this.getSelectedItems(this.registrationForm.get('paymentMethods').value)
 		}
 
-		console.log(dto);
 
 		if (dto.paymentMethods.length < 1) {
 			this.errorMessage = "Morate izabrati bar jedan servis za plaćanje."
+			return;
 		}
 
 		this.sellersService.register(dto).subscribe(
@@ -103,6 +122,36 @@ export class SellerRegistrationComponent implements OnInit {
 	}
 
 	continueRegistration(pm) {
-		console.log(pm);
+
+		this.activePm = null;
+
+		this.showBankForm = false;
+		this.showPPForm = false;
+		this.showBTCForm = false;
+		
+		if (pm.id === 1) {
+			this.activePm = pm;
+			this.showBankForm = true;
+		} else if (pm.id === 2) {
+			this.activePm = pm;
+			this.showPPForm = true;
+		} else if (pm.id === 3) {
+			this.activePm = pm;
+			console.log(this.activePm);
+			this.showBTCForm = true;
+		}
+	}
+
+	onEmitBTC($event) {
+		console.log('gerwe');
+		if ($event) {
+			this.showBTCForm = false;
+		}
+
+		this.registerResponse.paymentMethods.forEach(pm => {
+			if (pm.id === 3) {
+				pm.success = true;
+			}
+		});
 	}
 }

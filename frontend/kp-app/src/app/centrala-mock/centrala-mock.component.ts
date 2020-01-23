@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { CentralaService } from '../services/centrala.service';
 import { Router } from '@angular/router';
 import { TouchSequence } from 'selenium-webdriver';
+import { SellersService } from '../services/sellers.service';
 
 @Component({
   selector: "app-centrala-mock",
@@ -11,7 +12,7 @@ import { TouchSequence } from 'selenium-webdriver';
 export class CentralaMockComponent implements OnInit {
 
 	radovi: any[] = null;
-	constructor(private centralaService: CentralaService, private router: Router) {
+	constructor(private centralaService: CentralaService, private router: Router, private sellersService: SellersService) {
 		this.radovi = centralaService.radovi;
 	}
 
@@ -21,6 +22,14 @@ export class CentralaMockComponent implements OnInit {
 		this.centralaService.activeRad = r;
 		this.router.navigate(['/sellers', r.sellerId]);
 
+	}
+
+	onRegister() {
+		this.sellersService.initRegister().subscribe(
+			(res: any) => {
+				this.router.navigate(['/reg/' + res.id]);
+			}, error => console.log(error.error)
+		)
 	}
 
 

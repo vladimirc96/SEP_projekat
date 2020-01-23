@@ -1,15 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from "@angular/core";
+import { SellersService } from 'src/app/services/sellers.service';
 
 @Component({
-  selector: 'app-paypal-registration',
-  templateUrl: './paypal-registration.component.html',
-  styleUrls: ['./paypal-registration.component.css']
+    selector: "app-paypal-registration",
+    templateUrl: "./paypal-registration.component.html",
+    styleUrls: ["./paypal-registration.component.css"]
 })
 export class PaypalRegistrationComponent implements OnInit {
+   
+	
+    @Input() sellerId: any;
+    @Input() registrationLink: any;
+    
+    constructor(private sellersService: SellersService) {
 
-  constructor() { }
+    }
 
-  ngOnInit() {
-  }
-
+    ngOnInit() {
+        console.log(this.sellerId);
+    
+    }
 }

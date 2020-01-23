@@ -24,7 +24,8 @@ public class PaymentMethodDTO {
         if (pm == null) {
             return new PaymentMethodDTO();
         } else {
-            PaymentMethodDTO pmDTO = new PaymentMethodDTO(pm.getId(), pm.getPaymentMethod().getName(),
+            PaymentMethodDTO pmDTO = new PaymentMethodDTO(pm.getPaymentMethod().getId(),
+                    pm.getPaymentMethod().getName(),
                     pm.getPaymentMethod().getRegistrationUrl(),
                     pm.isRegistrationSuccess());
             return pmDTO;

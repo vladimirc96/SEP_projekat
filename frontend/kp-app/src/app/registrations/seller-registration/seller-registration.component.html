@@ -1,4 +1,4 @@
-<div class="fw-container pt-5">
+<div class="container pt-5 pb-5">
     <div class="row">
         <div class="col">
             <h2 class="text-uppercase">Registracija prodavca</h2>
@@ -6,7 +6,7 @@
     </div>
 
     <div class="row mt-4">
-        <div class="col-md-5">
+        <div class="col-md-7">
             <h5 class="">Osnovne informacije</h5>
             <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" *ngIf="!registerResponse" >
                 <div class="form-group mt-4">
@@ -93,6 +93,8 @@
             <div class="info" *ngIf="registerResponse">
                 <div>ID: <strong>{{registerResponse.id}}</strong></div>
                 <div>Email: <strong>{{registerResponse.email}}</strong></div>
+                <div *ngIf="registerResponse.organization">Organizacija: <strong>{{registerResponse.organization}} </strong></div>
+                <div *ngIf="registerResponse.name">Ime i prezime: <strong>{{registerResponse.name}}</strong></div>
 
 
                 <div class="mt-5 mb-4">
@@ -100,12 +102,23 @@
                 </div>
 
                 <div *ngFor="let pm of registerResponse.paymentMethods" class="mb-2">
-                    <button class="btn btn-primary" (click)="continueRegistration(pm)">{{pm.name}}</button>
+                    <button *ngIf="!pm.success" class="btn btn-primary btn-pm" (click)="continueRegistration(pm)">{{pm.name}} <i class="fa fa-chevron-right" aria-hidden="true"></i></button>
+                    <button *ngIf="pm.success" class="btn btn-light btn-pm" disabled>{{ pm.name }} <i class="fa fa-check" aria-hidden="true"></i></button>
                 </div>
             </div>
         </div>
-        <div class="col-md-1"></div>
 
-        <div class="col-md-5"></div>
+        <div class="col-md-5">
+            <div *ngIf="showBankForm">
+                <app-bank-registration [sellerId]="registerResponse.id" [registrationLink]="activePm.registrationLink"></app-bank-registration>
+            </div>
+            <div *ngIf="showPPForm">
+                <app-paypal-registration [sellerId]="registerResponse.id" [registrationLink]="activePm.registrationLink"></app-paypal-registration>
+            </div>
+            <div *ngIf="showBTCForm">
+                <app-bitcoin-registration [sellerId]="registerResponse.id" [registrationLink]="activePm.registrationLink"  (output)="onEmitBTC($event)"></app-bitcoin-registration>
+            </div>
+            
+        </div>
     </div>
 </div>
