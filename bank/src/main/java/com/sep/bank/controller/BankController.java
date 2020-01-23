@@ -1,25 +1,14 @@
 package com.sep.bank.controller;
 
-import com.sep.bank.crypto.Crypto;
-import com.sep.bank.crypto.KeyStoreUtil;
 import com.sep.bank.dto.*;
 import com.sep.bank.model.BankAccount;
-import com.sep.bank.model.Customer;
-import com.sep.bank.model.PaymentStatus;
 import com.sep.bank.model.Transaction;
 import com.sep.bank.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.jdbc.support.CustomSQLExceptionTranslatorRegistrar;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import javax.crypto.spec.SecretKeySpec;
-import java.security.Key;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @CrossOrigin
@@ -33,19 +22,11 @@ public class BankController {
     private RestTemplate restTemplate;
 
     @Autowired
-    private BankService bankService;
-
-    @Autowired
     private BankAccountService bankAccountService;
-
-    @Autowired
-    private CustomerService customerService;
 
     @Autowired
     private TransactionService transactionService;
 
-    @Autowired
-    private CryptoService cryptoService;
 
     // proverava zahtev za placanje
     @RequestMapping(value = "/check-payment-request", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
@@ -70,7 +51,7 @@ public class BankController {
     }
 
     // validira podatke u ulozi issuer banke (banke kupca) i proverava da li postoji dovoljno sredstava
-    @RequestMapping(value = "/issuer/payment/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/issuer/payment/{id}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
     public ResponseEntity<IssuerResponseDTO> issuerValidate(@RequestBody BankAccountDTO bankAccountDTO, @PathVariable("id") String id){
         Transaction transaction = transactionService.findOneById(Long.parseLong(id));
         BankAccount bankAccount = bankAccountService.findOneByPan(bankAccountDTO.getPan());
@@ -79,7 +60,7 @@ public class BankController {
 
     // izvrsava placanje
     // promeniti DTO objekat koji prima - potreban prenos ACQUIRER_TIMESTAMP podatka
-    @RequestMapping(value = "/confirm-payment/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/confirm-payment/{id}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> payment(@RequestBody BankAccountDTO bankAccountDTO, @PathVariable("id") String id){
         Transaction transaction = transactionService.findOneById(Long.parseLong(id));
         BankAccount bankAccount = bankAccountService.findOneByPan(bankAccountDTO.getPan());
@@ -98,15 +79,15 @@ public class BankController {
         return new ResponseEntity<>(paymentResponseDTO, HttpStatus.OK);
     }
 
-    @RequestMapping(value  = "/transaction/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value  = "/transaction/{id}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
     private ResponseEntity<String> updateTransaction(@RequestBody PaymentStatusDTO paymentStatusDTO, @PathVariable("id") String id){
         Transaction transaction = transactionService.findOneById(Long.parseLong(id));
         transaction.setPaymentStatus(paymentStatusDTO.getPaymentStatus());
         transaction = transactionService.save(transaction);
         System.out.println(transaction);
-        return new ResponseEntity<>("Updated", HttpStatus.OK);
+        requestUpdateTransactionPcc(transaction);
+        return new ResponseEntity<>("Transakcija azurirana.", HttpStatus.OK);
     }
-
 
     private void requestUpdateTransactionBankService(Transaction transaction){
         HttpEntity<PaymentStatusDTO> entity = new HttpEntity<PaymentStatusDTO>(new PaymentStatusDTO(transaction.getPaymentStatus()));
