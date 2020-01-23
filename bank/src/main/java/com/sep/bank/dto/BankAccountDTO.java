@@ -50,4 +50,14 @@ public class BankAccountDTO {
     public void setExpirationDate(Date expirationDate) {
         this.expirationDate = expirationDate;
     }
+
+    @Override
+    public String toString() {
+        return "BankAccountDTO{" +
+                "pan='" + pan + '\'' +
+                ", serviceCode='" + serviceCode + '\'' +
+                ", cardholderName='" + cardholderName + '\'' +
+                ", expirationDate=" + expirationDate +
+                '}';
+    }
 }
