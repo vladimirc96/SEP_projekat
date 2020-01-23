@@ -1,5 +1,7 @@
 package com.sep.bankservice.model;
 
+import com.sep.bankservice.dto.CustomerDTO;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -26,11 +28,17 @@ public class Customer {
     public Customer() {
     }
 
-    public Customer(String merchantId, String merchantPassword, String name) {
+    public Customer(Long id, String merchantId, String merchantPassword, String name) {
+        this.id = id;
         this.merchantId = merchantId;
         this.merchantPassword = merchantPassword;
         this.name = name;
     }
+
+    public Customer(CustomerDTO customerDTO){
+        this(customerDTO.getId(),customerDTO.getMerchantId(),customerDTO.getMerchantPassword(), customerDTO.getName());
+    }
+
 
     public Long getId() {
         return id;

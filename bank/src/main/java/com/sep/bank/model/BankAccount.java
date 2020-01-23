@@ -118,4 +118,19 @@ public class BankAccount {
     public void setBank(Bank bank) {
         this.bank = bank;
     }
+
+    @Override
+    public String toString() {
+        return "BankAccount{" +
+                "id=" + id +
+                ", pan='" + pan + '\'' +
+                ", cardholderName='" + cardholderName + '\'' +
+                ", expirationDate=" + expirationDate +
+                ", serviceCode='" + serviceCode + '\'' +
+                ", balance=" + balance +
+                ", reserved=" + reserved +
+                ", customer=" + customer +
+                ", bank=" + bank +
+                '}';
+    }
 }

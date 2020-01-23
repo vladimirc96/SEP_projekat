@@ -3,3 +3,22 @@
 2020-01-23 12:41:46,409 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
 2020-01-23 12:41:48,809 DEBUG org.springframework.web.filter.GenericFilterBean [main] Filter 'CORS Filter' configured for use
 2020-01-23 12:41:51,992 INFO org.springframework.boot.StartupInfoLogger [main] Started PaypalServiceApplication in 6.164 seconds (JVM running for 7.685)
+2020-01-23 18:27:19,349 INFO org.springframework.boot.StartupInfoLogger [main] Starting PaypalServiceApplication on DESKTOP-7EFKHD1 with PID 14052 (C:\GITHUB\SEP_PROJEKAT\koncentrator_placanja\paypal-service\target\classes started by Vladimir in C:\GITHUB\SEP_PROJEKAT)
+2020-01-23 18:27:19,353 DEBUG org.springframework.boot.StartupInfoLogger [main] Running with Spring Boot v2.1.5.RELEASE, Spring v5.1.7.RELEASE
+2020-01-23 18:27:19,354 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2020-01-23 18:27:23,877 DEBUG org.springframework.web.filter.GenericFilterBean [main] Filter 'CORS Filter' configured for use
+2020-01-23 18:33:10,551 INFO org.springframework.boot.StartupInfoLogger [main] Starting PaypalServiceApplication on DESKTOP-7EFKHD1 with PID 10200 (C:\GITHUB\SEP_PROJEKAT\koncentrator_placanja\paypal-service\target\classes started by Vladimir in C:\GITHUB\SEP_PROJEKAT)
+2020-01-23 18:33:10,562 DEBUG org.springframework.boot.StartupInfoLogger [main] Running with Spring Boot v2.1.5.RELEASE, Spring v5.1.7.RELEASE
+2020-01-23 18:33:10,563 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2020-01-23 18:33:14,522 DEBUG org.springframework.web.filter.GenericFilterBean [main] Filter 'CORS Filter' configured for use
+2020-01-23 18:33:19,392 INFO org.springframework.boot.StartupInfoLogger [main] Started PaypalServiceApplication in 9.875 seconds (JVM running for 12.053)
+2020-01-23 18:55:28,612 INFO org.springframework.boot.StartupInfoLogger [main] Starting PaypalServiceApplication on DESKTOP-7EFKHD1 with PID 12892 (C:\GITHUB\SEP_PROJEKAT\koncentrator_placanja\paypal-service\target\classes started by Vladimir in C:\GITHUB\SEP_PROJEKAT)
+2020-01-23 18:55:28,618 DEBUG org.springframework.boot.StartupInfoLogger [main] Running with Spring Boot v2.1.5.RELEASE, Spring v5.1.7.RELEASE
+2020-01-23 18:55:28,619 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2020-01-23 18:55:35,021 DEBUG org.springframework.web.filter.GenericFilterBean [main] Filter 'CORS Filter' configured for use
+2020-01-23 18:55:40,402 INFO org.springframework.boot.StartupInfoLogger [main] Started PaypalServiceApplication in 12.989 seconds (JVM running for 15.332)
+2020-01-23 18:57:54,099 INFO org.springframework.boot.StartupInfoLogger [main] Starting PaypalServiceApplication on DESKTOP-7EFKHD1 with PID 13796 (C:\GITHUB\SEP_PROJEKAT\koncentrator_placanja\paypal-service\target\classes started by Vladimir in C:\GITHUB\SEP_PROJEKAT)
+2020-01-23 18:57:54,105 DEBUG org.springframework.boot.StartupInfoLogger [main] Running with Spring Boot v2.1.5.RELEASE, Spring v5.1.7.RELEASE
+2020-01-23 18:57:54,106 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2020-01-23 18:57:59,010 DEBUG org.springframework.web.filter.GenericFilterBean [main] Filter 'CORS Filter' configured for use
+2020-01-23 18:58:07,345 INFO org.springframework.boot.StartupInfoLogger [main] Started PaypalServiceApplication in 14.217 seconds (JVM running for 16.338)
