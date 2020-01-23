@@ -1,10 +1,7 @@
-package com.sep.bitcoinservice.client;
+package com.sep.bankservice.client;
 
-import com.netflix.ribbon.proxy.annotation.Http;
-import com.sep.bitcoinservice.dto.ApproveDTO;
-import com.sep.bitcoinservice.dto.CGOrderFullDTO;
-import com.sep.bitcoinservice.dto.SellerDTO;
-import com.sep.bitcoinservice.model.Seller;
+import com.sep.bankservice.dto.ApproveDTO;
+import com.sep.bankservice.dto.CustomerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
@@ -18,14 +15,14 @@ import java.nio.file.AccessDeniedException;
 public class RegistrationClient {
 
     private final String ENDPOINT_URL = "https://localhost:8342/sellers/register/approve";
-    private final long paymentMethodId = 3;
+    private final long paymentMethodId = 1;
 
     @Autowired
     RestTemplate restTemplate;
 
-    public void approveRegistration(SellerDTO sDTO) throws AccessDeniedException {
+    public void approveRegistration(CustomerDTO customerDTO) throws AccessDeniedException {
 
-        ApproveDTO approveDTO = new ApproveDTO(sDTO.getId(), sDTO.getPassword(), this.paymentMethodId);
+        ApproveDTO approveDTO = new ApproveDTO(customerDTO.getId(), customerDTO.getPassword(), this.paymentMethodId);
 
         try {
             ResponseEntity response = restTemplate.postForEntity(this.ENDPOINT_URL, new HttpEntity<>(approveDTO),

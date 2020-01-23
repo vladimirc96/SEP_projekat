@@ -1,5 +1,7 @@
 package com.sep.bankservice.dto;
 
+import com.sep.bankservice.model.Customer;
+
 import javax.persistence.Column;
 
 public class CustomerDTO {
@@ -20,6 +22,11 @@ public class CustomerDTO {
         this.merchantPassword = merchantPassword;
         this.name = name;
     }
+
+    public static CustomerDTO formDTO(Customer customer){
+        return new CustomerDTO(customer.getId(), "", "", "", customer.getName());
+    }
+
 
     public String getPassword() {
         return password;
