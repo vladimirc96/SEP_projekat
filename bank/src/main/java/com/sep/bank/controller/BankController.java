@@ -10,10 +10,7 @@ import com.sep.bank.model.Transaction;
 import com.sep.bank.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.jdbc.support.CustomSQLExceptionTranslatorRegistrar;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +20,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @CrossOrigin
 @RestController
@@ -52,7 +50,7 @@ public class BankController {
     private CryptoService cryptoService;
 
     // proverava zahtev za placanje
-    @RequestMapping(value = "/check-payment-request", method = RequestMethod.PUT, consumes = "application/json")
+    @RequestMapping(value = "/check-payment-request", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> check(@RequestBody PaymentRequestDTO paymentRequest){
         Customer customer = customerService.findByMerchantId(paymentRequest.getMerchantId());
         Transaction transaction = new Transaction(paymentRequest.getAmount(), paymentRequest.getMerchantTimestamp(), customer);
@@ -72,24 +70,18 @@ public class BankController {
     }
 
     // validira podatke za placanje unete na sajtu banke i proverava da li postoji dovoljno sredstava
-    @RequestMapping(value = "/acquirer/validate/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/acquirer/payment/{id}", method = RequestMethod.PUT)
     public ResponseEntity<?> acquirerValidate(@RequestBody BankAccountDTO bankAccountDTO, @PathVariable("id") String id){
         Transaction transaction = transactionService.findOneById(Long.parseLong(id));
-        Customer acquirer = transaction.getCustomer();
         BankAccount bankAccount = bankAccountService.findOneByPan(bankAccountDTO.getPan());
+        Customer acquirer = transaction.getCustomer();
         Customer issuer = bankAccount.getCustomer();
-
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
-        String dtoDate = dateFormat.format(bankAccount.getExpirationDate());
-        String accDate = dateFormat.format(bankAccountDTO.getExpirationDate());
-        System.out.println("DTO DATE " + dtoDate);
-        System.out.println("ACC DATE" + accDate);
-
         // ako nisu iste banke, prosledi zahtev PCC-u
         if(issuer.getBankAccount().getBank().getId() != acquirer.getBankAccount().getBank().getId()){
-            PccRequestDTO pccRequestDTO = new PccRequestDTO(transaction.getId(), transaction.getTimestamp(), transaction.getAmount(),
+            PccRequestDTO pccRequestDTO = new PccRequestDTO(transaction.getId(), new Date(), transaction.getAmount(),
                     transaction.getPaymentStatus(), bankAccountDTO);
-            HttpEntity<PccRequestDTO> httpEntity = new HttpEntity<>(pccRequestDTO);
+
+            HttpEntity<PccRequestDTO> httpEntity = new HttpEntity<PccRequestDTO>(pccRequestDTO);
             ResponseEntity<IssuerResponseDTO> responseEntity = restTemplate.postForEntity("https://localhost:8452/pcc/forward-payment", httpEntity, IssuerResponseDTO.class);
             return responseEntity;
         }
@@ -97,23 +89,26 @@ public class BankController {
         try {
             bankAccountService.validation(bankAccountDTO, bankAccount, transaction);
         } catch (Exception e) {
+            e.printStackTrace();
             requestUpdateTransactionBankService(transaction);
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new AcquirerResponseDTO(transaction.getPaymentStatus(), transaction.getId(), new Date(), e.getMessage()), HttpStatus.BAD_REQUEST);
         }
         try {
             bankAccountService.reserveFunds(bankAccount,transaction);
         } catch (Exception e) {
+            e.printStackTrace();
             requestUpdateTransactionBankService(transaction);
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new AcquirerResponseDTO(transaction.getPaymentStatus(), transaction.getId(), new Date(), e.getMessage()), HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+        return new ResponseEntity<>(new AcquirerResponseDTO(transaction.getPaymentStatus(), transaction.getId(), new Date(), "Success"), HttpStatus.OK);
     }
 
     // validira podatke u ulozi issuer banke (banke kupca) i proverava da li postoji dovoljno sredstava
-    @RequestMapping(value = "/issuer/validate/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/issuer/payment/{id}", method = RequestMethod.PUT)
     public ResponseEntity<IssuerResponseDTO> issuerValidate(@RequestBody BankAccountDTO bankAccountDTO, @PathVariable("id") String id){
         Transaction transaction = transactionService.findOneById(Long.parseLong(id));
         BankAccount bankAccount = bankAccountService.findOneByPan(bankAccountDTO.getPan());
+
         try {
             bankAccountService.validation(bankAccountDTO, bankAccount, transaction);
         } catch (Exception e) {
@@ -121,8 +116,9 @@ public class BankController {
             requestUpdateTransactionPcc(transaction);
             requestUpdateTransactionBankService(transaction);
             return new ResponseEntity<>(new IssuerResponseDTO(transaction.getPaymentStatus(), transaction.getId(),
-                    transaction.getTimestamp(), transaction.getId(), transaction.getTimestamp()), HttpStatus.BAD_REQUEST);
+                    transaction.getTimestamp(), transaction.getId(), new Date(), e.getMessage()), HttpStatus.BAD_REQUEST);
         }
+
         try {
             bankAccountService.reserveFunds(bankAccount,transaction);
         } catch (Exception e) {
@@ -130,16 +126,17 @@ public class BankController {
             requestUpdateTransactionPcc(transaction);
             requestUpdateTransactionBankService(transaction);
             return new ResponseEntity<>(new IssuerResponseDTO(transaction.getPaymentStatus(), transaction.getId(),
-                    transaction.getTimestamp(), transaction.getId(), transaction.getTimestamp()), HttpStatus.BAD_REQUEST);
+                    transaction.getTimestamp(), transaction.getId(), new Date(), e.getMessage()), HttpStatus.BAD_REQUEST);
         }
 
         return new ResponseEntity<>(new IssuerResponseDTO(transaction.getPaymentStatus(), transaction.getId(),
-                transaction.getTimestamp(), transaction.getId(), transaction.getTimestamp()), HttpStatus.OK);
+                transaction.getTimestamp(), transaction.getId(), new Date(), "Success"), HttpStatus.OK);
     }
 
     // izvrsava placanje
-    @RequestMapping(value = "/payment/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<PaymentResponseDTO> payment(@RequestBody BankAccountDTO bankAccountDTO, @PathVariable("id") String id){
+    // promeniti DTO objekat koji prima - potreban prenos ACQUIRER_TIMESTAMP podatka
+    @RequestMapping(value = "/confirm-payment/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<?> payment(@RequestBody BankAccountDTO bankAccountDTO, @PathVariable("id") String id){
         Transaction transaction = transactionService.findOneById(Long.parseLong(id));
         BankAccount bankAccount = bankAccountService.findOneByPan(bankAccountDTO.getPan());
 

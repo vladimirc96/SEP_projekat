@@ -84,8 +84,8 @@ public class TransactionService {
                         transactionTemp.setPaymentStatus(PaymentStatus.FAILURE);
                         transactionTemp = transactionRepo.save(transactionTemp);
                         // posalji svima da azuriraju stanje transakcije
-                        requestUpdateTransactionBank(transactionTemp);
-                        requestUpdateTransactionPcc(transactionTemp);
+                        //requestUpdateTransactionBank(transactionTemp);
+                        //requestUpdateTransactionPcc(transactionTemp);
                         timer.cancel();
                     }
                 }

@@ -22,9 +22,8 @@ public class TransactionService {
 
     public Transaction executePayment(Transaction transaction, BankAccount bankAccount){
         // skinuti sredstva sa racuna
-        bankAccount.setBalance(bankAccount.getBalance()-bankAccount.getReserved());
-        bankAccount = bankAccountService.save(bankAccount);
-
+        //bankAccount.setBalance(bankAccount.getBalance()-bankAccount.getReserved());
+        //bankAccount = bankAccountService.save(bankAccount);
         // obraditi transakciju i proslediti podatke MERCHANT_ORDER_ID, ACQUIRER_ORDER_ID, ACQUIRER_TIMESTAMP i PAYMENT_ID
         // ne salju se za sada svi ti podaci posto nema Issuer banke
         transaction.setPaymentStatus(PaymentStatus.SUCCESS);
