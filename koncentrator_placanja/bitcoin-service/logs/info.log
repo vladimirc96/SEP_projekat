@@ -4,3 +4,27 @@
 2020-01-20 20:02:31,873 INFO com.sep.bitcoinservice.service.Logging [Timer-0] Transaction (id: 1) status changed from 'pending' to 'invalid'
 2020-01-20 20:08:18,679 INFO com.sep.bitcoinservice.service.Logging [https-jsse-nio-8444-exec-4] Transaction saved: 2
 2020-01-20 20:14:37,063 INFO com.sep.bitcoinservice.service.Logging [https-jsse-nio-8444-exec-1] Transaction (id: 2) status changed from 'pending' to 'paid'
+2020-01-23 11:55:55,974 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2020-01-23 11:56:04,407 INFO org.springframework.boot.StartupInfoLogger [main] Started BitcoinServiceApplication in 10.427 seconds (JVM running for 12.1)
+2020-01-23 13:24:17,795 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2020-01-23 13:25:06,333 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2020-01-23 13:25:13,986 INFO org.springframework.boot.StartupInfoLogger [main] Started BitcoinServiceApplication in 9.564 seconds (JVM running for 11.046)
+2020-01-23 13:54:02,011 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2020-01-23 13:54:12,705 INFO org.springframework.boot.StartupInfoLogger [main] Started BitcoinServiceApplication in 13.05 seconds (JVM running for 14.788)
+2020-01-23 14:00:15,734 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2020-01-23 14:00:19,697 INFO org.springframework.boot.StartupInfoLogger [main] Started BitcoinServiceApplication in 5.139 seconds (JVM running for 5.895)
+2020-01-23 14:06:47,593 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2020-01-23 14:06:51,590 INFO org.springframework.boot.StartupInfoLogger [main] Started BitcoinServiceApplication in 5.065 seconds (JVM running for 5.774)
+2020-01-23 14:08:59,274 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2020-01-23 14:09:04,661 INFO org.springframework.boot.StartupInfoLogger [main] Started BitcoinServiceApplication in 6.51 seconds (JVM running for 7.206)
+2020-01-23 14:13:33,826 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2020-01-23 14:13:39,741 INFO org.springframework.boot.StartupInfoLogger [main] Started BitcoinServiceApplication in 6.998 seconds (JVM running for 7.729)
+2020-01-23 14:20:34,849 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2020-01-23 14:20:39,282 INFO org.springframework.boot.StartupInfoLogger [main] Started BitcoinServiceApplication in 5.523 seconds (JVM running for 6.257)
+2020-01-23 15:55:43,140 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2020-01-23 15:55:53,431 INFO org.springframework.boot.StartupInfoLogger [main] Started BitcoinServiceApplication in 12.404 seconds (JVM running for 14.024)
+2020-01-23 17:19:05,312 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2020-01-23 17:19:13,558 INFO org.springframework.boot.StartupInfoLogger [main] Started BitcoinServiceApplication in 10.607 seconds (JVM running for 12.48)
+2020-01-23 18:20:59,915 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2020-01-23 18:21:08,410 INFO org.springframework.boot.StartupInfoLogger [main] Started BitcoinServiceApplication in 10.911 seconds (JVM running for 12.642)
+2020-01-23 19:18:29,892 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default

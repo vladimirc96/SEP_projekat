@@ -59,7 +59,7 @@ public class PccController {
         transaction.setPaymentStatus(paymentStatusDTO.getPaymentStatus());
         transaction = transactionService.save(transaction);
         System.out.println(transaction);
-        return new ResponseEntity<>("Updated", HttpStatus.OK);
+        return new ResponseEntity<>("Transakcija azurirana.", HttpStatus.OK);
     }
 
     private boolean isValid(PccRequestDTO pccRequestDTO){
