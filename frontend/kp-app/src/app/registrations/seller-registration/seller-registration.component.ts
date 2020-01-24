@@ -154,4 +154,28 @@ export class SellerRegistrationComponent implements OnInit {
 			}
 		});
 	}
+
+	onEmitBank($event){
+		if ($event) {
+			this.showBTCForm = false;
+		}
+
+		this.registerResponse.paymentMethods.forEach(pm => {
+			if (pm.id === 1) {
+				pm.success = true;
+			}
+		});
+	}
+
+	onEmitPayPal($event){
+		if ($event) {
+			this.showBTCForm = false;
+		}
+
+		this.registerResponse.paymentMethods.forEach(pm => {
+			if (pm.id === 1) {
+				pm.success = true;
+			}
+		});
+	}
 }

@@ -110,10 +110,10 @@
 
         <div class="col-md-5">
             <div *ngIf="showBankForm">
-                <app-bank-registration [sellerId]="registerResponse.id" [registrationLink]="activePm.registrationLink"></app-bank-registration>
+                <app-bank-registration [sellerId]="registerResponse.id" [registrationLink]="activePm.registrationLink" (output)="onEmitBank($event)"></app-bank-registration>
             </div>
             <div *ngIf="showPPForm">
-                <app-paypal-registration [sellerId]="registerResponse.id" [registrationLink]="activePm.registrationLink"></app-paypal-registration>
+                <app-paypal-registration [sellerId]="registerResponse.id" [registrationLink]="activePm.registrationLink" (output)="onEmitPayPal($event)"></app-paypal-registration>
             </div>
             <div *ngIf="showBTCForm">
                 <app-bitcoin-registration [sellerId]="registerResponse.id" [registrationLink]="activePm.registrationLink"  (output)="onEmitBTC($event)"></app-bitcoin-registration>

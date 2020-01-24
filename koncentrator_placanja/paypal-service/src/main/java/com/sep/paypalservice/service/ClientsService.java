@@ -26,7 +26,7 @@ public class ClientsService {
     public PPClientDTO registerSeller(PPClientDTO ppClientDTO) throws AccessDeniedException {
         PPClient ppClient = new PPClient();
         ppClient.setId(ppClientDTO.getId());
-        ppClient.setClientId(ppClientDTO.getClientId());
+        ppClient.setClientId(cryptoService.encrypt(ppClientDTO.getClientId()));
         ppClient.setClientSecret(cryptoService.encrypt(ppClientDTO.getClientSecret()));
 
         ppClient = clientsRepo.save(ppClient);
