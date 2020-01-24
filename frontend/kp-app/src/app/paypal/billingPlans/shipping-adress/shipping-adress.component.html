@@ -1,0 +1,37 @@
+<div class="container" [ngClass]="status ? 'wait' : 'point'">
+    <div class="forma">
+        <div class="centar">
+            <h4>Adresa dostave</h4>
+        </div>
+        <form [formGroup]="myForm" novalidate (ngSubmit)="onSubmitAdress(f)" #f="ngForm">
+            <div class="form-group polje">
+                <label for="street">Ulica</label>
+                <input required formControlName="street" type="text" class="form-control inp" name="street" id="street">
+            </div>
+            <div class="row">
+                <div class="form-group polje col-md-6">
+                    <label for="city">Grad</label>
+                    <input formControlName="city" type="text" class="form-control inp" name="city" id="city">
+                </div>
+                <div class="form-group polje col-md-6">
+                    <label for="state">Pokrajina</label>
+                    <input formControlName="state" type="text" class="form-control inp" name="state" id="state">
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group polje col-md-6">
+                    <label for="postalCode">Poštanski broj</label>
+                    <input formControlName="postalCode" type="text" class="form-control inp" name="postalCode" id="postalCode">
+                </div>
+                <div class="form-group polje col-md-6">
+                    <label for="countryCode">Sifra države</label>
+                    <input formControlName="countryCode" type="text" class="form-control inp" name="countryCode" id="countryCode">
+                </div>
+            </div>
+
+            <div class="form-group centar">
+                <input type="submit" value="Subscribe now" [ngClass]="status ? 'wait' : 'point'" class="btn btn-primary" [disabled]="!myForm.valid">
+            </div>
+        </form>
+    </div>
+</div>

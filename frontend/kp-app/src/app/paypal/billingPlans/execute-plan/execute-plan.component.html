@@ -1,0 +1,12 @@
+<div class="container">
+    <div class="row" *ngIf="!showInvalid">
+        <div class="cekaj">
+            <img src="/assets/loading.gif">
+            <p class="tekst">Finishing your subscription plan</p>
+        </div>
+    </div>
+    <div class="row" *ngIf="showInvalid">
+        <p class="tekst">Unfortunatelly, your subscription got suspended after 10 minutes of not being completed.</p>
+        <button class="btn btn-primary" (click)="goHome()">Go to home</button>
+    </div>
+</div>

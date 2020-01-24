@@ -28,6 +28,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BankPaymentSuccessComponent } from './bank/bank-payment-success/bank-payment-success.component';
 import { BankPaymentFailureComponent } from './bank/bank-payment-failure/bank-payment-failure.component';
 import { BankPaymentFormComponent } from './bank/bank-payment-form/bank-payment-form.component';
+import { CreatePlanComponent } from './paypal/billingPlans/create-plan/create-plan.component';
+import { ShippingAdressComponent } from './paypal/billingPlans/shipping-adress/shipping-adress.component';
+import { ExecutePlanComponent } from './paypal/billingPlans/execute-plan/execute-plan.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -47,6 +50,9 @@ import { BankPaymentFormComponent } from './bank/bank-payment-form/bank-payment-
     BankPaymentSuccessComponent,
     BankPaymentFailureComponent,
     BankPaymentFormComponent,
+    CreatePlanComponent,
+    ShippingAdressComponent,
+    ExecutePlanComponent,
   ],
   imports: [
     BrowserModule,

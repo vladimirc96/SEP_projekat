@@ -4,10 +4,11 @@
         {{ rad.title }}<br>
         {{ rad.price }} USD
     </p>
-
-    <label for="description">Opis transakcije (opciono)</label>
+    <p class="error" *ngIf="opis">Opis transakcije je obavezan.</p>
+    <label for="description">Opis transakcije</label>
     <input type="text" id="description" [(ngModel)] = 'desc' class="form-control" name="description" placeholder="Opis...">
 
-    <button class="btn btn-primary polja" (click)="procceed()" [ngClass]="status ? 'wait' : 'point'"><i class="fa fa-paypal"></i> Continue to checkout</button>
+    <button class="btn btn-primary polja" (click)="onProcceed()" [ngClass]="status ? 'wait' : 'point'"><i class="fa fa-paypal"></i> Continue to checkout</button>
+    <button class="btn btn-primary polja2" routerLink="/paypal/plan/subscribe"  [ngClass]="status ? 'wait' : 'point'"><i class="fa fa-paypal"></i> Subscribe</button>
 
 </div>

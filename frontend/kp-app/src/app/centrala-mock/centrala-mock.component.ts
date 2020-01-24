@@ -23,5 +23,10 @@ export class CentralaMockComponent implements OnInit {
 
 	}
 
+	onPlan(r) {
+		this.centralaService.activeRad = r;
+		this.router.navigate(['/paypal/plan']);
+	}
+
 
 }

@@ -6,15 +6,28 @@
   cursor: wait;
 }
 
+.container {
+  width: 40%;
+}
+
 .polja {
   margin-top: 15px;
 }
 
+.polja2 {
+  margin-top: 15px;
+  float: right;
+}
+
 input {
-  width: 55%;
+  width: 100%;
 }
 
 .detalji {
   margin-top: 20px;
   margin-bottom: 20px;
+}
+
+.error {
+  color: red;
 }

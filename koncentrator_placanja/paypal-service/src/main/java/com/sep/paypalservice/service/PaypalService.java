@@ -1,9 +1,14 @@
 package com.sep.paypalservice.service;
 
 import com.paypal.api.payments.*;
+import com.paypal.api.payments.Currency;
 import com.paypal.base.rest.APIContext;
+import com.paypal.base.rest.PayPalModel;
 import com.paypal.base.rest.PayPalRESTException;
 import com.sep.paypalservice.dto.OrderDTO;
+import com.sep.paypalservice.dto.PlanDTO;
+import com.sep.paypalservice.dto.ShippingDTO;
+import com.sep.paypalservice.model.BillingPlan;
 import com.sep.paypalservice.model.PPClient;
 import com.sep.paypalservice.model.PPTransaction;
 import com.sep.paypalservice.repository.ClientsRepository;
@@ -11,10 +16,13 @@ import com.sep.paypalservice.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.MalformedURLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -29,6 +37,9 @@ public class PaypalService {
 
     @Autowired
     private TransactionRepository transacRepo;
+
+    @Autowired
+    private BillingPlanService billingPlanService;
 
     private Logging logger = new Logging(this);
 
@@ -124,6 +135,66 @@ public class PaypalService {
         return "valid";
     }
 
+    public String plan(PlanDTO dto) {
+        logger.logInfo("PP_PLAN");
+        try {
+            Plan plan = createPlan(dto);
+            BillingPlan pln = new BillingPlan(plan.getId(), plan.getName(), "ACTIVE", plan.getCreateTime(), plan.getUpdateTime());
+            billingPlanService.save(pln);
+            return "PlanCreated";
+        } catch (PayPalRESTException e) {
+            logger.logError("PP_PLAN_ERR: " + e.getMessage());
+            System.out.println(e.getMessage());
+        }
+
+        return "PlanNotCreated";
+    }
+
+    public String agreement(ShippingDTO dto) {
+        logger.logInfo("PP_AGREEMENT");
+        //TODO: pribaviti iz baze(relacije) id plana
+        BillingPlan bp = billingPlanService.findOneById((long) 1);
+        try {
+
+            Agreement agreement = createAgreement(dto, bp.getPlanId());
+            for (Links links : agreement.getLinks()) {
+                if ("approval_url".equals(links.getRel())) {
+                    return links.getHref();
+                }
+            }
+        } catch (PayPalRESTException e) {
+            logger.logError("PP_AGREEMENT_ERR: " + e.getMessage());
+            System.out.println(e.getMessage());
+        }  catch (MalformedURLException e) {
+            logger.logError("PP_AGREEMENT_ERR: " + e.getMessage());
+            System.out.println(e.getMessage());
+        } catch (UnsupportedEncodingException e) {
+            logger.logError("PP_AGREEMENT_ERR: " + e.getMessage());
+            System.out.println(e.getMessage());
+        }
+
+        return "https://localhost:4200/";
+    }
+
+    public String executePlan(String token) {
+
+        Agreement agreement =  new Agreement();
+        agreement.setToken(token);
+        try {
+            logger.logInfo("PP_EXEPLAN");
+            //TODO: OVDE TREBA IZVUCI IZ BAZE(IZ RELACIJE) KOJI JE ID SELLERA DA BI SE NAPRAVIO API CONTEXT
+            APIContext apiContext = getContextAndMerchant((long) 1);
+            Agreement activeAgreement = agreement.execute(apiContext, agreement.getToken());
+            System.out.println("Agreement created with ID " + activeAgreement.getId());
+            //TODO: Zabeleziti u bazi agreement
+            return "success";
+        } catch (PayPalRESTException e) {
+            logger.logError("PP_EXEPLAN_ERR: " + e.getMessage());
+            System.out.println(e.getMessage());
+        }
+        return "error";
+    }
+
     private APIContext getContextAndMerchant(Long id) {
         PPClient cl = repo.findOneById(id);
         String secret = cryptoService.decrypt(cl.getClientSecret());
@@ -146,7 +217,6 @@ public class PaypalService {
 
         Payer payer = new Payer();
         payer.setPaymentMethod("paypal");
-
         Payment payment = new Payment();
         payment.setIntent("sale");
         payment.setPayer(payer);
@@ -159,6 +229,87 @@ public class PaypalService {
         APIContext apiContext = getContextAndMerchant(id);
 
         return payment.create(apiContext);
+    }
+
+    public Plan createPlan(PlanDTO dto) throws PayPalRESTException {
+        Plan plan = new Plan();
+        plan.setType("fixed");
+        plan.setName(dto.getName());
+        plan.setDescription(dto.getDescription());
+
+        PaymentDefinition paymentDefinition = new PaymentDefinition();
+        paymentDefinition.setName("Regular Payments");
+        paymentDefinition.setType("REGULAR");
+        paymentDefinition.setFrequency(dto.getFrequency());
+        paymentDefinition.setFrequencyInterval(dto.getFreqInterval());
+        paymentDefinition.setCycles(dto.getCycles());
+        paymentDefinition.setAmount(new Currency(dto.getCurrency(), dto.getAmount()));
+
+//        ChargeModels chargeModels = new ChargeModels(); //ZA SHIPPING ITD
+
+        MerchantPreferences merchantPreferences = new MerchantPreferences();
+        merchantPreferences.setReturnUrl("https://localhost:4200/paypal/plan/execute");
+        merchantPreferences.setCancelUrl("https://localhost:4200/centrala");
+        merchantPreferences.setAutoBillAmount("yes");
+        merchantPreferences.setInitialFailAmountAction("CONTINUE");
+        merchantPreferences.setMaxFailAttempts("1");
+        merchantPreferences.setSetupFee(new Currency(dto.getCurrency(), dto.getAmountStart()));
+        ArrayList<PaymentDefinition> pd = new ArrayList<>();
+        pd.add(paymentDefinition);
+        plan.setPaymentDefinitions(pd);
+        plan.setMerchantPreferences(merchantPreferences);
+
+        APIContext apiContext = getContextAndMerchant(dto.getMerchantId());
+
+        Plan createdPlan = plan.create(apiContext);
+
+        //Changing plan from created to active
+        List<Patch> patchRequestList = new ArrayList<>();
+        Map<String, String> value = new HashMap<>();
+        value.put("state", "ACTIVE");
+
+        Patch patch = new Patch();
+        patch.setOp("replace");
+        patch.setValue(value);
+        patch.setPath("/");
+        patchRequestList.add(patch);
+
+        createdPlan.update(apiContext, patchRequestList);
+
+        return createdPlan;
+    }
+
+    public Agreement createAgreement(ShippingDTO dto, String planId) throws UnsupportedEncodingException, PayPalRESTException, MalformedURLException {
+
+        Agreement agreement = new Agreement();
+        agreement.setName("Base Agreement");
+        agreement.setDescription("Naucna centrala pretplata na casopis/rad");
+        Instant i = java.time.Clock.systemUTC().instant();
+        Instant j = i.plusSeconds(300);
+        String dandt = (j.toString());
+        String[] split = dandt.split("\\.");
+        String vreme = split[0] + "Z";
+        agreement.setStartDate(vreme);
+
+        Plan plan = new Plan();
+        plan.setId(planId);
+        agreement.setPlan(plan);
+
+        Payer payer = new Payer();
+        payer.setPaymentMethod("paypal");
+        agreement.setPayer(payer);
+
+        ShippingAddress shipping = new ShippingAddress();
+        shipping.setLine1(dto.getStreet());
+        shipping.setCity(dto.getCity());
+        shipping.setState(dto.getState());
+        shipping.setPostalCode(dto.getPostalCode());
+        shipping.setCountryCode(dto.getCountryCode());
+        agreement.setShippingAddress(shipping);
+
+        APIContext apiContext = getContextAndMerchant(dto.getId());
+
+        return agreement.create(apiContext);
     }
 
     public Payment executePayment(String paymentId, String payerId) throws PayPalRESTException {

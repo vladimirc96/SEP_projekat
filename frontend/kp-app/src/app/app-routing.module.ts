@@ -16,6 +16,9 @@ import { BankPaymentComponent } from './bank/bank-payment/bank-payment.component
 import { BankPaymentSuccessComponent } from './bank/bank-payment-success/bank-payment-success.component';
 import { BankPaymentFailureComponent } from './bank/bank-payment-failure/bank-payment-failure.component';
 import { BankPaymentFormComponent } from './bank/bank-payment-form/bank-payment-form.component';
+import { CreatePlanComponent } from './paypal/billingPlans/create-plan/create-plan.component';
+import { ShippingAdressComponent } from './paypal/billingPlans/shipping-adress/shipping-adress.component';
+import { ExecutePlanComponent } from './paypal/billingPlans/execute-plan/execute-plan.component';
 
 const appRoutes: Routes = [
 	{ path: '', redirectTo: '/centrala', pathMatch: 'full'},
@@ -24,6 +27,9 @@ const appRoutes: Routes = [
 	{ path: 'paypal/success', component: PaymentSuccessComponent},
 	{ path: 'paypal/cancel', component: PaymentCancelComponent},
 	{ path: 'payment/verifying', component: LoadingPaymentComponent},
+	{ path: 'paypal/plan', component: CreatePlanComponent},
+	{ path: 'paypal/plan/subscribe', component: ShippingAdressComponent},
+	{ path: 'paypal/plan/execute', component: ExecutePlanComponent},
 	{ path: 'centrala', component: CentralaMockComponent},
 	{ path: 'centrala/rad/:id', component: RadComponent},
 	{ path: 'sellers/:id', component: SellerMethodsComponent},

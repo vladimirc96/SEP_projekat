@@ -1,0 +1,54 @@
+<div class="container">
+    <div class="forma">
+        <div class="centar">
+            <h4>Plan pretplate</h4>
+        </div>
+        <form [formGroup]="myForm" novalidate (ngSubmit)="onSubmitPlan(f)" #f="ngForm">
+            <div class="form-group polje">
+                <label for="name">Naziv plana</label>
+                <input required formControlName="name" type="text" class="form-control inp" name="name" id="name">
+            </div>
+            <div class="form-group polje">
+                <label for="description">Opis</label>
+                <input formControlName="description" type="text" class="form-control inp" name="description" id="description">
+            </div>
+            <div class="row">
+                <div class="form-group polje col-md-4">
+                    <label for="frequency">Frekvencija naplate</label>
+                    <select name="frequency" formControlName="frequency" id="frequency" class="form-control">
+                        <option value="YEAR">Godina</option>
+                        <option value="MONTH">Mesec</option>
+                        <option value="WEEK">Nedelja</option>
+                        <option value="DAY">Dan</option>
+                    </select>
+                </div>
+                <div class="form-group polje col-md-4">
+                    <label for="freqInterval">Interval frekvencije</label>
+                    <input formControlName="freqInterval" type="number" class="form-control inp" name="freqInterval">
+                </div>
+                <div class="form-group polje col-md-4">
+                    <label for="cycles">Ciklus naplate (0 za neograniceno)</label>
+                    <input formControlName="cycles" type="nubmer" class="form-control inp" name="cycles" >
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group polje col-md-4">
+                    <label for="amount">Cena</label>
+                    <input formControlName="amount" type="text" class="form-control inp" name="amount" >
+                </div>
+                <div class="form-group polje col-md-4">
+                    <label for="currency">Valuta</label>
+                    <input formControlName="currency" type="text" class="form-control inp" name="currency" >
+                </div>
+                <div class="form-group polje col-md-4">
+                    <label for="amountStart">Naplata prilikom pretplate</label>
+                    <input formControlName="amountStart" type="text" class="form-control inp" name="amountStart" >
+                </div>
+            </div>
+
+            <div class="form-group centar">
+                <input type="submit" value="Create & activate plan" class="btn btn-primary" [disabled]="!myForm.valid">
+            </div>
+        </form>
+    </div>
+</div>

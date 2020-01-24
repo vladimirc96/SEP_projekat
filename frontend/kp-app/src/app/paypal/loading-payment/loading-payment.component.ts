@@ -50,7 +50,7 @@ export class LoadingPaymentComponent implements OnInit {
       }, (error) => {
         alert("error");
       }
-    )
+    );
   }
 
   goHome() {

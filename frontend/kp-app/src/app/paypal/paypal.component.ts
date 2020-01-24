@@ -14,6 +14,7 @@ export class PaypalComponent implements OnInit {
   rad: any = null;
   ret: any;
   desc: String = "";
+  opis: boolean = false;
 
   constructor(private palService: PaypalService, private route: ActivatedRoute, private router: Router, private centralaService: CentralaService) {
     this.rad = this.centralaService.activeRad;
@@ -22,14 +23,15 @@ export class PaypalComponent implements OnInit {
   ngOnInit() {
   }
 
-  procceed() {
+  onProcceed() {
     this.status = true;
 
     let orderDTO = {
       price: this.rad.price,
       currency: 'USD',
       description: this.desc,
-      id: this.rad.sellerId
+      id: this.rad.sellerId,
+      name: ''
     }
 
     this.palService.pay(orderDTO).subscribe(
@@ -41,5 +43,4 @@ export class PaypalComponent implements OnInit {
       }
     )
   }
-
 }
