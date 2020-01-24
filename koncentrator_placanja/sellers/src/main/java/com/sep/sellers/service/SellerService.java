@@ -26,6 +26,7 @@ public class SellerService {
 
 
     public SellerDTO getSeller(long id) {
+        System.out.println("\nID: " + id + "\n");
         return SellerDTO.formDto(_sellerRepo.findById(id).get());
     }
 
