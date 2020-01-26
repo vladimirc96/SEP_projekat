@@ -155,7 +155,6 @@ public class PaypalService {
         //TODO: pribaviti iz baze(relacije) id plana
         BillingPlan bp = billingPlanService.findOneById((long) 1);
         try {
-
             Agreement agreement = createAgreement(dto, bp.getPlanId());
             for (Links links : agreement.getLinks()) {
                 if ("approval_url".equals(links.getRel())) {

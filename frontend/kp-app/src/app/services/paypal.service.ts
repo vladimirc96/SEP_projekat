@@ -35,7 +35,7 @@ export class PaypalService {
     }
 
     executePlan(token) {
-        // return this.http.get("api/paypal-service/paypal/success/"+ paymentID + "/" + payerID, {responseType: 'text'});
+        // return this.http.get("api/paypal/plan/execute/".concat(token), {responseType: 'text'});
         return this.http.get("http://localhost:8443/paypal/plan/execute/".concat(token), {responseType: 'text'});
     }
 
