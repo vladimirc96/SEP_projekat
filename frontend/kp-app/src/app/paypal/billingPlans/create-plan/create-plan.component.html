@@ -34,7 +34,7 @@
             <div class="row">
                 <div class="form-group polje col-md-4">
                     <label for="amount">Cena</label>
-                    <input formControlName="amount" type="text" class="form-control inp" name="amount" >
+                    <input formControlName="amount" type="text" (keydown)="onKeydown($event)" class="form-control inp" name="amount" >
                 </div>
                 <div class="form-group polje col-md-4">
                     <label for="currency">Valuta</label>
@@ -42,7 +42,7 @@
                 </div>
                 <div class="form-group polje col-md-4">
                     <label for="amountStart">Naplata prilikom pretplate</label>
-                    <input formControlName="amountStart" type="text" class="form-control inp" name="amountStart" >
+                    <input formControlName="amountStart" type="text" (keydown)="onKeydown($event)" class="form-control inp" name="amountStart" >
                 </div>
             </div>
 

@@ -1,5 +1,6 @@
 package com.sep.sellers.controller;
 
+import com.sep.sellers.dto.ActiveBillingPlanDTO;
 import com.sep.sellers.dto.ApproveDTO;
 import com.sep.sellers.dto.KPRegistrationDTO;
 import com.sep.sellers.dto.SellerDTO;
@@ -52,5 +53,14 @@ public class SellerController {
         }
     }
 
+    @PostMapping(value = "/createPlan")
+    public @ResponseBody ResponseEntity createPlan(@RequestBody ActiveBillingPlanDTO dto) {
+        return new ResponseEntity(sellerService.createPlan(dto), HttpStatus.CREATED);
+    }
+
+    @GetMapping(value = "/getActivePlan/{id}")
+    public @ResponseBody ResponseEntity initRegistration(@PathVariable("id") long id) {
+        return new ResponseEntity(sellerService.getActivePlan(id), HttpStatus.CREATED);
+    }
 
 }

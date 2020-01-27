@@ -31,7 +31,7 @@ const appRoutes: Routes = [
 	{ path: 'paypal/success', component: PaymentSuccessComponent},
 	{ path: 'paypal/cancel', component: PaymentCancelComponent},
 	{ path: 'payment/verifying', component: LoadingPaymentComponent},
-	{ path: 'paypal/plan', component: CreatePlanComponent},
+	{ path: 'paypal/plan/:id', component: CreatePlanComponent},
 	{ path: 'paypal/plan/subscribe', component: ShippingAdressComponent},
 	{ path: 'paypal/plan/execute', component: ExecutePlanComponent},
 	{ path: 'centrala', component: CentralaMockComponent},

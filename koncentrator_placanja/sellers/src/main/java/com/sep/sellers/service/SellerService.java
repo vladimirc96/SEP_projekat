@@ -1,13 +1,16 @@
 package com.sep.sellers.service;
 
 import com.sep.sellers.client.NCRegistrationClient;
+import com.sep.sellers.dto.ActiveBillingPlanDTO;
 import com.sep.sellers.dto.ApproveDTO;
 import com.sep.sellers.dto.KPRegistrationDTO;
 import com.sep.sellers.dto.PaymentMethodDTO;
 import com.sep.sellers.dto.SellerDTO;
+import com.sep.sellers.model.ActiveBillingPlan;
 import com.sep.sellers.model.PaymentMethod;
 import com.sep.sellers.model.Seller;
 import com.sep.sellers.model.SellerPaymentMethod;
+import com.sep.sellers.repository.ActiveBillingPlanRepository;
 import com.sep.sellers.repository.PaymentMethodRepository;
 import com.sep.sellers.repository.SellerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +33,7 @@ public class SellerService {
     NCRegistrationClient ncRegistrationClient;
 
     private final String  REG_PAGE_REDIRECT_URL = "https://localhost:4200/reg/";
-
+    ActiveBillingPlanRepository planRepo;
 
     public SellerDTO getSeller(long id) {
         System.out.println("\nID: " + id + "\n");
@@ -77,9 +80,18 @@ public class SellerService {
         return SellerDTO.formDto(s);
     }
 
+    public String createPlan(ActiveBillingPlanDTO dto) {
+        String retUrl = "https://localhost:4200/paypal/plan/";
+        ActiveBillingPlan plan = new ActiveBillingPlan(dto);
+        planRepo.save(plan);
+        String temp = retUrl + plan.getId();
+        return retUrl + plan.getId();
+    }
 
-
-
+    public ActiveBillingPlanDTO getActivePlan(long id) {
+        ActiveBillingPlan a = planRepo.findOneById(id);
+        return new ActiveBillingPlanDTO(a);
+    }
 
     public void approveRegistration(ApproveDTO approveDTO) throws AccessDeniedException {
 

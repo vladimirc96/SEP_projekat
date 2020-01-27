@@ -38,6 +38,9 @@ export class SellersService {
         return this.http.post(this.ENDPOINT_URI + "/sellers/register", dto);
     }
 
+    getActivePlan(id) {
+        return this.http.get(this.ENDPOINT_URI.concat("/sellers/getActivePlan/").concat(id));
+    }
 
 
 }
