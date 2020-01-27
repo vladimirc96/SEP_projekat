@@ -35,25 +35,34 @@ public class BankController {
     }
 
     // validira podatke za placanje unete na sajtu banke i proverava da li postoji dovoljno sredstava
-    @RequestMapping(value = "/acquirer/payment/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<?> acquirerValidate(@RequestBody BankAccountDTO bankAccountDTO, @PathVariable("id") String id){
-        Transaction transaction = transactionService.findOneById(Long.parseLong(id));
+    @RequestMapping(value = "/acquirer/payment/{paymentId}", method = RequestMethod.PUT)
+    public ResponseEntity<?> acquirerValidate(@RequestBody BankAccountDTO bankAccountDTO, @PathVariable("paymentId") String id){
+        Transaction transaction = transactionService.findOneByPaymentId(Long.parseLong(id));
         BankAccount bankAccount = bankAccountService.findOneByPan(bankAccountDTO.getPan());
         // ako nisu iste banke, prosledi zahtev PCC-u
         if(!bankAccountService.isBankSame(transaction, bankAccount)){
-            PccRequestDTO pccRequestDTO = new PccRequestDTO(transaction.getId(), new Date(), transaction.getAmount(),
+            PccRequestDTO pccRequestDTO = new PccRequestDTO(transaction.getId(), transaction.getTimestamp(), transaction.getAmount(),
                     transaction.getPaymentStatus(), bankAccountDTO);
             HttpEntity<PccRequestDTO> httpEntity = new HttpEntity<PccRequestDTO>(pccRequestDTO);
-            ResponseEntity<IssuerResponseDTO> responseEntity = restTemplate.postForEntity("https://localhost:8452/pcc/forward-payment", httpEntity, IssuerResponseDTO.class);
+            ResponseEntity<IssuerResponseDTO> responseEntity = restTemplate.postForEntity("https://localhost:8452/pcc/forward-payment/" + id, httpEntity, IssuerResponseDTO.class);
             return responseEntity;
         }
         return bankAccountService.acquirerValidateAndReserve(transaction, bankAccount, bankAccountDTO);
     }
 
     // validira podatke u ulozi issuer banke (banke kupca) i proverava da li postoji dovoljno sredstava
-    @RequestMapping(value = "/issuer/payment/{id}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
-    public ResponseEntity<IssuerResponseDTO> issuerValidate(@RequestBody BankAccountDTO bankAccountDTO, @PathVariable("id") String id){
-        Transaction transaction = transactionService.findOneById(Long.parseLong(id));
+    @RequestMapping(value = "/issuer/payment/{paymentId}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
+    public ResponseEntity<IssuerResponseDTO> issuerValidate(@RequestBody PccRequestDTO pccRequestDTO, @PathVariable("paymentId") String id){
+        // napraviti novu transakciju za issuer-a
+        BankAccountDTO bankAccountDTO = pccRequestDTO.getBankAccountDTO();
+        Transaction transaction = new Transaction();
+        transaction.setPaymentId(Long.parseLong(id));
+        transaction.setPaymentStatus(pccRequestDTO.getPaymentStatus());
+        transaction.setAmount(pccRequestDTO.getAmount());
+        transaction.setTimestamp(new Date());
+        transaction.setCustomer();
+
+
         BankAccount bankAccount = bankAccountService.findOneByPan(bankAccountDTO.getPan());
         return bankAccountService.issuerValidateAndReserve(transaction, bankAccount, bankAccountDTO);
     }
