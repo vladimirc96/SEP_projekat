@@ -139,7 +139,7 @@ public class PaypalService {
         logger.logInfo("PP_PLAN");
         try {
             Plan plan = createPlan(dto);
-            BillingPlan pln = new BillingPlan(plan.getId(), plan.getName(), "ACTIVE", plan.getCreateTime(), plan.getUpdateTime(), plan.getDescription(), dto.getFrequency(), dto.getFreqInterval(), dto.getCycles(), Double.parseDouble(dto.getAmount()), dto.getCurrency(), Double.parseDouble(dto.getAmountStart()));
+            BillingPlan pln = new BillingPlan(plan.getId(), plan.getName(), "ACTIVE", plan.getCreateTime(), plan.getUpdateTime(), plan.getDescription(), dto.getFrequency(), dto.getFreqInterval(), dto.getCycles(), Double.parseDouble(dto.getAmount()), dto.getCurrency(), Double.parseDouble(dto.getAmountStart()), dto.getMerchantId());
             billingPlanService.save(pln);
             return "PlanCreated";
         } catch (PayPalRESTException e) {
