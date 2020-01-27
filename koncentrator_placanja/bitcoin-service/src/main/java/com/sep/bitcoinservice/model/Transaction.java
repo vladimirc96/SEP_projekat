@@ -18,6 +18,9 @@ public class Transaction {
     @Column(unique = true)
     private long orderId;
 
+    @Column(unique = true)
+    private long activeOrderId;
+
     @Column
     private String status;
 
@@ -45,8 +48,9 @@ public class Transaction {
     public Transaction() {
     }
 
-    public Transaction(long orderId, String status, double amount, double amountDifference, String paymentUrl, String paymentAddress, Enums.Currency currency, Date createdAt, Seller seller) {
+    public Transaction(long orderId, long activeOrderId, String status, double amount, double amountDifference, String paymentUrl, String paymentAddress, Enums.Currency currency, Date createdAt, Seller seller) {
         this.orderId = orderId;
+        this.activeOrderId = activeOrderId;
         this.status = status;
         this.amount = amount;
         this.amountDifference = amountDifference;
@@ -56,7 +60,6 @@ public class Transaction {
         this.createdAt = createdAt;
         this.seller = seller;
     }
-
 
     public static Transaction convertObjects(Transaction t, CGOrderFullDTO cgDTO) {
 
@@ -153,6 +156,14 @@ public class Transaction {
         this.paymentAddress = paymentAddress;
     }
 
+    public long getActiveOrderId() {
+        return activeOrderId;
+    }
+
+    public void setActiveOrderId(long activeOrderId) {
+        this.activeOrderId = activeOrderId;
+    }
+
     @Override
     public String toString() {
         return "Transaction{" +
@@ -166,6 +177,7 @@ public class Transaction {
                 ",\\n currency=" + currency +
                 ",\\n createdAt=" + createdAt +
                 ",\\n seller=" + seller.getId() +
+                ",\\n activeOrder=" + activeOrderId +
                 '}';
     }
 }

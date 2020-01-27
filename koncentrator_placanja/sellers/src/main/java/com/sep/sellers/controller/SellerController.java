@@ -2,6 +2,7 @@ package com.sep.sellers.controller;
 
 import com.sep.sellers.dto.ActiveBillingPlanDTO;
 import com.sep.sellers.dto.ApproveDTO;
+import com.sep.sellers.dto.KPRegistrationDTO;
 import com.sep.sellers.dto.SellerDTO;
 import com.sep.sellers.service.SellerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +27,12 @@ public class SellerController {
         return new ResponseEntity<>(sellerService.getSeller(id), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/register")
-    public @ResponseBody ResponseEntity initRegistration() {
-        return new ResponseEntity(sellerService.initRegistration(), HttpStatus.CREATED);
+    @PostMapping(value = "/register/init")
+    public @ResponseBody ResponseEntity initRegistration(@RequestBody KPRegistrationDTO kprDTO) {
+        return new ResponseEntity(sellerService.initRegistration(kprDTO), HttpStatus.CREATED);
     }
 
-
+    // todo edit order
 
     @PostMapping(value = "/register")
     public @ResponseBody ResponseEntity postRegistration(@RequestBody SellerDTO sellerDTO) {

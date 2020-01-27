@@ -1,7 +1,9 @@
 package com.sep.sellers.service;
 
+import com.sep.sellers.client.NCRegistrationClient;
 import com.sep.sellers.dto.ActiveBillingPlanDTO;
 import com.sep.sellers.dto.ApproveDTO;
+import com.sep.sellers.dto.KPRegistrationDTO;
 import com.sep.sellers.dto.PaymentMethodDTO;
 import com.sep.sellers.dto.SellerDTO;
 import com.sep.sellers.model.ActiveBillingPlan;
@@ -28,19 +30,27 @@ public class SellerService {
     PaymentMethodRepository _paymentRepo;
 
     @Autowired
-    ActiveBillingPlanRepository planRepo;
+    NCRegistrationClient ncRegistrationClient;
 
+    private final String  REG_PAGE_REDIRECT_URL = "https://localhost:4200/reg/";
+    ActiveBillingPlanRepository planRepo;
 
     public SellerDTO getSeller(long id) {
         System.out.println("\nID: " + id + "\n");
         return SellerDTO.formDto(_sellerRepo.findById(id).get());
     }
 
-    public SellerDTO initRegistration() {
+    public KPRegistrationDTO initRegistration(KPRegistrationDTO kprDTO) {
 
         Seller s = new Seller();
+        s.setRegistrationStatusCallbackUrl(kprDTO.getRegistrationStatusCallbackUrl());
 
-        return SellerDTO.formDto(_sellerRepo.save(s));
+        s = _sellerRepo.save(s);
+
+        kprDTO.setSellerId(s.getId());
+        kprDTO.setRegistrationPageRedirectUrl(this.REG_PAGE_REDIRECT_URL + s.getId());
+        kprDTO.setStatus(false);
+        return kprDTO;
     }
 
     public SellerDTO postRegistration(SellerDTO sDTO) {
@@ -100,6 +110,13 @@ public class SellerService {
 
 
         _sellerRepo.save(s);
+
+        KPRegistrationDTO kprDTO = new KPRegistrationDTO();
+        kprDTO.setSellerId(s.getId());
+        kprDTO.setRegistrationStatusCallbackUrl(s.getRegistrationStatusCallbackUrl());
+        kprDTO.setStatus(true);
+
+        ncRegistrationClient.informRegistrationStatus(kprDTO);
     }
 
 
