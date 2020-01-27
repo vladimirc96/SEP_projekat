@@ -28,3 +28,4 @@
 2020-01-23 18:20:59,915 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
 2020-01-23 18:21:08,410 INFO org.springframework.boot.StartupInfoLogger [main] Started BitcoinServiceApplication in 10.911 seconds (JVM running for 12.642)
 2020-01-23 19:18:29,892 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2020-01-23 19:18:38,004 INFO org.springframework.boot.StartupInfoLogger [main] Started BitcoinServiceApplication in 10.258 seconds (JVM running for 11.998)
