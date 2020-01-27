@@ -60,8 +60,6 @@ public class BankController {
         transaction.setPaymentStatus(pccRequestDTO.getPaymentStatus());
         transaction.setAmount(pccRequestDTO.getAmount());
         transaction.setTimestamp(new Date());
-        transaction.setCustomer();
-
 
         BankAccount bankAccount = bankAccountService.findOneByPan(bankAccountDTO.getPan());
         return bankAccountService.issuerValidateAndReserve(transaction, bankAccount, bankAccountDTO);
