@@ -13,7 +13,7 @@ public class NCRegistrationClient {
     @Autowired
     RestTemplate restTemplate;
 
-    private void informRegistrationStatus(KPRegistrationDTO kprDTO) {
+    public void informRegistrationStatus(KPRegistrationDTO kprDTO) {
         restTemplate.postForEntity(kprDTO.getRegistrationStatusCallbackUrl(), new HttpEntity<>(kprDTO),
                 KPRegistrationDTO.class);
 

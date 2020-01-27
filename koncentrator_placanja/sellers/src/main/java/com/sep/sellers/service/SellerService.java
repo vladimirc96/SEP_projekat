@@ -1,5 +1,6 @@
 package com.sep.sellers.service;
 
+import com.sep.sellers.client.NCRegistrationClient;
 import com.sep.sellers.dto.ApproveDTO;
 import com.sep.sellers.dto.KPRegistrationDTO;
 import com.sep.sellers.dto.PaymentMethodDTO;
@@ -25,7 +26,10 @@ public class SellerService {
     @Autowired
     PaymentMethodRepository _paymentRepo;
 
-    private final String  REG_PAGE_REDIRECT_URL = "https://localhost:4201/reg/";
+    @Autowired
+    NCRegistrationClient ncRegistrationClient;
+
+    private final String  REG_PAGE_REDIRECT_URL = "https://localhost:4200/reg/";
 
 
     public SellerDTO getSeller(long id) {
@@ -94,6 +98,13 @@ public class SellerService {
 
 
         _sellerRepo.save(s);
+
+        KPRegistrationDTO kprDTO = new KPRegistrationDTO();
+        kprDTO.setSellerId(s.getId());
+        kprDTO.setRegistrationStatusCallbackUrl(s.getRegistrationStatusCallbackUrl());
+        kprDTO.setStatus(true);
+
+        ncRegistrationClient.informRegistrationStatus(kprDTO);
     }
 
 
