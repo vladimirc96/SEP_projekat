@@ -17,7 +17,7 @@ import java.nio.file.AccessDeniedException;
 @Service
 public class RegistrationClient {
 
-    private final String ENDPOINT_URL = "https://localhost:8342/sellers/register/approve";
+    private final String ENDPOINT_URL = "https://locahost:8342/sellers/register/approve";
     private final long paymentMethodId = 3;
 
     @Autowired

@@ -24,15 +24,44 @@ public class BillingPlan {
     @Column(name = "updated_time", nullable = false)
     private String updatedAt;
 
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "frequency")
+    private String frequency;
+
+    @Column(name = "freqInterval")
+    private String freqInterval;
+
+    @Column(name = "cycles")
+    private String cycles;
+
+    @Column(name = "amount")
+    private double amount;
+
+    @Column(name = "currency")
+    private String currency;
+
+    @Column(name = "amountStart")
+    private double amountStart;
+
+
     public BillingPlan() {
     }
 
-    public BillingPlan(String planId, String name, String state, String createdAt, String updatedAt) {
+    public BillingPlan(String planId, String name, String state, String createdAt, String updatedAt, String description, String frequency, String freqInterval, String cycles, double amount, String currency, double amountStart) {
         this.planId = planId;
         this.name = name;
         this.state = state;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.description = description;
+        this.frequency = frequency;
+        this.freqInterval = freqInterval;
+        this.cycles = cycles;
+        this.amount = amount;
+        this.currency = currency;
+        this.amountStart = amountStart;
     }
 
     public long getId() {
@@ -59,6 +88,34 @@ public class BillingPlan {
         return updatedAt;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public String getFrequency() {
+        return frequency;
+    }
+
+    public String getFreqInterval() {
+        return freqInterval;
+    }
+
+    public String getCycles() {
+        return cycles;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public double getAmountStart() {
+        return amountStart;
+    }
+
     public void setId(long id) {
         this.id = id;
     }
@@ -81,5 +138,33 @@ public class BillingPlan {
 
     public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setFrequency(String frequency) {
+        this.frequency = frequency;
+    }
+
+    public void setFreqInterval(String freqInterval) {
+        this.freqInterval = freqInterval;
+    }
+
+    public void setCycles(String cycles) {
+        this.cycles = cycles;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public void setAmountStart(double amountStart) {
+        this.amountStart = amountStart;
     }
 }

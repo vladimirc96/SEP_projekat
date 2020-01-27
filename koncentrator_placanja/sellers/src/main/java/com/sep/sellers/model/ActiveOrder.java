@@ -8,6 +8,7 @@ import javax.persistence.*;
 public class ActiveOrder {
 
     @Id
+    @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private long id;
 
     @Column
