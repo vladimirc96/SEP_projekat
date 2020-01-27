@@ -20,6 +20,9 @@ public class Transaction {
     @Enumerated(EnumType.STRING) // omogucava cuvanje enum vrednosti kao string u bazi
     private PaymentStatus paymentStatus;
 
+    @Column(name = "active_order_id")
+    private Long activeOrderId;
+
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Customer customer;
 
@@ -72,6 +75,14 @@ public class Transaction {
         this.paymentStatus = paymentStatus;
     }
 
+    public Long getActiveOrderId() {
+        return activeOrderId;
+    }
+
+    public void setActiveOrderId(Long activeOrderId) {
+        this.activeOrderId = activeOrderId;
+    }
+
     @Override
     public String toString() {
         return "Transaction{" +
@@ -79,7 +90,8 @@ public class Transaction {
                 ", amount=" + amount +
                 ", timestamp=" + timestamp +
                 ", paymentStatus=" + paymentStatus +
-                ", customer=" + customer.getId() +
+                ", activeOrderId=" + activeOrderId +
+                ", customer=" + customer +
                 '}';
     }
 }
