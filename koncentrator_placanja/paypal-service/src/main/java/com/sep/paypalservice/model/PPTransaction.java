@@ -39,10 +39,13 @@ public class PPTransaction {
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private PPClient client;
 
+    @Column
+    private long active_order_id;
+
     public PPTransaction() {
     }
 
-    public PPTransaction(String orderId, String payerId, String payerEmail, String currency, double amount, String status, String payee, String createdAt) {
+    public PPTransaction(String orderId, String payerId, String payerEmail, String currency, double amount, String status, String payee, String createdAt, long active_order_id) {
         this.orderId = orderId;
         this.payerId = payerId;
         this.payerEmail = payerEmail;
@@ -51,6 +54,7 @@ public class PPTransaction {
         this.status = status;
         this.payee = payee;
         this.createdAt = createdAt;
+        this.active_order_id = active_order_id;
     }
 
     public long getId() {
@@ -86,6 +90,8 @@ public class PPTransaction {
     }
 
     public String getCreatedAt() { return createdAt; }
+
+    public Long getActive_order_id() { return active_order_id; }
 
     public void setId(long id) {
         this.id = id;
@@ -128,4 +134,6 @@ public class PPTransaction {
     public void setClient(PPClient client) {
         this.client = client;
     }
+
+    public void setActive_order_id(long id) { this.active_order_id = id; }
 }
