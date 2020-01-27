@@ -29,16 +29,28 @@ public class Seller {
     @OneToMany(mappedBy = "seller", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<SellerPaymentMethod> paymentMethods = new ArrayList<>();
 
+    @Column
+    private String registrationStatusCallbackUrl;
+
 
     public Seller() {
     }
 
-    public Seller(String email, String password, String name, String organization, List<SellerPaymentMethod> paymentMethods) {
+    public Seller(String email, String password, String name, String organization, List<SellerPaymentMethod> paymentMethods, String registrationStatusCallbackUrl) {
         this.email = email;
         this.password = password;
         this.name = name;
         this.organization = organization;
         this.paymentMethods = paymentMethods;
+        this.registrationStatusCallbackUrl = registrationStatusCallbackUrl;
+    }
+
+    public String getRegistrationStatusCallbackUrl() {
+        return registrationStatusCallbackUrl;
+    }
+
+    public void setRegistrationStatusCallbackUrl(String registrationStatusCallbackUrl) {
+        this.registrationStatusCallbackUrl = registrationStatusCallbackUrl;
     }
 
     public String getEmail() {
