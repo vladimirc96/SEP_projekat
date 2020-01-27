@@ -45,11 +45,14 @@ public class BillingPlan {
     @Column(name = "amountStart")
     private double amountStart;
 
+    @Column(name = "seller_id")
+    private long seller_id;
+
 
     public BillingPlan() {
     }
 
-    public BillingPlan(String planId, String name, String state, String createdAt, String updatedAt, String description, String frequency, String freqInterval, String cycles, double amount, String currency, double amountStart) {
+    public BillingPlan(String planId, String name, String state, String createdAt, String updatedAt, String description, String frequency, String freqInterval, String cycles, double amount, String currency, double amountStart, long seller_id) {
         this.planId = planId;
         this.name = name;
         this.state = state;
@@ -62,6 +65,7 @@ public class BillingPlan {
         this.amount = amount;
         this.currency = currency;
         this.amountStart = amountStart;
+        this.seller_id = seller_id;
     }
 
     public long getId() {
@@ -116,6 +120,10 @@ public class BillingPlan {
         return amountStart;
     }
 
+    public long getSeller_id() {
+        return seller_id;
+    }
+
     public void setId(long id) {
         this.id = id;
     }
@@ -166,5 +174,9 @@ public class BillingPlan {
 
     public void setAmountStart(double amountStart) {
         this.amountStart = amountStart;
+    }
+
+    public void setSeller_id(long seller_id) {
+        this.seller_id = seller_id;
     }
 }

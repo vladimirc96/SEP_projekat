@@ -9,17 +9,19 @@ public class ActiveBillingPlanDTO {
     private String issn;
     private String currency;
     private double amount;
+    private long sellerId;
 
-    public ActiveBillingPlanDTO(Long id, String name, String issn, String currency, double amount) {
+    public ActiveBillingPlanDTO(Long id, String name, String issn, String currency, double amount, long sellerId) {
         this.id = id;
         this.name = name;
         this.issn = issn;
         this.currency = currency;
         this.amount = amount;
+        this.sellerId = sellerId;
     }
 
     public ActiveBillingPlanDTO(ActiveBillingPlan a) {
-        this(a.getId(), a.getName(), a.getIssn(), a.getCurrency(), a.getAmount());
+        this(a.getId(), a.getName(), a.getIssn(), a.getCurrency(), a.getAmount(), a.getSeller_id());
     }
 
     public void setId(Long id) {
@@ -42,6 +44,10 @@ public class ActiveBillingPlanDTO {
         this.amount = amount;
     }
 
+    public void setSellerId(long sellerId) {
+        this.sellerId = sellerId;
+    }
+
     public Long getId() {
         return id;
     }
@@ -60,5 +66,9 @@ public class ActiveBillingPlanDTO {
 
     public double getAmount() {
         return amount;
+    }
+
+    public long getSellerId() {
+        return sellerId;
     }
 }

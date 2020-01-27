@@ -3,7 +3,7 @@
         <div class="centar">
             <h4>Plan pretplate</h4>
         </div>
-        <form [formGroup]="myForm" novalidate (ngSubmit)="onSubmitPlan(f)" #f="ngForm">
+        <form [formGroup]="myForm" (ngSubmit)="onSubmitPlan(f)" #f="ngForm">
             <div class="form-group polje">
                 <label for="name">Naziv plana</label>
                 <input required formControlName="name" type="text" class="form-control inp" name="name" id="name">
