@@ -43,21 +43,21 @@ public class TransactionService {
     public ResponseEntity<RedirectDTO> checkPaymentRequest(PaymentRequestDTO paymentRequest){
         logger.logInfo("INFO: Provera podataka zahteva. " + paymentRequest.toString());
         Customer customer = customerService.findByMerchantId(paymentRequest.getMerchantId());
-        Transaction transaction = new Transaction(paymentRequest.getAmount(), paymentRequest.getMerchantTimestamp(), customer);
-        transaction.setId(paymentRequest.getMerchantOrderId());
+        Transaction transaction = new Transaction(paymentRequest.getAmount(), new Date(), customer);
+        transaction.setPaymentId(paymentRequest.getMerchantOrderId());
 
         if(!isRequestValid(paymentRequest, customer)){
             logger.logError("ERROR: Zahtev nije validan.");
             transaction.setPaymentStatus(PaymentStatus.FAILURE);
             transaction = transactionRepo.save(transaction);
-            requestUpdateTransactionBankService(transaction);
+            requestUpdateTransactionBankService(paymentRequest.getMerchantOrderId(), PaymentStatus.FAILURE);
             return new ResponseEntity<>(new RedirectDTO(FAILED_URL, null), HttpStatus.BAD_REQUEST);
         }
 
         transaction.setPaymentStatus(PaymentStatus.PROCESSING);
         transaction = transactionRepo.save(transaction);
         logger.logInfo("SUCCESS: Uspesna provera podataka zahteva. " + paymentRequest.toString());
-        return new ResponseEntity<>(new RedirectDTO(SUCCESS_URL, transaction.getId()), HttpStatus.OK);
+        return new ResponseEntity<>(new RedirectDTO(SUCCESS_URL, paymentRequest.getMerchantOrderId()), HttpStatus.OK);
     }
 
     public Transaction executePayment(Transaction transaction, BankAccount bankAccount){
@@ -84,6 +84,10 @@ public class TransactionService {
         transactionRepo.deleteById(id);
     }
 
+    public Transaction findOneByPaymentId(Long id){
+        return transactionRepo.findOneByPaymentId(id);
+    }
+
     private boolean isRequestValid(PaymentRequestDTO paymentRequest, Customer customer){
         if(customer == null){
             return false;
@@ -102,9 +106,10 @@ public class TransactionService {
         return true;
     }
 
-    private void requestUpdateTransactionBankService(Transaction transaction){
-        HttpEntity<PaymentStatusDTO> entity = new HttpEntity<PaymentStatusDTO>(new PaymentStatusDTO(transaction.getPaymentStatus()));
-        ResponseEntity<String> responseEntity = restTemplate.exchange("https://localhost:8500/bank-service/bank/transaction/" + transaction.getId(),
+
+    private void requestUpdateTransactionBankService(Long id, PaymentStatus paymentStatus){
+        HttpEntity<PaymentStatusDTO> entity = new HttpEntity<PaymentStatusDTO>(new PaymentStatusDTO(paymentStatus));
+        ResponseEntity<String> responseEntity = restTemplate.exchange("https://localhost:8500/bank-service/bank/transaction/" + id,
                 HttpMethod.PUT, entity, String.class);
     }
 }

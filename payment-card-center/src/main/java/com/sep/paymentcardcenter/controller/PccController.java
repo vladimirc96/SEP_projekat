@@ -26,8 +26,8 @@ public class PccController {
     @Autowired
     private TransactionService transactionService;
 
-    @RequestMapping(value = "/forward-payment", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    public ResponseEntity<?> forward(@RequestBody PccRequestDTO pccRequestDTO){
+    @RequestMapping(value = "/forward-payment/{paymentId}", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    public ResponseEntity<?> forward(@RequestBody PccRequestDTO pccRequestDTO, @PathVariable("paymentId") String id){
 
         if(!isValid(pccRequestDTO)){
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -41,8 +41,8 @@ public class PccController {
         transaction = transactionService.save(transaction);
 
         // proslediti zahtev banci kupca
-        HttpEntity<BankAccountDTO> entity = new HttpEntity<>(pccRequestDTO.getBankAccountDTO());
-        ResponseEntity<IssuerResponseDTO> responseEntity = restTemplate.exchange("https://localhost:8451/bank/issuer/payment/" + pccRequestDTO.getAcquirerOrderId(),
+        HttpEntity<PccRequestDTO> entity = new HttpEntity<>(pccRequestDTO);
+        ResponseEntity<IssuerResponseDTO> responseEntity = restTemplate.exchange("https://localhost:8451/bank/issuer/payment/" + id,
                 HttpMethod.PUT, entity, IssuerResponseDTO.class);
 
         // responseEntity odgovor proslediti prodavcu

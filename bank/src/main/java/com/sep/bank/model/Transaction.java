@@ -16,6 +16,9 @@ public class Transaction {
     @Column(name = "timestamp")
     private Date timestamp;
 
+    @Column(name = "payment_id")
+    private Long paymentId;
+
     @Column(name = "payment_status")
     @Enumerated(EnumType.STRING) // omogucava cuvanje enum vrednosti kao string u bazi
     private PaymentStatus paymentStatus;
@@ -40,12 +43,12 @@ public class Transaction {
         this.id = id;
     }
 
-    public Customer getCustomer() {
-        return customer;
+    public double getAmount() {
+        return amount;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public void setAmount(double amount) {
+        this.amount = amount;
     }
 
     public Date getTimestamp() {
@@ -56,12 +59,12 @@ public class Transaction {
         this.timestamp = timestamp;
     }
 
-    public double getAmount() {
-        return amount;
+    public Long getPaymentId() {
+        return paymentId;
     }
 
-    public void setAmount(double amount) {
-        this.amount = amount;
+    public void setPaymentId(Long paymentId) {
+        this.paymentId = paymentId;
     }
 
     public PaymentStatus getPaymentStatus() {
@@ -72,14 +75,23 @@ public class Transaction {
         this.paymentStatus = paymentStatus;
     }
 
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
     @Override
     public String toString() {
         return "Transaction{" +
                 "id=" + id +
                 ", amount=" + amount +
                 ", timestamp=" + timestamp +
+                ", paymentId=" + paymentId +
                 ", paymentStatus=" + paymentStatus +
-                ", customer=" + customer.getId() +
+                ", customer=" + customer +
                 '}';
     }
 }
