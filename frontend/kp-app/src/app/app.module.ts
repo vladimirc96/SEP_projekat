@@ -35,6 +35,7 @@ import { BitcoinRegistrationComponent } from './registrations/bitcoin-registrati
 import { PaypalRegistrationComponent } from './registrations/paypal-registration/paypal-registration.component';
 import { BankRegistrationComponent } from './registrations/bank-registration/bank-registration.component';
 import { SellerRegistrationComponent } from './registrations/seller-registration/seller-registration.component';
+import { SubscriptionPlanComponent } from './subscription-plan/subscription-plan.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -61,6 +62,7 @@ import { SellerRegistrationComponent } from './registrations/seller-registration
     PaypalRegistrationComponent,
     BankRegistrationComponent,
     SellerRegistrationComponent,
+    SubscriptionPlanComponent,
   ],
   imports: [
     BrowserModule,
