@@ -54,8 +54,9 @@ export class SellerRegistrationComponent implements OnInit {
 	fetchSeller() {
 		this.sellersService.getSeller(this.sellerId).subscribe(
 			(res: any) => {
+				// seller data submited
 				if (res.email) {
-					this.router.navigate(['/']);
+					this.registerResponse = res;
 				}
 			}, err =>{
 				this.router.navigate(['/']);
@@ -150,31 +151,31 @@ export class SellerRegistrationComponent implements OnInit {
 
 		this.registerResponse.paymentMethods.forEach(pm => {
 			if (pm.id === 3) {
-				pm.success = true;
+				pm.registerSuccess = true;
 			}
 		});
 	}
 
 	onEmitBank($event){
 		if ($event) {
-			this.showBTCForm = false;
+			this.showBankForm = false;
 		}
 
 		this.registerResponse.paymentMethods.forEach(pm => {
 			if (pm.id === 1) {
-				pm.success = true;
+				pm.registerSuccess = true;
 			}
 		});
 	}
 
 	onEmitPayPal($event){
 		if ($event) {
-			this.showBTCForm = false;
+			this.showPPForm = false;
 		}
 
 		this.registerResponse.paymentMethods.forEach(pm => {
-			if (pm.id === 1) {
-				pm.success = true;
+			if (pm.id === 2) {
+				pm.registerSuccess = true;
 			}
 		});
 	}

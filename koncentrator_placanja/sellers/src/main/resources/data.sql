@@ -21,7 +21,7 @@
 
 LOCK TABLES `payment_method` WRITE;
 /*!40000 ALTER TABLE `payment_method` DISABLE KEYS */;
-INSERT INTO `payment_method` (`id`,`name`,`registration_url`) VALUES (1,'Credit/Debit Card','https://localhost:8500/bank-service/registration/'),(2,'PayPal','http://localhost:8443/registration/'),(3,'Bitcoin','https://localhost:8500/bitcoin-service/registration/');
+INSERT INTO `payment_method` (`id`,`name`,`registration_url`) VALUES (1,'Credit/Debit Card','https://localhost:8500/bank-service/registration/'),(2,'PayPal','https://localhost:8500/paypal-service/registration/'),(3,'Bitcoin','https://localhost:8500/bitcoin-service/registration/');
 /*!40000 ALTER TABLE `payment_method` ENABLE KEYS */;
 UNLOCK TABLES;
 
