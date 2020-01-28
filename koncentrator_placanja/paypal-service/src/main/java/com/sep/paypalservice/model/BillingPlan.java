@@ -46,7 +46,7 @@ public class BillingPlan {
     private double amountStart;
 
     @Column(name = "seller_id")
-    private long seller_id;
+    private long sellerId;
 
 
     public BillingPlan() {
@@ -65,7 +65,7 @@ public class BillingPlan {
         this.amount = amount;
         this.currency = currency;
         this.amountStart = amountStart;
-        this.seller_id = seller_id;
+        this.sellerId = seller_id;
     }
 
     public long getId() {
@@ -120,8 +120,8 @@ public class BillingPlan {
         return amountStart;
     }
 
-    public long getSeller_id() {
-        return seller_id;
+    public long getSellerId() {
+        return sellerId;
     }
 
     public void setId(long id) {
@@ -176,7 +176,7 @@ public class BillingPlan {
         this.amountStart = amountStart;
     }
 
-    public void setSeller_id(long seller_id) {
-        this.seller_id = seller_id;
+    public void setSellerId(long seller_id) {
+        this.sellerId = seller_id;
     }
 }

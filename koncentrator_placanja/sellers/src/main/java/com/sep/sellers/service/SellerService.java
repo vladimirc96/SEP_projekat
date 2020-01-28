@@ -32,8 +32,10 @@ public class SellerService {
     @Autowired
     NCRegistrationClient ncRegistrationClient;
 
-    private final String  REG_PAGE_REDIRECT_URL = "https://localhost:4200/reg/";
+    @Autowired
     ActiveBillingPlanRepository planRepo;
+
+    private final String  REG_PAGE_REDIRECT_URL = "https://localhost:4200/reg/";
 
     public SellerDTO getSeller(long id) {
         System.out.println("\nID: " + id + "\n");
@@ -83,7 +85,7 @@ public class SellerService {
     public String createPlan(ActiveBillingPlanDTO dto) {
         String retUrl = "https://localhost:4200/paypal/plan/";
         ActiveBillingPlan plan = new ActiveBillingPlan(dto);
-        planRepo.save(plan);
+        plan = planRepo.save(plan);
         String temp = retUrl + plan.getId();
         return retUrl + plan.getId();
     }

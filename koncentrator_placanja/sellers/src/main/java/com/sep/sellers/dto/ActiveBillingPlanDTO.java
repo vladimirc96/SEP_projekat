@@ -11,6 +11,8 @@ public class ActiveBillingPlanDTO {
     private double amount;
     private long sellerId;
 
+    public ActiveBillingPlanDTO(){ }
+
     public ActiveBillingPlanDTO(Long id, String name, String issn, String currency, double amount, long sellerId) {
         this.id = id;
         this.name = name;
@@ -21,7 +23,7 @@ public class ActiveBillingPlanDTO {
     }
 
     public ActiveBillingPlanDTO(ActiveBillingPlan a) {
-        this(a.getId(), a.getName(), a.getIssn(), a.getCurrency(), a.getAmount(), a.getSeller_id());
+        this(a.getId(), a.getName(), a.getIssn(), a.getCurrency(), a.getAmount(), a.getSellerId());
     }
 
     public void setId(Long id) {

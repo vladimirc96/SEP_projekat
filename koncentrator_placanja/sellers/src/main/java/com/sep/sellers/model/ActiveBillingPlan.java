@@ -12,7 +12,7 @@ public class ActiveBillingPlan {
     private long id;
 
     @Column
-    private long seller_id;
+    private long sellerId;
 
     @Column
     private String name;
@@ -30,7 +30,7 @@ public class ActiveBillingPlan {
     }
 
     public ActiveBillingPlan(ActiveBillingPlanDTO d) {
-        this.seller_id = d.getId();
+        this.sellerId = d.getSellerId();
         this.amount = d.getAmount();
         this.currency = d.getCurrency();
         this.issn = d.getIssn();
@@ -41,8 +41,8 @@ public class ActiveBillingPlan {
         return id;
     }
 
-    public long getSeller_id() {
-        return seller_id;
+    public long getSellerId() {
+        return sellerId;
     }
 
     public String getName() {
@@ -65,8 +65,8 @@ public class ActiveBillingPlan {
         this.id = id;
     }
 
-    public void setSeller_id(long seller_id) {
-        this.seller_id = seller_id;
+    public void setSellerId(long seller_id) {
+        this.sellerId = seller_id;
     }
 
     public void setName(String name) {
