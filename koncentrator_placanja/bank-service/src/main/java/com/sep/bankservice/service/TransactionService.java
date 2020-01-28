@@ -1,5 +1,6 @@
 package com.sep.bankservice.service;
 
+import com.sep.bankservice.dto.ActiveOrderDTO;
 import com.sep.bankservice.dto.PaymentDTO;
 import com.sep.bankservice.dto.PaymentStatusDTO;
 import com.sep.bankservice.model.Customer;
@@ -47,12 +48,11 @@ public class TransactionService {
         transactionRepo.deleteById(id);
     }
 
-    public Transaction create(PaymentDTO paymentDTO, Customer customer){
+    public Transaction create(ActiveOrderDTO activeOrderDTO, Customer customer){
         Transaction transaction = new Transaction();
-        transaction.setAmount(paymentDTO.getAmount());
+        transaction.setAmount(activeOrderDTO.getAmount());
         transaction.setTimestamp(new Date());
         transaction.setPaymentStatus(PaymentStatus.PROCESSING);
-
         transaction.setCustomer(customer);
         transaction = transactionRepo.save(transaction);
 

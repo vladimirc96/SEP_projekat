@@ -43,19 +43,19 @@ public class TransactionService {
     public ResponseEntity<RedirectDTO> checkPaymentRequest(PaymentRequestDTO paymentRequest){
         logger.logInfo("INFO: Provera podataka zahteva. " + paymentRequest.toString());
         Customer customer = customerService.findByMerchantId(paymentRequest.getMerchantId());
-        Transaction transaction = new Transaction(paymentRequest.getAmount(), new Date(), customer);
-        transaction.setPaymentId(paymentRequest.getMerchantOrderId());
+        //Transaction transaction = new Transaction(paymentRequest.getAmount(), new Date(), customer);
+        //transaction.setPaymentId(paymentRequest.getMerchantOrderId());
 
         if(!isRequestValid(paymentRequest, customer)){
             logger.logError("ERROR: Zahtev nije validan.");
-            transaction.setPaymentStatus(PaymentStatus.FAILURE);
-            transaction = transactionRepo.save(transaction);
-            requestUpdateTransactionBankService(paymentRequest.getMerchantOrderId(), PaymentStatus.FAILURE);
+            // transaction.setPaymentStatus(PaymentStatus.FAILURE);
+            // transaction = transactionRepo.save(transaction);
+            //requestUpdateTransactionBankService(paymentRequest.getMerchantOrderId(), PaymentStatus.FAILURE);
             return new ResponseEntity<>(new RedirectDTO(FAILED_URL, null), HttpStatus.BAD_REQUEST);
         }
 
-        transaction.setPaymentStatus(PaymentStatus.PROCESSING);
-        transaction = transactionRepo.save(transaction);
+        //transaction.setPaymentStatus(PaymentStatus.PROCESSING);
+        //transaction = transactionRepo.save(transaction);
         logger.logInfo("SUCCESS: Uspesna provera podataka zahteva. " + paymentRequest.toString());
         return new ResponseEntity<>(new RedirectDTO(SUCCESS_URL, paymentRequest.getMerchantOrderId()), HttpStatus.OK);
     }
