@@ -1,14 +1,14 @@
 <div class="container" [ngClass]="status ? 'wait' : 'point'">
     <h4 class="mt-5">Vaša porudžbina:</h4>
     <p class="detalji">
-        {{ rad.title }}<br>
-        {{ rad.price }} USD
+        Naslov: {{ activeOrder.title }}<br>
+        Cena: {{ activeOrder.amount }} {{activeOrder.currency}}
     </p>
     <p class="error" *ngIf="opis">Opis transakcije je obavezan.</p>
     <label for="description">Opis transakcije</label>
     <input type="text" id="description" [(ngModel)] = 'desc' class="form-control" name="description" placeholder="Opis...">
 
     <button class="btn btn-primary polja" (click)="onProcceed()" [ngClass]="status ? 'wait' : 'point'"><i class="fa fa-paypal"></i> Continue to checkout</button>
-    <button class="btn btn-primary polja2" routerLink="/paypal/plan/subscribe"  [ngClass]="status ? 'wait' : 'point'"><i class="fa fa-paypal"></i> Subscribe</button>
+    <!-- <button class="btn btn-primary polja2" routerLink="/paypal/plan/subscribe"  [ngClass]="status ? 'wait' : 'point'"><i class="fa fa-paypal"></i> Subscribe</button> -->
 
 </div>

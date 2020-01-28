@@ -43,6 +43,8 @@ public class PaypalService {
 
     private Logging logger = new Logging(this);
 
+    private static String RETURL = "http://localhost:4201";
+
     public String payment(OrderDTO orderDTO) {
         logger.logInfo("PP_PAYMENT");
         try {
@@ -99,7 +101,7 @@ public class PaypalService {
             logger.logError("PP_PAYMENT_ERR: " + e.getMessage());
             e.printStackTrace();
         }
-        return "https://localhost:4200/";
+        return RETURL;
     }
 
     public String successPay(String paymentId, String payerId) {
@@ -118,13 +120,13 @@ public class PaypalService {
             System.out.println(payment.toJSON());
             if (payment.getState().equals("approved")) {
                 logger.logInfo("PP_CONFIRM_SUCCESS");
-                return "https://localhost:4200/paypal/success";
+                return "https://localhost:4200/paypal/success/payment";
             }
         } catch (PayPalRESTException e) {
             logger.logError("PP_CONFIRM_ERR: " + e.getMessage());
             System.out.println(e.getMessage());
         }
-        return "https://localhost:4200/";
+        return RETURL;
     }
 
     public String checkStatus(String id) {
@@ -172,7 +174,7 @@ public class PaypalService {
             System.out.println(e.getMessage());
         }
 
-        return "https://localhost:4200/";
+        return RETURL;
     }
 
     public String executePlan(String token) {
@@ -221,7 +223,7 @@ public class PaypalService {
         payment.setPayer(payer);
         payment.setTransactions(transactions);
         RedirectUrls redirectUrls = new RedirectUrls();
-        redirectUrls.setCancelUrl("https://localhost:4200/centrala");
+        redirectUrls.setCancelUrl("http://localhost:4201");
         redirectUrls.setReturnUrl("https://localhost:4200/payment/verifying");
         payment.setRedirectUrls(redirectUrls);
 
@@ -248,7 +250,7 @@ public class PaypalService {
 
         MerchantPreferences merchantPreferences = new MerchantPreferences();
         merchantPreferences.setReturnUrl("https://localhost:4200/paypal/plan/execute");
-        merchantPreferences.setCancelUrl("https://localhost:4200/centrala");
+        merchantPreferences.setCancelUrl("http://localhost:4201");
         merchantPreferences.setAutoBillAmount("yes");
         merchantPreferences.setInitialFailAmountAction("CONTINUE");
         merchantPreferences.setMaxFailAttempts("1");
