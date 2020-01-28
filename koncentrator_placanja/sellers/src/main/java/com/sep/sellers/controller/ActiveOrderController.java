@@ -1,15 +1,14 @@
 package com.sep.sellers.controller;
 
+import com.sep.sellers.dto.ActiveOrderDTO;
 import com.sep.sellers.dto.InitOrderRequestDTO;
 import com.sep.sellers.dto.InitOrderResponseDTO;
 import com.sep.sellers.service.ActiveOrderService;
+import net.bytebuddy.dynamic.TypeResolutionStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/active-order")
@@ -22,5 +21,11 @@ public class ActiveOrderController {
     public ResponseEntity<InitOrderResponseDTO> init(@RequestBody InitOrderRequestDTO initOrderRequestDTO){
         return new ResponseEntity<>(activeOrderService.create(initOrderRequestDTO), HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/{activeOrderId}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<ActiveOrderDTO> get(@PathVariable("activeOrderId") String activeOrderId){
+        return new ResponseEntity<>(activeOrderService.findOneById(Long.parseLong(activeOrderId)), HttpStatus.OK);
+    }
+
 
 }
