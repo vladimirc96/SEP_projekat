@@ -9,7 +9,6 @@ import { PaypalService } from './services/paypal.service';
 import { PaypalComponent } from './paypal/paypal.component';
 import { HttpClientModule } from '@angular/common/http';
 import { PaymentSuccessComponent } from './paypal/payment-success/payment-success.component';
-import { PaymentCancelComponent } from './paypal/payment-cancel/payment-cancel.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LoadingPaymentComponent } from './paypal/loading-payment/loading-payment.component';
 import { CentralaMockComponent } from './centrala-mock/centrala-mock.component';
@@ -35,13 +34,13 @@ import { BitcoinRegistrationComponent } from './registrations/bitcoin-registrati
 import { PaypalRegistrationComponent } from './registrations/paypal-registration/paypal-registration.component';
 import { BankRegistrationComponent } from './registrations/bank-registration/bank-registration.component';
 import { SellerRegistrationComponent } from './registrations/seller-registration/seller-registration.component';
+import { SubscriptionPlanComponent } from './subscription-plan/subscription-plan.component';
 @NgModule({
   declarations: [
     AppComponent,
     SellersComponent,
     PaypalComponent,
     PaymentSuccessComponent,
-    PaymentCancelComponent,
     LoadingPaymentComponent,
     CentralaMockComponent,
     RadComponent,
@@ -61,6 +60,7 @@ import { SellerRegistrationComponent } from './registrations/seller-registration
     PaypalRegistrationComponent,
     BankRegistrationComponent,
     SellerRegistrationComponent,
+    SubscriptionPlanComponent,
   ],
   imports: [
     BrowserModule,

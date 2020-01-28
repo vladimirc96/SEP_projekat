@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { PaypalService } from '../services/paypal.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, Params } from '@angular/router';
 import { CentralaService } from '../services/centrala.service';
+import { SellersService } from '../services/sellers.service';
+import { ActiveOrderService } from '../services/active-order.service';
 
 @Component({
   selector: 'app-paypal',
@@ -15,23 +17,37 @@ export class PaypalComponent implements OnInit {
   ret: any;
   desc: String = "";
   opis: boolean = false;
+  orderId: any;
+  activeOrder: any = null;
 
-  constructor(private palService: PaypalService, private route: ActivatedRoute, private router: Router, private centralaService: CentralaService) {
-    this.rad = this.centralaService.activeRad;
+  constructor(private palService: PaypalService, private route: ActivatedRoute, private router: Router, private aoService: ActiveOrderService) {
+    this.route.params.subscribe(
+      (params: Params) => {
+        this.orderId = params['id'];
+      }
+    );
   }
 
   ngOnInit() {
+    this.aoService.getActiveOrder(this.orderId).subscribe(
+      (response) => {
+        this.activeOrder = response;
+      },
+      (error) => {
+        alert("error active order");
+      }
+    );
   }
 
   onProcceed() {
     this.status = true;
 
     let orderDTO = {
-      price: this.rad.price,
-      currency: 'USD',
+      price: this.activeOrder.amount,
+      currency: this.activeOrder.currency,
       description: this.desc,
-      id: this.rad.sellerId,
-      name: ''
+      id: this.activeOrder.sellerId,
+      name: this.activeOrder.title
     }
 
     this.palService.pay(orderDTO).subscribe(

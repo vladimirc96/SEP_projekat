@@ -13,7 +13,7 @@ export class SucccessComponent implements OnInit {
   }
 
   goHome() {
-    window.location.href = "https://localhost:4200/centrala";
+    window.location.href = "http://localhost:4201";
   }
 
 
