@@ -1,8 +1,8 @@
-<div class="container pt-5">
+<div class="container pt-5" *ngIf="activeOrder">
     <h4 class="mb-4">Vaša porudžbina:</h4>
-    <strong class="mb-1">{{ rad.title }}</strong>
+    <strong class="mb-1">{{ activeOrder.title }}</strong>
     <br>
-    Originalna cena: <strong>{{ rad.price }}</strong> USD
+    Originalna cena: <strong>{{ activeOrder.amount }}</strong> USD
     <br>
     <span *ngIf="btcPrice">
         Konvertovana cena: <strong>{{ btcPrice }}</strong> BTC
@@ -17,7 +17,7 @@
     </div>
 
     
-    <button class="btn btn-primary mt-5" (click)="onContinue()" *ngIf="rad && btcPrice && !transaction"><i class="fa fa-chevron-right"></i>  Generiši adresu za plaćanje</button>
+    <button class="btn btn-primary mt-5" (click)="onContinue()" *ngIf="activeOrder && btcPrice && !transaction"><i class="fa fa-chevron-right"></i>  Generiši adresu za plaćanje</button>
 
     <div *ngIf="transaction" class="mt-5">
         <div>

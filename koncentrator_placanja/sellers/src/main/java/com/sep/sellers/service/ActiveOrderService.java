@@ -1,6 +1,8 @@
 package com.sep.sellers.service;
 
+import com.sep.sellers.client.NCFinalizeClient;
 import com.sep.sellers.dto.ActiveOrderDTO;
+import com.sep.sellers.dto.FinalizeOrderDTO;
 import com.sep.sellers.dto.InitOrderRequestDTO;
 import com.sep.sellers.dto.InitOrderResponseDTO;
 import com.sep.sellers.model.ActiveOrder;
@@ -8,6 +10,7 @@ import com.sep.sellers.repository.ActiveOrderRepository;
 import net.bytebuddy.dynamic.TypeResolutionStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ActiveOrderService {
@@ -16,6 +19,9 @@ public class ActiveOrderService {
 
     @Autowired
     private ActiveOrderRepository activeOrderRepo;
+
+    @Autowired
+    private NCFinalizeClient ncFinalizeClient;
 
     public ActiveOrderDTO findOneById(Long id){
         ActiveOrder activeOrder = activeOrderRepo.findOneById(id);
@@ -39,5 +45,12 @@ public class ActiveOrderService {
         return new InitOrderResponseDTO(redirectUrl + activeOrder.getId());
     }
 
-
+    @Transactional(rollbackFor = Exception.class)
+    public void finalizeOrder(FinalizeOrderDTO foDTO) {
+        ActiveOrder ao = activeOrderRepo.findOneById(foDTO.getActiveOrderId());
+        foDTO.setNcOrderId(ao.getNc_order_id());
+        ao.setOrderStatus(foDTO.getOrderStatus());
+        activeOrderRepo.save(ao);
+        ncFinalizeClient.finalizeOrder(foDTO, ao.getReturn_url());
+    }
 }

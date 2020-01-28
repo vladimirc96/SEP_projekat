@@ -18,7 +18,7 @@ public class Transaction {
     @Column(unique = true)
     private long orderId;
 
-    @Column(unique = true)
+    @Column
     private long activeOrderId;
 
     @Column

@@ -1,7 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { CentralaService } from "../services/centrala.service";
 import { BitcoinService } from '../services/bitcoin.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, Params } from '@angular/router';
+import { SellersService } from '../services/sellers.service';
+import { ActiveOrderService } from '../services/active-order.service';
 
 @Component({
   selector: "app-bitcoin",
@@ -9,7 +11,10 @@ import { Router } from '@angular/router';
   styleUrls: ["./bitcoin.component.css"]
 })
 export class BitcoinComponent implements OnInit {
-	rad: any = null;
+	
+
+	activeOrder: any = null;
+	activeOrderId; 
 	btcPrice = null;
 	desc: string = "";
 	math = Math;
@@ -22,16 +27,39 @@ export class BitcoinComponent implements OnInit {
 	redirectMessage: boolean = false;
 	errorMessage = null;
 
-	constructor(private centralaService: CentralaService, private bitcoinService: BitcoinService, private router: Router) {
-		this.rad = this.centralaService.activeRad;
-		this.convertPrice();
+	constructor(private aoService: ActiveOrderService, private bitcoinService: BitcoinService, private router: Router, private route: ActivatedRoute) {
+		
+		this.route.params.subscribe((params: Params) => {
+			
+			console.log(params);
+			const param = +params["id"];
+
+			console.log(param);
+
+			if (!isNaN(param)) {
+				this.activeOrderId = param;
+				console.log("HERE!!!!!!!!");
+				this.fetchActiveOrder();
+			} else {
+				this.router.navigate(["/"]);
+			}
+		});
 	}
 
 	ngOnInit() {}
 
+	fetchActiveOrder() {
+		this.aoService.getActiveOrder(this.activeOrderId).subscribe(
+			(res: any) => {
+				this.activeOrder = res;
+				this.convertPrice();
+			}, err => console.log(err.error)
+		)
+	}
+
 	convertPrice() {
 		this.bitcoinService.getRate("USD", "BTC").subscribe(
-			(success:any) => this.btcPrice = success.rate * this.rad.price,
+			(success:any) => this.btcPrice = success.rate * this.activeOrder.amount,
 			error => console.log(error)
 		)
 	}
@@ -39,10 +67,10 @@ export class BitcoinComponent implements OnInit {
 	onContinue() {
 
 		const dto = {
-			sellerId: this.rad.sellerId,
+			sellerId: this.activeOrder.sellerId,
 			currency: "BTC",
-			amount: this.btcPrice,
-			title: "Payment for: " + this.rad.title,
+			amount: this.activeOrder.amount,
+			title: "Payment for: " + this.activeOrder.title,
 			description: this.desc
 		}
 

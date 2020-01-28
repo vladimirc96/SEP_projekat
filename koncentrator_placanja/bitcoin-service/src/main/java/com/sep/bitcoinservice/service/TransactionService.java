@@ -1,5 +1,6 @@
 package com.sep.bitcoinservice.service;
 
+import com.sep.bitcoinservice.client.OrderClient;
 import com.sep.bitcoinservice.dto.*;
 import com.sep.bitcoinservice.enums.Enums;
 import com.sep.bitcoinservice.model.Seller;
@@ -51,6 +52,9 @@ public class TransactionService implements ITransactionService {
 
     @Autowired
     CryptoService cryptoService;
+
+    @Autowired
+    OrderClient orderClient;
 
     private Logging logger = new Logging(this);
 
@@ -108,10 +112,19 @@ public class TransactionService implements ITransactionService {
                         System.out.println(t.toString());
                         TransactionStatusDTO tDTO = getTransactionStatusDto(t.getId());
 
-                        if (!tDTO.getStatus().equals("new") && !tDTO.getStatus().equals("pending")) {
+                        if (!tDTO.getStatus().equals("new")
+                                && !tDTO.getStatus().equals("pending")
+                                && !tDTO.getStatus().equals("confirming")) {
+
+
 
                             System.out.println("Loop cancel");
                             timer.cancel();
+
+                            FinalizeOrderDTO foDTO = new FinalizeOrderDTO();
+                            foDTO.setOrderStatus(convertStatus(tDTO.getStatus()));
+                            foDTO.setActiveOrderId(t.getActiveOrderId());
+                            orderClient.finalizeOrder(foDTO);
                         }
 
                     } catch (Exception e) {
@@ -129,6 +142,14 @@ public class TransactionService implements ITransactionService {
         logger.logInfo("Transaction saved: " + t.getId());
 
         return TransactionDTO.formDto(t);
+    }
+
+    private Enums.OrderStatus convertStatus(String status) {
+        if (status.equals("paid")) {
+            return Enums.OrderStatus.SUCCESS;
+        } else {
+            return Enums.OrderStatus.FAILED;
+        }
     }
 
     @Override

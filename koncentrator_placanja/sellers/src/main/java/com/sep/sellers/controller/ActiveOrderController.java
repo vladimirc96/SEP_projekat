@@ -1,6 +1,7 @@
 package com.sep.sellers.controller;
 
 import com.sep.sellers.dto.ActiveOrderDTO;
+import com.sep.sellers.dto.FinalizeOrderDTO;
 import com.sep.sellers.dto.InitOrderRequestDTO;
 import com.sep.sellers.dto.InitOrderResponseDTO;
 import com.sep.sellers.service.ActiveOrderService;
@@ -26,6 +27,14 @@ public class ActiveOrderController {
     public ResponseEntity<ActiveOrderDTO> get(@PathVariable("activeOrderId") String activeOrderId){
         return new ResponseEntity<>(activeOrderService.findOneById(Long.parseLong(activeOrderId)), HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/finalize", method = RequestMethod.POST)
+    public @ResponseBody ResponseEntity finalizeActiveOrder(@RequestBody FinalizeOrderDTO foDTO){
+        activeOrderService.finalizeOrder(foDTO);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
 
 
 }

@@ -37,7 +37,7 @@ const appRoutes: Routes = [
 	{ path: 'centrala', component: CentralaMockComponent},
 	{ path: 'centrala/rad/:id', component: RadComponent},
 	{ path: 'sellers/:id', component: SellerMethodsComponent},
-	{ path: 'bitcoin', component: BitcoinComponent },
+	{ path: 'bitcoin/:id', component: BitcoinComponent },
 	{ path: 'bank', component: BankComponent },
 	{ path: 'success', component: SucccessComponent },
 	{ path: 'cancel', component: CancelComponent },

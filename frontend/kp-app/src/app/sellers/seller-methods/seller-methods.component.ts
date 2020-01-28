@@ -57,7 +57,8 @@ export class SellerMethodsComponent implements OnInit {
 				this.router.navigate(["/paypal"]);
 				break;
 			case "Bitcoin":
-				this.router.navigate(["/bitcoin"]);
+				console.log(this.id);
+				this.router.navigate(["/bitcoin/" + this.id]);
 				break;
 		
 			default:

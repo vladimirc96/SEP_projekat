@@ -20,6 +20,9 @@ public class SellerService implements ISellerService {
     @Autowired
     RegistrationClient registrationClient;
 
+    @Autowired
+    CryptoService cryptoService;
+
     @Override
     @Transactional(rollbackFor = AccessDeniedException.class)
     public SellerDTO registerSeller(SellerDTO sDTO) throws AccessDeniedException {
@@ -27,7 +30,7 @@ public class SellerService implements ISellerService {
         Seller s = new Seller();
 
         s.setId(sDTO.getId());
-        s.setAuthToken(sDTO.getAuthToken());
+        s.setAuthToken(cryptoService.encrypt(sDTO.getAuthToken()));
 
         s = _sellerRepo.save(s);
 
