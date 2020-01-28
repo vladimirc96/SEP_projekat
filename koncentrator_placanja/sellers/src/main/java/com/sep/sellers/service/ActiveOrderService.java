@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class ActiveOrderService {
 
+    private final static String redirectUrl = "https://localhost:4200/sellers/";
+
     @Autowired
     private ActiveOrderRepository activeOrderRepo;
 
@@ -26,7 +28,7 @@ public class ActiveOrderService {
 
         activeOrder = activeOrderRepo.save(activeOrder);
 
-        return new InitOrderResponseDTO("https://localhost:8500/sellers/sellers/" + activeOrder.getId());
+        return new InitOrderResponseDTO(redirectUrl + activeOrder.getSeller_id());
     }
 
 
