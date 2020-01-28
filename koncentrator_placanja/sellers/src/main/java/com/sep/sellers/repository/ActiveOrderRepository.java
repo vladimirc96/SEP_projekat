@@ -4,4 +4,7 @@ import com.sep.sellers.model.ActiveOrder;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ActiveOrderRepository extends JpaRepository<ActiveOrder, Long> {
+
+    ActiveOrder findOneById(Long id);
+
 }

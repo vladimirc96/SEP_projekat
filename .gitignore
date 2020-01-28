@@ -1,2 +1,6 @@
 .idea
 /logs
+/koncentrator_placanja/paypal-service/logs
+/koncentrator_placanja/bitcoin-service/logs
+/koncentrator_placanja/sellers/logs
+/koncentrator_placanja/bank-service/logs

@@ -1,7 +1,8 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ANALYZE_FOR_ENTRY_COMPONENTS } from "@angular/core";
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { SellersService } from 'src/app/services/sellers.service';
 import { CentralaService } from 'src/app/services/centrala.service';
+import { ActiveOrderService } from 'src/app/services/active-order.service';
 
 @Component({
   selector: "app-seller-methods",
@@ -12,14 +13,15 @@ export class SellerMethodsComponent implements OnInit {
 
 	id: number;
 	seller: any = null;
+	activeOrder: any = null;
 
-	constructor(private route: ActivatedRoute, private router: Router, private sellerService: SellersService, private centralaService: CentralaService) {
+	constructor(private activeOrderService: ActiveOrderService,private route: ActivatedRoute, private router: Router, private sellerService: SellersService, private centralaService: CentralaService) {
 		this.route.params.subscribe((params: Params) => {
 			const param = +params["id"];
 
 			if (!isNaN(param)) {
 				this.id = param;
-				this.fetchSeller();
+				this.getActiveOrder();
 			} else {
 				this.router.navigate(["/"]);
 			}
@@ -29,11 +31,21 @@ export class SellerMethodsComponent implements OnInit {
 	ngOnInit() {
 	}
 
-	fetchSeller() {
-		this.sellerService.getSeller(this.id).subscribe(
+	fetchSeller(id) {
+		this.sellerService.getSeller(id).subscribe(
 			success => this.seller = success,
 			error => alert(error.error)
 		)
+	}
+
+	getActiveOrder(){
+		this.activeOrderService.getActiveOrder(this.id).subscribe(
+			(success) => {
+				this.activeOrder = success;
+				this.fetchSeller(this.activeOrder.sellerId);
+			},
+			error => alert(error.error),
+		);
 	}
 
 	onClickPM(pm) {
