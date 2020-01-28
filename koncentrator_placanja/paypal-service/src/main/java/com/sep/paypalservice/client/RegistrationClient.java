@@ -19,10 +19,9 @@ public class RegistrationClient {
     private final long paymentMethodId = 2;
 
     @Autowired
-    HttpComponentsClientHttpRequestFactory requestFactory;
+    RestTemplate restTemplate;
 
     public void approveRegistration(PPClientDTO ppClientDTO) throws AccessDeniedException {
-        RestTemplate restTemplate = new RestTemplate(this.requestFactory);
         ApproveDTO approveDTO = new ApproveDTO(ppClientDTO.getId(), ppClientDTO.getPassword(), this.paymentMethodId);
 
         try {

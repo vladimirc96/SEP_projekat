@@ -55,6 +55,12 @@ public class SellerService {
         return kprDTO;
     }
 
+    public KPRegistrationDTO reviewRegistration(KPRegistrationDTO kprDTO) {
+        Seller s = _sellerRepo.findById(kprDTO.getSellerId()).get();
+        kprDTO.setRegistrationPageRedirectUrl(this.REG_PAGE_REDIRECT_URL + s.getId());
+        return  kprDTO;
+    }
+
     public SellerDTO postRegistration(SellerDTO sDTO) {
 
 
@@ -131,5 +137,6 @@ public class SellerService {
     }
 
     private boolean checkPass(String pw, String hashpw) { return BCrypt.checkpw(pw, hashpw); }
+
 
 }

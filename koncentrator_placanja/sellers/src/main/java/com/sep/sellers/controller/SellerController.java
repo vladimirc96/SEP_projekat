@@ -32,6 +32,11 @@ public class SellerController {
         return new ResponseEntity(sellerService.initRegistration(kprDTO), HttpStatus.CREATED);
     }
 
+    @PostMapping(value = "/register/review")
+    public @ResponseBody ResponseEntity reviewRegistration(@RequestBody KPRegistrationDTO kprDTO) {
+        return new ResponseEntity(sellerService.reviewRegistration(kprDTO), HttpStatus.CREATED);
+    }
+
     // todo edit order
 
     @PostMapping(value = "/register")
