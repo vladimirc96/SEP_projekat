@@ -28,7 +28,7 @@ public class ActiveOrderService {
 
         activeOrder = activeOrderRepo.save(activeOrder);
 
-        return new InitOrderResponseDTO(redirectUrl + activeOrder.getSeller_id());
+        return new InitOrderResponseDTO(redirectUrl + activeOrder.getId());
     }
 
 
