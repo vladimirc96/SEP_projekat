@@ -21,6 +21,8 @@ import java.util.concurrent.CompletableFuture;
 public class ActiveOrderService {
 
     private final static String redirectUrl = "https://localhost:4200/sellers/";
+    private final static String redirectPlanUrl = "https://localhost:4200/sellersasdasdasd/";
+
 
     @Autowired
     private ActiveOrderRepository activeOrderRepo;

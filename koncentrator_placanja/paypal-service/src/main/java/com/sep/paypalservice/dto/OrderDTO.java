@@ -7,17 +7,27 @@ public class OrderDTO {
     private String description;
     private Long id;
     private String name;
+    private long activeOrderId;
 
     public OrderDTO() {
 
     }
 
-    public OrderDTO(double price, String currency, String description, Long id, String name) {
+    public OrderDTO(double price, String currency, String description, Long id, String name, long activeOrderId) {
         this.price = price;
         this.currency = currency;
         this.description = description;
         this.id = id;
         this.name = name;
+        this.activeOrderId = activeOrderId;
+    }
+
+    public long getActiveOrderId() {
+        return activeOrderId;
+    }
+
+    public void setActiveOrderId(long activeOrderId) {
+        this.activeOrderId = activeOrderId;
     }
 
     public double getPrice() {

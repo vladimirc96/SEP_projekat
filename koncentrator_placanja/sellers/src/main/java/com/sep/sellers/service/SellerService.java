@@ -116,6 +116,8 @@ public class SellerService {
         String retUrl = "https://localhost:4200/subscriptions/";
         String enc = Base64.getEncoder().encodeToString(id.getBytes());
 
+        // TODO form ACtiveOrder
+
         return retUrl.concat(enc);
     }
 

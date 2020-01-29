@@ -41,7 +41,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `seller_payment_method` WRITE;
 /*!40000 ALTER TABLE `seller_payment_method` DISABLE KEYS */;
-INSERT INTO `seller_payment_method` (`id`, `registration_success`, `payment_method_id`, `seller_id`) VALUES (1,0,1,1),(2,0,2,1),(3,0,3,1);
+INSERT INTO `seller_payment_method` (`id`, `registration_success`, `payment_method_id`, `seller_id`) VALUES (1,0,1,1),(2,1,2,1),(3,0,3,1);
 /*!40000 ALTER TABLE `seller_payment_method` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

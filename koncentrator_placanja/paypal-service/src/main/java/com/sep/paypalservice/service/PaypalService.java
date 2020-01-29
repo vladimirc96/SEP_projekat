@@ -60,6 +60,7 @@ public class PaypalService {
             tr.setStatus(payment.getState());
             PPClient cl = repo.findOneById(orderDTO.getId());
             tr.setClient(cl);
+            tr.setActiveOrderId(orderDTO.getActiveOrderId());
             transacRepo.save(tr);
 
             final PPTransaction transaction = tr;
