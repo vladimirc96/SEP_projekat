@@ -12,7 +12,7 @@
     <div class="row">
         <div class="col-5">
             <label for="description" class="mt-4">Opis transakcije (opciono)</label>
-            <input type="text" id="description" [(ngModel)] = 'desc' class="form-control" name="description" placeholder="Opis...">
+            <input type="text" id="description" [(ngModel)] = 'desc' class="form-control" name="description" placeholder="Opis..." [disabled]="!transaction">
         </div>
     </div>
 

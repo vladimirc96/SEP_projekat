@@ -18,7 +18,7 @@ public class OrderClient {
     @Autowired
     RestTemplate restTemplate;
 
-    private final String KP_FINALIZE_ORDER_URL = "https://localhost:8342/sellers/active-order/finalize";
+    private final String KP_FINALIZE_ORDER_URL = "https://localhost:8342/active-order/finalize";
 
     public void finalizeOrder(FinalizeOrderDTO foDTO)  {
 

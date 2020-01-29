@@ -18,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.AccessDeniedException;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
@@ -74,14 +75,24 @@ public class SellerService {
 
         s = _sellerRepo.save(s);
 
-        for (PaymentMethodDTO pmDTO : sDTO.getPaymentMethods()) {
-            SellerPaymentMethod sellerPM  = new SellerPaymentMethod();
+        List<PaymentMethod> paymentMethods = _paymentRepo.findAll();
 
+        for (PaymentMethod pm: paymentMethods) {
+            SellerPaymentMethod sellerPM  = new SellerPaymentMethod();
             sellerPM.setSeller(s);
-            sellerPM.setPaymentMethod(choosePaymentMethod(pmDTO.getId()));
+            sellerPM.setPaymentMethod(pm);
             sellerPM.setRegistrationSuccess(false);
             s.getPaymentMethods().add(sellerPM);
         }
+
+//        for (PaymentMethodDTO pmDTO : sDTO.getPaymentMethods()) {
+//            SellerPaymentMethod sellerPM  = new SellerPaymentMethod();
+//
+//            sellerPM.setSeller(s);
+//            sellerPM.setPaymentMethod(choosePaymentMethod(pmDTO.getId()));
+//            sellerPM.setRegistrationSuccess(false);
+//            s.getPaymentMethods().add(sellerPM);
+//        }
 
         s = _sellerRepo.save(s);
 

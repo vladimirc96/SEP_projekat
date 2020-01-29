@@ -5,6 +5,7 @@ import com.sep.bitcoinservice.enums.Enums;
 public class OrderDTO {
 
     private long sellerId;
+    private long activeOrderId;
     private Enums.Currency currency;
     private double amount;
     private String title;
@@ -14,12 +15,21 @@ public class OrderDTO {
     public OrderDTO() {
     }
 
-    public OrderDTO(long sellerId, Enums.Currency currency, double amount, String title, String description) {
+    public OrderDTO(long sellerId, long activeOrderId, Enums.Currency currency, double amount, String title, String description) {
         this.sellerId = sellerId;
+        this.activeOrderId = activeOrderId;
         this.currency = currency;
         this.amount = amount;
         this.title = title;
         this.description = description;
+    }
+
+    public long getActiveOrderId() {
+        return activeOrderId;
+    }
+
+    public void setActiveOrderId(long activeOrderId) {
+        this.activeOrderId = activeOrderId;
     }
 
     public long getSellerId() {

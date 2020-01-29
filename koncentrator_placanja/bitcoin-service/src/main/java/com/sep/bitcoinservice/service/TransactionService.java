@@ -92,6 +92,7 @@ public class TransactionService implements ITransactionService {
                 CGOrderFullDTO.class);
 
         Transaction t = Transaction.convertObjects(new Transaction(), response.getBody());
+        t.setActiveOrderId(order.getActiveOrderId());
 
         if (transactionRepo.existsById(t.getOrderId())) {
             throw new InstanceAlreadyExistsException("Order is already created.");
@@ -118,17 +119,22 @@ public class TransactionService implements ITransactionService {
 
 
 
-                            System.out.println("Loop cancel");
-                            timer.cancel();
-
+                            System.out.println("Loop canceled.");
                             FinalizeOrderDTO foDTO = new FinalizeOrderDTO();
                             foDTO.setOrderStatus(convertStatus(tDTO.getStatus()));
                             foDTO.setActiveOrderId(t.getActiveOrderId());
                             orderClient.finalizeOrder(foDTO);
+                            timer.cancel();
+
                         }
 
                     } catch (Exception e) {
                         e.printStackTrace();
+                        System.out.println("Loop canceled due to an exception, status FAILED sent to sellers.");
+                        FinalizeOrderDTO foDTO = new FinalizeOrderDTO();
+                        foDTO.setOrderStatus(Enums.OrderStatus.FAILED);
+                        foDTO.setActiveOrderId(transaction.getActiveOrderId());
+                        orderClient.finalizeOrder(foDTO);
                         timer.cancel();
                     }
 
