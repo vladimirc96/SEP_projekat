@@ -99,11 +99,22 @@ public class SellerService {
     }
 
     public String createPlan(ActiveBillingPlanDTO dto) {
-        String retUrl = "https://localhost:4200/paypal/plan/";
-        ActiveBillingPlan plan = new ActiveBillingPlan(dto);
-        plan = planRepo.save(plan);
-        String temp = retUrl + plan.getId();
-        return retUrl + plan.getId();
+        Seller seller = _sellerRepo.findById(dto.getSellerId()).get();
+        boolean imaPP = false;
+        for(SellerPaymentMethod spm : seller.getPaymentMethods()) {
+            if(spm.getPaymentMethod().getName().equals("PayPal")) {
+                imaPP = true;
+                break;
+            }
+        }
+        if(imaPP) {
+            String retUrl = "https://localhost:4200/paypal/plan/";
+            ActiveBillingPlan plan = new ActiveBillingPlan(dto);
+            plan = planRepo.save(plan);
+            String temp = retUrl + plan.getId();
+            return retUrl + plan.getId();
+        }
+        return "noPP";
     }
 
     public ActiveBillingPlanDTO getActivePlan(long id) {
@@ -111,14 +122,10 @@ public class SellerService {
         return new ActiveBillingPlanDTO(a);
     }
 
-    public String getSubscriptions(long sellerID) {
-        String id = Long.toString(sellerID);
-        String retUrl = "https://localhost:4200/subscriptions/";
-        String enc = Base64.getEncoder().encodeToString(id.getBytes());
-
-        // TODO form ACtiveOrder
-
-        return retUrl.concat(enc);
+    public String removeActivePlan(long id) {
+        ActiveBillingPlan a = planRepo.findOneById(id);
+        planRepo.delete(a);
+        return "done";
     }
 
     public void approveRegistration(ApproveDTO approveDTO) throws AccessDeniedException {

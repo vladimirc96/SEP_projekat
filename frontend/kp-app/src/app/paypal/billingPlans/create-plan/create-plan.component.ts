@@ -15,6 +15,7 @@ export class CreatePlanComponent implements OnInit {
   ret: any;
   rad: any = null;
   id: any;
+  status: boolean = false;
 
   myForm: FormGroup;
   name: FormControl;
@@ -32,7 +33,6 @@ export class CreatePlanComponent implements OnInit {
 
 			if (!isNaN(param)) {
         this.id = param;
-        console.log("ID: " + this.id);
         
 			} else {
 				this.router.navigate(["/"]);
@@ -79,32 +79,39 @@ export class CreatePlanComponent implements OnInit {
   }
 
   onSubmitPlan(form: NgForm) {
+    this.status = true;
 
-      let planDTO = {
-        name: this.myForm.value.name,
-        description: this.myForm.value.description,
-        frequency: this.myForm.value.frequency,
-        freqInterval: this.myForm.value.freqInterval,
-        cycles: this.myForm.value.cycles,
-        amount: this.myForm.value.amount,
-        currency: this.myForm.value.currency,
-        amountStart: this.myForm.value.amountStart,
-        merchantId: this.rad.sellerId
-      }
-  
-      this.palService.createPlan(planDTO).subscribe(
-        (data) => {
-          this.ret = data;
-          if(this.ret === "PlanCreated") {
-            alert("Plan created!");
-            window.location.href = "http://localhost:4201/";
-          } else {
-            alert("Plan WASN'T created");
-          }
-        }, (error) => {
-          alert("error");
+    let planDTO = {
+      name: this.myForm.value.name,
+      description: this.myForm.value.description,
+      frequency: this.myForm.value.frequency,
+      freqInterval: this.myForm.value.freqInterval,
+      cycles: this.myForm.value.cycles,
+      amount: this.myForm.value.amount,
+      currency: this.myForm.value.currency,
+      amountStart: this.myForm.value.amountStart,
+      merchantId: this.rad.sellerId
+    }
+
+    this.palService.createPlan(planDTO).subscribe(
+      (data) => {
+        this.ret = data;
+        if(this.ret === "PlanCreated") {
+          this.sellersService.removeActivePlan(this.id).subscribe(
+              (data) => {
+                alert("Plan created!");
+                window.location.href = "http://localhost:4201/";
+              }, (error) => {
+                alert("error");
+              }
+            );
+        } else {
+          alert("Plan WASN'T created");
         }
-      );
+      }, (error) => {
+        alert("error");
+      }
+    );
   }
 
   onKeydown(e) {

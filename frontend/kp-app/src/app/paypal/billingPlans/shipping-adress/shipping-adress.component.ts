@@ -3,6 +3,7 @@ import { CentralaService } from 'src/app/services/centrala.service';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { PaypalService } from 'src/app/services/paypal.service';
 import { FormGroup, FormControl, Validators, NgForm } from '@angular/forms';
+import { isNgTemplate } from '@angular/compiler';
 
 @Component({
   selector: 'app-shipping-adress',
@@ -28,10 +29,10 @@ export class ShippingAdressComponent implements OnInit {
   constructor(private palService: PaypalService, private router: Router, private route: ActivatedRoute) {
     this.route.params.subscribe((params: Params) => {
       const plan = +params["pl"];
-      const param = params["id"]
+      const id = +params["id"]
 
-			if (param !== "" && !isNaN(plan)) {
-        this.id = param;
+			if (!isNaN(id) || !isNaN(plan)) {
+        this.id = id;
         this.planId = plan;
 			} else {
 				window.location.href = this.NC;

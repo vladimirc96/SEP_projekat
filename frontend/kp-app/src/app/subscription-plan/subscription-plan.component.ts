@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { PaypalService } from '../services/paypal.service';
+import { ActiveOrderService } from '../services/active-order.service';
+import { SellersService } from '../services/sellers.service';
 
 @Component({
   selector: 'app-subscription-plan',
@@ -15,15 +17,16 @@ export class SubscriptionPlanComponent implements OnInit {
   PayPalPlans: any;
 
   imaPPPlanova: boolean = false;
+  seller: any = null;
+	activeOrder: any = null;
 
-  constructor(private paypalService: PaypalService, private route: ActivatedRoute, private router: Router) {
+  constructor(private activeOrderService: ActiveOrderService, private sellerService: SellersService, private paypalService: PaypalService, private route: ActivatedRoute, private router: Router) {
     this.route.params.subscribe((params: Params) => {
-			const param = params["id"];
+			const param = +params["id"];
 
-			if (param !== "") {
+			if (!isNaN(param)) {
         this.id = param;
-        //izvuci activeOrder iz urla i onda prvo posalji u seller da uzmes sellerID pa onda posalji paypalu dalje sve
-				this.getPayPalSubscriptions(param);
+        this.getActiveOrder();
 			} else {
 				window.location.href = this.NC;
 			}
@@ -31,6 +34,16 @@ export class SubscriptionPlanComponent implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  getActiveOrder(){
+		this.activeOrderService.getActiveOrder(this.id).subscribe(
+			(success) => {
+        this.activeOrder = success;
+        this.getPayPalSubscriptions(this.activeOrder.sellerId);
+			},
+			error => alert(error.error),
+		);
   }
 
   getPayPalSubscriptions(id) {
@@ -50,7 +63,7 @@ export class SubscriptionPlanComponent implements OnInit {
 
   onPPSub() {
     localStorage.setItem("plan", this.ppizbor);
-    window.location.href = "https://localhost:4200/paypal/plan/subscribe/".concat(this.ppizbor).concat("/").concat(this.id);
+    window.location.href = "https://localhost:4200/paypal/plan/subscribe/".concat(this.ppizbor).concat("/").concat(this.activeOrder.sellerId);
   }
 
 }

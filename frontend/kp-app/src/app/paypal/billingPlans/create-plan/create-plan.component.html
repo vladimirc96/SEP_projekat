@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" [ngClass]="status ? 'wait' : 'point'">
     <div class="forma">
         <div class="centar">
             <h4>Plan pretplate</h4>
@@ -47,7 +47,7 @@
             </div>
 
             <div class="form-group centar">
-                <input type="submit" value="Create & activate plan" class="btn btn-primary" [disabled]="!myForm.valid">
+                <input type="submit" value="Create & activate plan" [ngClass]="status ? 'wait' : 'point'" class="btn btn-primary" [disabled]="!myForm.valid">
             </div>
         </form>
     </div>

@@ -69,11 +69,9 @@ public class SellerController {
         return new ResponseEntity(sellerService.getActivePlan(id), HttpStatus.CREATED);
     }
 
-    @PostMapping(value = "/getSubscriptions")
-    public @ResponseBody ResponseEntity getSubs(@RequestBody ActiveBillingPlanDTO dto) {
-        return new ResponseEntity(sellerService.getSubscriptions(dto.getSellerId()), HttpStatus.CREATED);
+    @GetMapping(value = "/removeActivePlan/{id}")
+    public @ResponseBody ResponseEntity removeActivePlan(@PathVariable("id") long id) {
+        return new ResponseEntity(sellerService.removeActivePlan(id), HttpStatus.CREATED);
     }
-
-
 
 }

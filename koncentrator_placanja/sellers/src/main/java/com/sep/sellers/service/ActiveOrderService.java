@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Base64;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CompletableFuture;
@@ -21,7 +22,7 @@ import java.util.concurrent.CompletableFuture;
 public class ActiveOrderService {
 
     private final static String redirectUrl = "https://localhost:4200/sellers/";
-    private final static String redirectPlanUrl = "https://localhost:4200/sellersasdasdasd/";
+    private final static String redirectSubUrl = "https://localhost:4200/subscriptions/";
 
 
     @Autowired
@@ -50,6 +51,12 @@ public class ActiveOrderService {
         activeOrder = activeOrderRepo.save(activeOrder);
 
         setTimerForCheckingOrderStatus(activeOrder.getId());
+
+        System.out.println("orderType: " + initOrderRequestDTO.getOrderType());
+        if(initOrderRequestDTO.getOrderType().toString() == "ORDER_SUBSCRIPTION") {
+            System.out.println("USAO U REDIRECT SUB URL: " + redirectSubUrl + activeOrder.getId());
+            return new InitOrderResponseDTO(redirectSubUrl + activeOrder.getId());
+        }
 
         return new InitOrderResponseDTO(redirectUrl + activeOrder.getId());
     }

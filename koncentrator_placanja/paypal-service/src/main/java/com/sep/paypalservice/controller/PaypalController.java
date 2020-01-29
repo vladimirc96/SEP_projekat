@@ -48,8 +48,8 @@ public class PaypalController {
     }
 
     @RequestMapping(value = "/getSpecificPlans/{sellerId}", method = RequestMethod.GET)
-    public List<ShowPlansDTO> getSpecificPlans(@PathVariable("sellerId") String sellerId) {
-        return service.getPlansEnc(sellerId);
+    public List<ShowPlansDTO> getSpecificPlans(@PathVariable("sellerId") long sellerId) {
+        return service.getPlans(sellerId);
     }
 
 }

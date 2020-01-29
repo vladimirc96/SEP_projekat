@@ -1,7 +1,7 @@
 package com.sep.paypalservice.service;
 
-import com.paypal.api.payments.*;
 import com.paypal.api.payments.Currency;
+import com.paypal.api.payments.*;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
 import com.sep.paypalservice.client.OrderClient;
@@ -13,19 +13,15 @@ import com.sep.paypalservice.model.PPTransaction;
 import com.sep.paypalservice.repository.ClientsRepository;
 import com.sep.paypalservice.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.MalformedURLException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -47,6 +43,9 @@ public class PaypalService {
 
     @Autowired
     OrderClient orderClient;
+
+    @Autowired
+    RestTemplate restTemplate;
 
     private Logging logger = new Logging(this);
 
@@ -177,6 +176,56 @@ public class PaypalService {
         BillingPlan bp = billingPlanService.findOneById(dto.getPlanId());
         try {
             Agreement agreement = createAgreement(dto, bp.getPlanId());
+            System.out.println("AGREEMENT KAD SE KREIRA: ");
+            System.out.println(agreement.toJSON());
+            //TODO: POGLEDAJ KAKO AGREEMENT IZGLEDA KAD SE NAPRAVI(STATUS), SACUVAJ GA U BAZU I STAVI TIMER
+//            final PPTransaction transaction = tr;
+//
+//            CompletableFuture<Object> completableFuture = CompletableFuture.supplyAsync(() -> {
+//                Timer timer = new Timer();
+//                long startTime = System.currentTimeMillis();
+//                timer.scheduleAtFixedRate(new TimerTask(){
+//                    @Override
+//                    public void run(){
+//
+//                        System.out.println("Loop ping");
+//                        long stopTime = System.currentTimeMillis();
+//                        if(stopTime - startTime < 600000) {
+//                            try {
+//                                PPTransaction t = transacRepo.findOneByOrderId(transaction.getOrderId());
+//
+//                                if (!t.getStatus().equals("created")) {
+//                                    System.out.println("Loop cancel");
+//                                    FinalizeOrderDTO foDTO = new FinalizeOrderDTO();
+//                                    foDTO.setOrderStatus(convertStatus(t.getStatus()));
+//                                    foDTO.setActiveOrderId(t.getActiveOrderId());
+//                                    orderClient.finalizeOrder(foDTO);
+//                                    timer.cancel();
+//                                }
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                                FinalizeOrderDTO foDTO = new FinalizeOrderDTO();
+//                                foDTO.setOrderStatus(Enums.OrderStatus.FAILED);
+//                                foDTO.setActiveOrderId(transaction.getActiveOrderId());
+//                                orderClient.finalizeOrder(foDTO);
+//                                timer.cancel();
+//                            }
+//                        } else {
+//                            PPTransaction t = transacRepo.findOneByOrderId(transaction.getOrderId());
+//                            t.setStatus("suspended");
+//                            t = transacRepo.save(t);
+//                            FinalizeOrderDTO foDTO = new FinalizeOrderDTO();
+//                            foDTO.setOrderStatus(Enums.OrderStatus.FAILED);
+//                            foDTO.setActiveOrderId(t.getActiveOrderId());
+//                            orderClient.finalizeOrder(foDTO);
+//                            System.out.println("Loop cancel TIMER");
+//                            timer.cancel();
+//                        }
+//                    }
+//                },5000,10000);
+//                return "OK";
+//            });
+
             for (Links links : agreement.getLinks()) {
                 if ("approval_url".equals(links.getRel())) {
                     return links.getHref();
@@ -326,11 +375,7 @@ public class PaypalService {
         shipping.setCountryCode(dto.getCountryCode());
         agreement.setShippingAddress(shipping);
 
-        byte[] actualByte = Base64.getDecoder().decode(dto.getId());
-        String dec = new String(actualByte);
-        long actualID = Long.parseLong(dec);
-
-        APIContext apiContext = getContextAndMerchant(actualID);
+        APIContext apiContext = getContextAndMerchant(dto.getId());
 
         return agreement.create(apiContext);
     }
@@ -347,17 +392,12 @@ public class PaypalService {
         return payment.execute(apiContext, paymentExecute);
     }
 
-    public List<ShowPlansDTO> getPlansEnc(String selID) {
-        byte[] actualByte = Base64.getDecoder().decode(selID);
-        String dec = new String(actualByte);
+    public List<ShowPlansDTO> getPlans(long sellerID) {
         ArrayList<ShowPlansDTO> planovi = new ArrayList<>();
-        if(!dec.equals("")) {
-            long sellerID = Long.parseLong(dec);
-            List<BillingPlan> bilplans = billingPlanService.findBySeller(sellerID);
-            for(BillingPlan bp : bilplans) {
-                ShowPlansDTO temp = new ShowPlansDTO(bp.getId(), bp.getName(), bp.getFrequency(), bp.getFreqInterval(), bp.getCycles(), bp.getAmount(), bp.getCurrency(), bp.getAmountStart());
-                planovi.add(temp);
-            }
+        List<BillingPlan> bilplans = billingPlanService.findBySeller(sellerID);
+        for(BillingPlan bp : bilplans) {
+            ShowPlansDTO temp = new ShowPlansDTO(bp.getId(), bp.getName(), bp.getFrequency(), bp.getFreqInterval(), bp.getCycles(), bp.getAmount(), bp.getCurrency(), bp.getAmountStart());
+            planovi.add(temp);
         }
 
         return planovi;
