@@ -31,8 +31,8 @@ const appRoutes: Routes = [
 	{ path: 'paypal/success/payment', component: PaymentSuccessComponent},
 	{ path: 'payment/verifying', component: LoadingPaymentComponent},
 	{ path: 'paypal/plan/:id', component: CreatePlanComponent},
-	{ path: 'paypal/plan/subscribe', component: ShippingAdressComponent},
-	{ path: 'paypal/plan/execute', component: ExecutePlanComponent},
+	{ path: 'paypal/plan/subscribe/:pl/:id', component: ShippingAdressComponent},
+	{ path: 'paypal/execute/plan', component: ExecutePlanComponent},
 	{ path: 'centrala', component: CentralaMockComponent},
 	{ path: 'centrala/rad/:id', component: RadComponent},
 	{ path: 'sellers/:id', component: SellerMethodsComponent},
@@ -49,7 +49,7 @@ const appRoutes: Routes = [
 	]
 	},
 	{ path: 'reg/:sellerId', component: SellerRegistrationComponent },
-	{ path: 'subscriptions', component: SubscriptionPlanComponent}
+	{ path: 'subscriptions/:id', component: SubscriptionPlanComponent}
 ]
 
 @NgModule({

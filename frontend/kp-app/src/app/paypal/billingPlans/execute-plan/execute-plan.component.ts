@@ -14,23 +14,24 @@ export class ExecutePlanComponent implements OnInit {
   showInvalid: boolean = false;
 
   constructor(private router: Router, private palService: PaypalService) {
-
-  }
-
-  ngOnInit() {
     this.ref = this.router.url;
     const str: string[] = this.ref.split("?");
     const tkn: string[] = str[1].split("=");
-    this.pass(tkn[1]);
+    const plan = localStorage.getItem("plan");
+    console.log(plan);
+    this.pass(tkn[1], plan);
   }
 
-  pass(token) {
-    this.palService.executePlan(token).subscribe(
+  ngOnInit() {
+  }
+
+  pass(token, planID) {
+    this.palService.executePlan(token, planID).subscribe(
       (data) => {
         this.ret = data;
         if(this.ret === "success") {
           alert("You are now subscribed!");
-          this.router.navigate(['/centrala']);
+          window.location.href = "http://localhost:4201";
         } else {
           alert("Error while executing subscription plan.");
         }
@@ -41,7 +42,7 @@ export class ExecutePlanComponent implements OnInit {
   }
 
   goHome() {
-    window.location.href = "https://localhost:4200/centrala";
+    window.location.href = "http://localhost:4201";
   }
 
 }

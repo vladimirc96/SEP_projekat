@@ -7,7 +7,8 @@ public class ShippingDTO {
     private String state;
     private String postalCode;
     private String countryCode;
-    private Long id;
+    private long planId;
+    private String id;
 
     public String getStreet() {
         return street;
@@ -29,11 +30,15 @@ public class ShippingDTO {
         return countryCode;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public long getPlanId() {
+        return planId;
+    }
+
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -55,5 +60,9 @@ public class ShippingDTO {
 
     public void setCountryCode(String countryCode) {
         this.countryCode = countryCode;
+    }
+
+    public void setPlanId(long planId) {
+        this.planId = planId;
     }
 }

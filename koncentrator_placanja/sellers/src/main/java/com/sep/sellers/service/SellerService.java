@@ -17,7 +17,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
 import java.nio.file.AccessDeniedException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
@@ -99,6 +107,14 @@ public class SellerService {
     public ActiveBillingPlanDTO getActivePlan(long id) {
         ActiveBillingPlan a = planRepo.findOneById(id);
         return new ActiveBillingPlanDTO(a);
+    }
+
+    public String getSubscriptions(long sellerID) {
+        String id = Long.toString(sellerID);
+        String retUrl = "https://localhost:4200/subscriptions/";
+        String enc = Base64.getEncoder().encodeToString(id.getBytes());
+
+        return retUrl.concat(enc);
     }
 
     public void approveRegistration(ApproveDTO approveDTO) throws AccessDeniedException {
