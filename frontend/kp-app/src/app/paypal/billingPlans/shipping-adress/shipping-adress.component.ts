@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CentralaService } from 'src/app/services/centrala.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 import { PaypalService } from 'src/app/services/paypal.service';
 import { FormGroup, FormControl, Validators, NgForm } from '@angular/forms';
 
@@ -14,6 +14,9 @@ export class ShippingAdressComponent implements OnInit {
   status: boolean = false;
   rad: any = null;
   ret: any;
+  id: any;
+  planId: any;
+  NC: string = "http://localhost:4201";
   
   myForm: FormGroup;
   street: FormControl;
@@ -22,8 +25,18 @@ export class ShippingAdressComponent implements OnInit {
   postalCode: FormControl;
   countryCode: FormControl;
 
-  constructor(private palService: PaypalService, private router: Router, private centralaService: CentralaService) {
-    this.rad = this.centralaService.activeRad;
+  constructor(private palService: PaypalService, private router: Router, private route: ActivatedRoute) {
+    this.route.params.subscribe((params: Params) => {
+      const plan = +params["pl"];
+      const param = params["id"]
+
+			if (param !== "" && !isNaN(plan)) {
+        this.id = param;
+        this.planId = plan;
+			} else {
+				window.location.href = this.NC;
+			}
+		});
   }
 
   ngOnInit() {
@@ -58,7 +71,8 @@ export class ShippingAdressComponent implements OnInit {
       state: this.myForm.value.state,
       postalCode: this.myForm.value.postalCode,
       countryCode: this.myForm.value.countryCode,
-      id: this.rad.sellerId
+      planId: this.planId,
+      id: this.id
     }
     console.log(shippingDTO);
     this.palService.createAgreement(shippingDTO).subscribe(
@@ -70,6 +84,14 @@ export class ShippingAdressComponent implements OnInit {
         alert("error");
       }
     );
+  }
+
+  onKeydown(e) {
+    if(!((e.keyCode > 95 && e.keyCode < 106)
+      || (e.keyCode > 47 && e.keyCode < 58) 
+      || e.keyCode == 8 || e.keyCode == 37 || e.keyCode == 39 || e.keyCode == 9)) {
+        return false;
+    }
   }
 
 }

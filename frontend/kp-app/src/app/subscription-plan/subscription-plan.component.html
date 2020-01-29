@@ -1,1 +1,36 @@
-<p>subscription-plan works!</p>
+<div class="container">
+    <h3>Izaberite pretplatu:</h3>
+    <div class="casopis">
+        <div class="row">
+            <div class="col-md-10">
+                <h5>Pretplata na časopis</h5>
+                <span>(Ovde napisati i cenu i to sve sta god)</span>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary">Izaberi</button>
+            </div>
+        </div>
+    </div>
+    <div class="paypal">
+        <h5>PayPal pretplata</h5>
+        <div *ngIf="imaPPPlanova">
+            <p>Izaberite jednu od ponuđenih pretplata:</p>
+            <div class="row">
+                <div class="col-md-10">
+                    <select name="pppretplate" class="form-control" [(ngModel)] = 'ppizbor'>
+                        <option *ngFor="let plan of PayPalPlans" value={{plan.id}}>
+                          {{plan.name}}, {{plan.amount}} {{plan.currency}}, start: {{plan.amountStart}} {{plan.currency}}, cycles: {{plan.cycles}}, frequency: {{plan.frequency}}, interval: {{plan.freqInterval}}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-primary" (click)="onPPSub()">Izaberi</button>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="!imaPPPlanova">
+            <p>Trenutno za časopis koji ste izabrali ne postoje paypal pretplate.</p>
+        </div>
+        
+    </div>
+</div>

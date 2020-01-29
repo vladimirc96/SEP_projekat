@@ -42,5 +42,4 @@ export class SellersService {
         return this.http.get(this.ENDPOINT_URI.concat("/sellers/getActivePlan/").concat(id));
     }
 
-
 }
