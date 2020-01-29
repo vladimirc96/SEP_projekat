@@ -51,7 +51,7 @@ public class PccController {
 
     // belezi ishod transakcije u odnosu na to sta banka posalje
     @RequestMapping(value  = "/transaction/{paymentId}", method = RequestMethod.PUT)
-    private ResponseEntity<String> updateTransaction(@RequestBody PaymentStatusDTO paymentStatusDTO, @PathVariable("id") String id){
+    private ResponseEntity<String> updateTransaction(@RequestBody PaymentStatusDTO paymentStatusDTO, @PathVariable("paymentId") String id){
         Transaction transaction = transactionService.findOneByPaymentId(Long.parseLong(id));
         if(transaction == null){
             return new ResponseEntity<>("Transakcija ne postoji.", HttpStatus.NOT_FOUND);

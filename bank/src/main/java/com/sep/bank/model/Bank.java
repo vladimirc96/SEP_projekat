@@ -13,6 +13,7 @@ public class Bank {
     @Column(name = "name")
     private String name;
 
+
     @OneToMany(mappedBy = "bank", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<BankAccount> accounts;
 
@@ -39,4 +40,5 @@ public class Bank {
     public void setAccounts(Set<BankAccount> accounts) {
         this.accounts = accounts;
     }
+
 }

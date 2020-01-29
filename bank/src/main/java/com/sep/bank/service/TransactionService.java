@@ -2,10 +2,8 @@ package com.sep.bank.service;
 
 import com.sep.bank.client.TransactionClient;
 import com.sep.bank.dto.*;
-import com.sep.bank.model.BankAccount;
-import com.sep.bank.model.Customer;
-import com.sep.bank.model.PaymentStatus;
-import com.sep.bank.model.Transaction;
+import com.sep.bank.model.*;
+import com.sep.bank.model.enums.BankType;
 import com.sep.bank.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -42,6 +40,9 @@ public class TransactionService {
     @Autowired
     private TransactionClient transactionClient;
 
+    @Autowired
+    private PaymentService paymentService;
+
     public Transaction create(PccRequestDTO pccRequestDTO, Long paymentId, Customer customer){
         BankAccountDTO bankAccountDTO = pccRequestDTO.getBankAccountDTO();
         Transaction transaction = new Transaction();
@@ -54,11 +55,9 @@ public class TransactionService {
         return transaction;
     }
 
-    public Transaction create(PaymentRequestDTO paymentRequest){
+    public Transaction create(PaymentRequestDTO paymentRequest, Customer customer){
         Transaction transaction = new Transaction();
-        Customer customer = customerService.findByMerchantId(paymentRequest.getMerchantId());
         transaction.setCustomer(customer);
-        transaction.setPaymentId(paymentRequest.getMerchantOrderId());
         transaction.setAmount(paymentRequest.getAmount());
         transaction.setTimestamp(new Date());
         transaction.setPaymentStatus(PaymentStatus.PROCESSING);
@@ -66,11 +65,10 @@ public class TransactionService {
         return transaction;
     }
 
-    public ResponseEntity<RedirectDTO> checkPaymentRequest(PaymentRequestDTO paymentRequest){
+    public ResponseEntity<RedirectDTO> checkPaymentRequest(PaymentRequestDTO paymentRequest, Transaction transaction, Customer customer, Payment payment){
         logger.logInfo("INFO: Provera podataka zahteva. " + paymentRequest.toString());
-        Transaction transaction = create(paymentRequest);
 
-        if(!isRequestValid(paymentRequest, transaction.getCustomer())){
+        if(!isRequestValid(paymentRequest, customer)){
             logger.logError("ERROR: Zahtev nije validan.");
             transaction.setPaymentStatus(PaymentStatus.FAILURE);
             transaction = transactionRepo.save(transaction);
@@ -79,7 +77,7 @@ public class TransactionService {
         }
 
         logger.logInfo("SUCCESS: Uspesna provera podataka zahteva. " + paymentRequest.toString());
-        return new ResponseEntity<>(new RedirectDTO(SUCCESS_URL, paymentRequest.getMerchantOrderId()), HttpStatus.OK);
+        return new ResponseEntity<>(new RedirectDTO(SUCCESS_URL, payment.getId()), HttpStatus.OK);
     }
 
     public Transaction executePayment(Transaction transaction, BankAccount bankAccount){
@@ -103,10 +101,6 @@ public class TransactionService {
 
     public void remove(Long id){
         transactionRepo.deleteById(id);
-    }
-
-    public Transaction findOneByPaymentId(Long id){
-        return transactionRepo.findOneByPaymentId(id);
     }
 
     private boolean isRequestValid(PaymentRequestDTO paymentRequest, Customer customer){

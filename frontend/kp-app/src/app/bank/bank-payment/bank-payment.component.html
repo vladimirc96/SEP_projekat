@@ -1,9 +1,11 @@
 <div class="container pt-5">
-    {{ rad.title }}
+    {{ activeOrder.title }}
     <br>
-    {{ rad.author }}
+    {{ activeOrder.orderType }}
     <br>
-    {{ rad.price }} USD
+    {{ activeOrder.orderStatus }}
+    <br>
+    {{ activeOrder.amount }} {{ activeOrder.currency }}
     <br>
     
     <button class="btn btn-primary mt-5" (click)="redirect()">Nastavi sa placanjem</button>

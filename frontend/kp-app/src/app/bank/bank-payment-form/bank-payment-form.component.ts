@@ -18,8 +18,13 @@ export class BankPaymentFormComponent implements OnInit {
   })
 
   isValid: boolean = false;
+  acquirerSuccess: boolean = false;
+  issuerSuccess: boolean = false;
+
+  responseDto: any;
   transactionId: any;
   paymentConfirmation: boolean = false;
+  
   
   constructor(private route: ActivatedRoute, private router: Router, private bankService: BankService) { 
 
@@ -52,13 +57,10 @@ export class BankPaymentFormComponent implements OnInit {
   }
 
   validate(bankAccountDTO){
-    setTimeout(() =>{
-      this.paymentConfirmation = true;
-      alert("The information are valid");
-    },1000)
     this.bankService.validateAndReserve(bankAccountDTO, this.transactionId).subscribe(
-      (success) => {
+      (response) => {
         this.paymentConfirmation = true;
+        this.responseDto = response;
         alert("The information are valid");
       },
       (error: any) => {
@@ -76,12 +78,53 @@ export class BankPaymentFormComponent implements OnInit {
       expirationDate: this.infoForm.value.expirationDate
     }
 
-    this.bankService.payment(bankAccountDTO, this.transactionId).subscribe(
-      (response: any) => { 
+    if(this.responseDto.hasOwnProperty('acquirerOrderId') && this.responseDto.hasOwnProperty('issuerOrderId')){
+      
+      this.confirmPaymentAcquirer(bankAccountDTO);
+      this.confirmPaymentIssuer(bankAccountDTO);
+      if(this.acquirerSuccess == true && this.issuerSuccess == true){
         this.router.navigate(['bank/' + this.transactionId + '/success']);
+      }else{
+        this.router.navigate(['bank/' + this.transactionId + '/failure']);
+      }
+
+
+    }else{
+
+      this.confirmPaymentAcquirer(bankAccountDTO);
+      if(this.acquirerSuccess == true){
+        this.router.navigate(['bank/' + this.transactionId + '/success']);
+      }else{
+        this.router.navigate(['bank/' + this.transactionId + '/failure']);
+      }
+
+    }
+    
+  }
+
+
+  confirmPaymentAcquirer(bankAccountDTO){
+    this.bankService.confirmPaymentAcquirer(bankAccountDTO, this.transactionId).subscribe(
+      (response: any) => { 
+        alert("Success");
+        this.acquirerSuccess = true;
       },
       (error) => {
-        this.router.navigate(['bank/' + this.transactionId + '/failure']);
+        alert("Fail");
+        this.acquirerSuccess = false;
+      }
+    )
+  }
+
+  confirmPaymentIssuer(bankAccountDTO){
+    this.bankService.confirmPaymentIssuer(bankAccountDTO, this.transactionId).subscribe(
+      (response: any) => {
+        alert("Success"); 
+        this.issuerSuccess = true;
+      },
+      (error) => {
+        alert("Fail");
+        this.issuerSuccess = false;
       }
     )
   }

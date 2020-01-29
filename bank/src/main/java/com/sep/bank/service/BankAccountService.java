@@ -129,6 +129,7 @@ public class BankAccountService {
             // rezervisi sredstva
             bankAccount.setReserved(transaction.getAmount());
             bankAccount = bankAccountRepo.save(bankAccount);
+
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
                 @Override
