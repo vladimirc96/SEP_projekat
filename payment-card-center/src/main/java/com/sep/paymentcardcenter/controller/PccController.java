@@ -34,10 +34,10 @@ public class PccController {
         }
 
         Transaction transaction = new Transaction();
-        transaction.setId(pccRequestDTO.getAcquirerOrderId());
-        transaction.setTimestamp(pccRequestDTO.getAcquirerTimepstamp());
+        transaction.setTimestamp(new Date());
         transaction.setAmount(pccRequestDTO.getAmount());
         transaction.setPaymentStatus(pccRequestDTO.getPaymentStatus());
+        transaction.setPaymentId(Long.parseLong(id));
         transaction = transactionService.save(transaction);
 
         // proslediti zahtev banci kupca
@@ -50,9 +50,9 @@ public class PccController {
     }
 
     // belezi ishod transakcije u odnosu na to sta banka posalje
-    @RequestMapping(value  = "/transaction/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value  = "/transaction/{paymentId}", method = RequestMethod.PUT)
     private ResponseEntity<String> updateTransaction(@RequestBody PaymentStatusDTO paymentStatusDTO, @PathVariable("id") String id){
-        Transaction transaction = transactionService.findOneById(Long.parseLong(id));
+        Transaction transaction = transactionService.findOneByPaymentId(Long.parseLong(id));
         if(transaction == null){
             return new ResponseEntity<>("Transakcija ne postoji.", HttpStatus.NOT_FOUND);
         }

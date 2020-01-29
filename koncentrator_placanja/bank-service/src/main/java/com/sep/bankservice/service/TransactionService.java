@@ -1,5 +1,6 @@
 package com.sep.bankservice.service;
 
+import com.sep.bankservice.dto.ActiveOrderDTO;
 import com.sep.bankservice.dto.PaymentDTO;
 import com.sep.bankservice.dto.PaymentStatusDTO;
 import com.sep.bankservice.model.Customer;
@@ -47,13 +48,13 @@ public class TransactionService {
         transactionRepo.deleteById(id);
     }
 
-    public Transaction create(PaymentDTO paymentDTO, Customer customer){
+    public Transaction create(ActiveOrderDTO activeOrderDTO, Customer customer){
         Transaction transaction = new Transaction();
-        transaction.setAmount(paymentDTO.getAmount());
+        transaction.setAmount(activeOrderDTO.getAmount());
         transaction.setTimestamp(new Date());
         transaction.setPaymentStatus(PaymentStatus.PROCESSING);
-
         transaction.setCustomer(customer);
+        transaction.setActiveOrderId(activeOrderDTO.getId());
         transaction = transactionRepo.save(transaction);
 
         final Transaction t = transaction;
@@ -93,18 +94,6 @@ public class TransactionService {
             return "OK";
         });
         return transaction;
-    }
-
-
-    private void requestUpdateTransactionBank(Transaction transaction){
-        HttpEntity<PaymentStatusDTO> entity = new HttpEntity<PaymentStatusDTO>(new PaymentStatusDTO(transaction.getPaymentStatus()));
-        ResponseEntity<String> responseEntity = restTemplate.exchange("https://localhost:8450/bank/transaction" + transaction.getId(),
-                HttpMethod.PUT, entity, String.class);
-    }
-    private void requestUpdateTransactionPcc(Transaction transaction){
-        HttpEntity<PaymentStatusDTO> entity = new HttpEntity<PaymentStatusDTO>(new PaymentStatusDTO(transaction.getPaymentStatus()));
-        ResponseEntity<String> responseEntityPcc = restTemplate.exchange("https://localhost:8452/pcc/transaction/" + transaction.getId(),
-                HttpMethod.PUT, entity, String.class);
     }
 
 }

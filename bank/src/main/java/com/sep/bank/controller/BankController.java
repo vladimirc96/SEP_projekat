@@ -1,7 +1,9 @@
 package com.sep.bank.controller;
 
+import com.sep.bank.client.TransactionClient;
 import com.sep.bank.dto.*;
 import com.sep.bank.model.BankAccount;
+import com.sep.bank.model.Customer;
 import com.sep.bank.model.Transaction;
 import com.sep.bank.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import javax.xml.ws.Response;
 import java.util.Date;
 
 @CrossOrigin
@@ -27,6 +30,11 @@ public class BankController {
     @Autowired
     private TransactionService transactionService;
 
+    @Autowired
+    private TransactionClient transactionClient;
+
+    @Autowired
+    private CustomerService customerService;
 
     // proverava zahtev za placanje
     @RequestMapping(value = "/check-payment-request", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
@@ -54,57 +62,41 @@ public class BankController {
     @RequestMapping(value = "/issuer/payment/{paymentId}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
     public ResponseEntity<IssuerResponseDTO> issuerValidate(@RequestBody PccRequestDTO pccRequestDTO, @PathVariable("paymentId") String id){
         // napraviti novu transakciju za issuer-a
-        BankAccountDTO bankAccountDTO = pccRequestDTO.getBankAccountDTO();
-        Transaction transaction = new Transaction();
-        transaction.setPaymentId(Long.parseLong(id));
-        transaction.setPaymentStatus(pccRequestDTO.getPaymentStatus());
-        transaction.setAmount(pccRequestDTO.getAmount());
-        transaction.setTimestamp(new Date());
+        Customer customer = customerService.findOneByPan(pccRequestDTO.getBankAccountDTO().getPan());
+        Transaction transaction = transactionService.create(pccRequestDTO, Long.parseLong(id), customer);
+        BankAccount bankAccount = bankAccountService.findOneByPan(pccRequestDTO.getBankAccountDTO().getPan());
+        return bankAccountService.issuerValidateAndReserve(transaction, bankAccount, pccRequestDTO);
+    }
 
-        BankAccount bankAccount = bankAccountService.findOneByPan(bankAccountDTO.getPan());
-        return bankAccountService.issuerValidateAndReserve(transaction, bankAccount, bankAccountDTO);
+    @RequestMapping(value = "/transfer-funds/{acquirerOrderId}", method = RequestMethod.PUT, consumes = "application/json", produces = "applicatin/json")
+    public ResponseEntity<?> transferFunds(@RequestBody BankAccountDTO bankAccountDTO, @PathVariable("acquirerOrderId") String id){
+        Transaction transaction = transactionService.findOneById(Long.parseLong(id));
+        Customer customer = transaction.getCustomer();
+        bankAccountService.addFunds(customer.getBankAccount(), transaction);
+        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
 
     // izvrsava placanje
     // promeniti DTO objekat koji prima - potreban prenos ACQUIRER_TIMESTAMP podatka
-    @RequestMapping(value = "/confirm-payment/{id}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
+    @RequestMapping(value = "/confirm-payment/{paymentId}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> payment(@RequestBody BankAccountDTO bankAccountDTO, @PathVariable("id") String id){
         Transaction transaction = transactionService.findOneById(Long.parseLong(id));
         BankAccount bankAccount = bankAccountService.findOneByPan(bankAccountDTO.getPan());
-        logger.logInfo("INFO: Potvrda placanja. Transaction: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
 
-        transaction = transactionService.executePayment(transaction, bankAccount);
-        requestUpdateTransactionBankService(transaction);
-        requestUpdateTransactionPcc(transaction);
+        try{
+            transaction = transactionService.executePayment(transaction, bankAccount);
+        }catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }
 
-        PaymentResponseDTO paymentResponseDTO = new PaymentResponseDTO(transaction.getId(), transaction.getId(),
-                transaction.getId(), transaction.getTimestamp(), transaction.getPaymentStatus());
-
-        //proslediti info KP-u
+        transactionClient.updateTransactionBankService(transaction.getPaymentId(), new PaymentStatusDTO(transaction.getPaymentStatus()));
+        transactionClient.updateTransactionPcc(transaction.getPaymentId(), new PaymentStatusDTO(transaction.getPaymentStatus()));
 
         logger.logInfo("SUCCESS: Uspesna potvrda placanja. Transaction: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
-        return new ResponseEntity<>(paymentResponseDTO, HttpStatus.OK);
+        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
 
-    @RequestMapping(value  = "/transaction/{id}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
-    private ResponseEntity<String> updateTransaction(@RequestBody PaymentStatusDTO paymentStatusDTO, @PathVariable("id") String id){
-        Transaction transaction = transactionService.findOneById(Long.parseLong(id));
-        transaction.setPaymentStatus(paymentStatusDTO.getPaymentStatus());
-        transaction = transactionService.save(transaction);
-        System.out.println(transaction);
-        requestUpdateTransactionPcc(transaction);
-        return new ResponseEntity<>("Transakcija azurirana.", HttpStatus.OK);
-    }
 
-    private void requestUpdateTransactionBankService(Transaction transaction){
-        HttpEntity<PaymentStatusDTO> entity = new HttpEntity<PaymentStatusDTO>(new PaymentStatusDTO(transaction.getPaymentStatus()));
-        ResponseEntity<String> responseEntity = restTemplate.exchange("https://localhost:8500/bank-service/bank/transaction/" + transaction.getId(),
-                HttpMethod.PUT, entity, String.class);
-    }
-    private void requestUpdateTransactionPcc(Transaction transaction){
-        HttpEntity<PaymentStatusDTO> entity = new HttpEntity<PaymentStatusDTO>(new PaymentStatusDTO(transaction.getPaymentStatus()));
-        ResponseEntity<String> responseEntityPcc = restTemplate.exchange("https://localhost:8452/pcc/transaction/" + transaction.getId(),
-                HttpMethod.PUT, entity, String.class);
-    }
+
 
 }

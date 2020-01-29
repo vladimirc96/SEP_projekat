@@ -1,5 +1,7 @@
 package com.sep.bank.service;
 
+import com.sep.bank.client.BankClient;
+import com.sep.bank.client.TransactionClient;
 import com.sep.bank.dto.*;
 import com.sep.bank.model.*;
 import com.sep.bank.repository.BankAccountRepository;
@@ -31,6 +33,11 @@ public class BankAccountService {
     @Autowired
     private TransactionService transactionService;
 
+    @Autowired
+    private TransactionClient transactionClient;
+
+    @Autowired
+    private BankClient bankClient;
 
     public boolean isBankSame(Transaction transaction, BankAccount bankAccount){
         Customer acquirer = transaction.getCustomer();
@@ -50,48 +57,49 @@ public class BankAccountService {
         } catch (Exception e) {
             logger.logError("ERROR: " + e.getMessage() + ". Transaction: " + transaction.toString());
             e.printStackTrace();
-            requestUpdateTransactionBankService(transaction);
-            return new ResponseEntity<>(new AcquirerResponseDTO(transaction.getPaymentStatus(), transaction.getId(), new Date(), e.getMessage()), HttpStatus.BAD_REQUEST);
+            transactionClient.updateTransactionBankService(transaction.getPaymentId(), new PaymentStatusDTO(transaction.getPaymentStatus()));
+            return new ResponseEntity<>(new AcquirerResponseDTO(transaction.getPaymentStatus(), transaction.getId(), transaction.getTimestamp(), e.getMessage()), HttpStatus.BAD_REQUEST);
         }
         try {
-            reserveFunds(bankAccount,transaction);
+            reserveFunds(bankAccount, transaction);
+            addFunds(transaction.getCustomer().getBankAccount(), transaction);
         } catch (Exception e) {
             logger.logError("ERROR: " + e.getMessage() + ". Transaction: " + transaction.toString());
             e.printStackTrace();
-            requestUpdateTransactionBankService(transaction);
-            return new ResponseEntity<>(new AcquirerResponseDTO(transaction.getPaymentStatus(), transaction.getId(), new Date(), e.getMessage()), HttpStatus.BAD_REQUEST);
+            transactionClient.updateTransactionBankService(transaction.getPaymentId(), new PaymentStatusDTO(transaction.getPaymentStatus()));
+            return new ResponseEntity<>(new AcquirerResponseDTO(transaction.getPaymentStatus(), transaction.getId(), transaction.getTimestamp(), e.getMessage()), HttpStatus.BAD_REQUEST);
         }
         logger.logInfo("SUCCESS: Zahtev za placanje uspesno obradjen, sredstva su rezervisana. Transaction: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
-        return new ResponseEntity<>(new AcquirerResponseDTO(transaction.getPaymentStatus(), transaction.getId(), new Date(), "Success"), HttpStatus.OK);
+        return new ResponseEntity<>(new AcquirerResponseDTO(transaction.getPaymentStatus(), transaction.getId(), transaction.getTimestamp(), "Success"), HttpStatus.OK);
     }
 
-    public ResponseEntity<IssuerResponseDTO> issuerValidateAndReserve(Transaction transaction, BankAccount bankAccount, BankAccountDTO bankAccountDTO){
+    public ResponseEntity<IssuerResponseDTO> issuerValidateAndReserve(Transaction transaction, BankAccount bankAccount, PccRequestDTO pccRequestDTO){
+        BankAccountDTO bankAccountDTO = pccRequestDTO.getBankAccountDTO();
         logger.logInfo("INFO: Validacija podataka kartice. Issuer banka. Transcation: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
         try {
             validation(bankAccountDTO, bankAccount, transaction);
         } catch (Exception e) {
             logger.logError("ERROR: " + e.getMessage() + ". Transaction: " + transaction.toString());
             e.printStackTrace();
-            requestUpdateTransactionPcc(transaction);
-            requestUpdateTransactionBankService(transaction);
+            transactionClient.updateTransactionBankService(transaction.getPaymentId(), new PaymentStatusDTO(transaction.getPaymentStatus()));
             return new ResponseEntity<>(new IssuerResponseDTO(transaction.getPaymentStatus(), transaction.getId(),
-                    transaction.getTimestamp(), transaction.getId(), new Date(), e.getMessage()), HttpStatus.BAD_REQUEST);
+                    transaction.getTimestamp(), transaction.getId(), transaction.getTimestamp(), e.getMessage()), HttpStatus.BAD_REQUEST);
         }
 
         try {
-            reserveFunds(bankAccount,transaction);
+            reserveFunds(bankAccount, transaction);
+            bankClient.transferFunds(bankAccountDTO, pccRequestDTO.getAcquirerOrderId());
         } catch (Exception e) {
             logger.logError("ERROR: " + e.getMessage() + ". Transaction: " + transaction.toString());
             e.printStackTrace();
-            requestUpdateTransactionPcc(transaction);
-            requestUpdateTransactionBankService(transaction);
+            transactionClient.updateTransactionBankService(transaction.getPaymentId(), new PaymentStatusDTO(transaction.getPaymentStatus()));
             return new ResponseEntity<>(new IssuerResponseDTO(transaction.getPaymentStatus(), transaction.getId(),
-                    transaction.getTimestamp(), transaction.getId(), new Date(), e.getMessage()), HttpStatus.BAD_REQUEST);
+                    transaction.getTimestamp(), transaction.getId(), transaction.getTimestamp(), e.getMessage()), HttpStatus.BAD_REQUEST);
         }
 
         logger.logInfo("SUCCESS: Zahtev za placanje uspesno obradjen, sredstva su rezervisana. Issuer banka. Transaction: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
         return new ResponseEntity<>(new IssuerResponseDTO(transaction.getPaymentStatus(), transaction.getId(),
-                transaction.getTimestamp(), transaction.getId(), new Date(), "Success"), HttpStatus.OK);
+                transaction.getTimestamp(), transaction.getId(), transaction.getTimestamp(), "Success"), HttpStatus.OK);
     }
 
     public void validation(BankAccountDTO bankAccountDTO, BankAccount bankAccount, Transaction transaction) throws Exception {
@@ -137,6 +145,12 @@ public class BankAccountService {
         }
     }
 
+    public void addFunds(BankAccount bankAccount, Transaction transaction){
+        bankAccount.setBalance(bankAccount.getBalance() + transaction.getAmount());
+        bankAccount = bankAccountRepo.save(bankAccount);
+    }
+
+
     public BankAccount findOneById(Long id){
         return bankAccountRepo.findOneById(id);
     }
@@ -178,17 +192,6 @@ public class BankAccountService {
         }else{
             return false;
         }
-    }
-
-    private void requestUpdateTransactionBankService(Transaction transaction){
-        HttpEntity<PaymentStatusDTO> entity = new HttpEntity<PaymentStatusDTO>(new PaymentStatusDTO(transaction.getPaymentStatus()));
-        ResponseEntity<String> responseEntity = restTemplate.exchange("https://localhost:8500/bank-service/bank/transaction/" + transaction.getId(),
-                HttpMethod.PUT, entity, String.class);
-    }
-    private void requestUpdateTransactionPcc(Transaction transaction){
-        HttpEntity<PaymentStatusDTO> entity = new HttpEntity<PaymentStatusDTO>(new PaymentStatusDTO(transaction.getPaymentStatus()));
-        ResponseEntity<String> responseEntityPcc = restTemplate.exchange("https://localhost:8452/pcc/transaction/" + transaction.getId(),
-                HttpMethod.PUT, entity, String.class);
     }
 
 }

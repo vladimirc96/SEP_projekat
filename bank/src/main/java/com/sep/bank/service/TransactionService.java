@@ -1,8 +1,7 @@
 package com.sep.bank.service;
 
-import com.sep.bank.dto.PaymentRequestDTO;
-import com.sep.bank.dto.PaymentStatusDTO;
-import com.sep.bank.dto.RedirectDTO;
+import com.sep.bank.client.TransactionClient;
+import com.sep.bank.dto.*;
 import com.sep.bank.model.BankAccount;
 import com.sep.bank.model.Customer;
 import com.sep.bank.model.PaymentStatus;
@@ -40,29 +39,51 @@ public class TransactionService {
     @Autowired
     private CustomerService customerService;
 
+    @Autowired
+    private TransactionClient transactionClient;
+
+    public Transaction create(PccRequestDTO pccRequestDTO, Long paymentId, Customer customer){
+        BankAccountDTO bankAccountDTO = pccRequestDTO.getBankAccountDTO();
+        Transaction transaction = new Transaction();
+        transaction.setPaymentId(paymentId);
+        transaction.setPaymentStatus(pccRequestDTO.getPaymentStatus());
+        transaction.setAmount(pccRequestDTO.getAmount());
+        transaction.setTimestamp(new Date());
+        transaction.setCustomer(customer);
+        transaction = transactionRepo.save(transaction);
+        return transaction;
+    }
+
+    public Transaction create(PaymentRequestDTO paymentRequest){
+        Transaction transaction = new Transaction();
+        Customer customer = customerService.findByMerchantId(paymentRequest.getMerchantId());
+        transaction.setCustomer(customer);
+        transaction.setPaymentId(paymentRequest.getMerchantOrderId());
+        transaction.setAmount(paymentRequest.getAmount());
+        transaction.setTimestamp(new Date());
+        transaction.setPaymentStatus(PaymentStatus.PROCESSING);
+        transaction = transactionRepo.save(transaction);
+        return transaction;
+    }
+
     public ResponseEntity<RedirectDTO> checkPaymentRequest(PaymentRequestDTO paymentRequest){
         logger.logInfo("INFO: Provera podataka zahteva. " + paymentRequest.toString());
-        Customer customer = customerService.findByMerchantId(paymentRequest.getMerchantId());
-        Transaction transaction = new Transaction(paymentRequest.getAmount(), new Date(), customer);
-        transaction.setPaymentId(paymentRequest.getMerchantOrderId());
+        Transaction transaction = create(paymentRequest);
 
-        if(!isRequestValid(paymentRequest, customer)){
+        if(!isRequestValid(paymentRequest, transaction.getCustomer())){
             logger.logError("ERROR: Zahtev nije validan.");
             transaction.setPaymentStatus(PaymentStatus.FAILURE);
             transaction = transactionRepo.save(transaction);
-            requestUpdateTransactionBankService(paymentRequest.getMerchantOrderId(), PaymentStatus.FAILURE);
+            transactionClient.updateTransactionBankService(transaction.getPaymentId(), new PaymentStatusDTO(transaction.getPaymentStatus()));
             return new ResponseEntity<>(new RedirectDTO(FAILED_URL, null), HttpStatus.BAD_REQUEST);
         }
 
-        transaction.setPaymentStatus(PaymentStatus.PROCESSING);
-        transaction = transactionRepo.save(transaction);
         logger.logInfo("SUCCESS: Uspesna provera podataka zahteva. " + paymentRequest.toString());
         return new ResponseEntity<>(new RedirectDTO(SUCCESS_URL, paymentRequest.getMerchantOrderId()), HttpStatus.OK);
     }
 
     public Transaction executePayment(Transaction transaction, BankAccount bankAccount){
-        // obraditi transakciju i proslediti podatke MERCHANT_ORDER_ID, ACQUIRER_ORDER_ID, ACQUIRER_TIMESTAMP i PAYMENT_ID
-        // ne salju se za sada svi ti podaci posto nema Issuer banke
+        logger.logInfo("INFO: Potvrda placanja. Transaction: " + transaction.toString() + "; bank account data: " + bankAccount.toString());
         transaction.setPaymentStatus(PaymentStatus.SUCCESS);
         transaction = transactionRepo.save(transaction);
         return transaction;
@@ -93,8 +114,6 @@ public class TransactionService {
             return false;
         }
         boolean isMerchanPasswordValid = BCrypt.checkpw(paymentRequest.getMerchantPassword(), customer.getMerchantPassword());
-//        Customer customer = customerService.findByMerchantIdAndMerchantPassword(paymentRequest.getMerchantId(),
-//                 paymentRequest.getMerchantPassword());
         if(!isMerchanPasswordValid){
             return false;
         }
@@ -106,10 +125,4 @@ public class TransactionService {
         return true;
     }
 
-
-    private void requestUpdateTransactionBankService(Long id, PaymentStatus paymentStatus){
-        HttpEntity<PaymentStatusDTO> entity = new HttpEntity<PaymentStatusDTO>(new PaymentStatusDTO(paymentStatus));
-        ResponseEntity<String> responseEntity = restTemplate.exchange("https://localhost:8500/bank-service/bank/transaction/" + id,
-                HttpMethod.PUT, entity, String.class);
-    }
 }

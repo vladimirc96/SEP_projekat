@@ -1,9 +1,6 @@
 package com.sep.bankservice.controller;
 
-import com.sep.bankservice.dto.PaymentDTO;
-import com.sep.bankservice.dto.PaymentRequestDTO;
-import com.sep.bankservice.dto.PaymentStatusDTO;
-import com.sep.bankservice.dto.RedirectDTO;
+import com.sep.bankservice.dto.*;
 import com.sep.bankservice.model.Customer;
 import com.sep.bankservice.model.Transaction;
 import com.sep.bankservice.service.CryptoService;
@@ -37,14 +34,14 @@ public class BankController {
 
     // metoda koja prihvata zahtev za placanje i prosledjuje banci na proveru
     @RequestMapping(value = "/payment-request", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    private ResponseEntity<RedirectDTO> payment(@RequestBody PaymentDTO paymentDTO) {
-        Customer customer = customerService.findOneById(paymentDTO.getSellerId());
-        Transaction transaction = transactionService.create(paymentDTO, customer);
+    private ResponseEntity<RedirectDTO> payment(@RequestBody ActiveOrderDTO activeOrderDTO) {
+        Customer customer = customerService.findOneById(activeOrderDTO.getSellerId());
+        Transaction transaction = transactionService.create(activeOrderDTO, customer);
 
         String merchantPasswordDecrypted = cryptoService.decrypt(customer.getMerchantPassword());
         PaymentRequestDTO paymentRequestDTO = new PaymentRequestDTO(customer.getMerchantId(),
                 merchantPasswordDecrypted,
-                paymentDTO.getAmount(), transaction.getId(), transaction.getTimestamp());
+                transaction.getAmount(), transaction.getId(), transaction.getTimestamp());
         // poslati zahtev banci
         HttpEntity<PaymentRequestDTO> entity = new HttpEntity<>(paymentRequestDTO);
         ResponseEntity<RedirectDTO> responseEntity = restTemplate.exchange("https://localhost:8450/bank/check-payment-request", HttpMethod.PUT, entity, RedirectDTO.class);

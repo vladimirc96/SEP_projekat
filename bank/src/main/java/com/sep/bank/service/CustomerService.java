@@ -36,11 +36,9 @@ public class CustomerService {
     public Customer findByMerchantIdAndMerchantPassword(String id, String password){
         return customerRepo.findByMerchantIdAndMerchantPassword(id, password);
     }
-//
-//    public Customer findOneByPan(String pan){
-//        return customerRepo.findOneByPan(pan);
-//    }
 
-
+    public Customer findOneByPan(String pan){
+        return customerRepo.findOneByPan(pan);
+    }
 
 }

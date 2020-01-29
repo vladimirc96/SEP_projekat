@@ -19,6 +19,7 @@ export class BankPaymentFormComponent implements OnInit {
 
   isValid: boolean = false;
   transactionId: any;
+  paymentConfirmation: boolean = false;
   
   constructor(private route: ActivatedRoute, private router: Router, private bankService: BankService) { 
 
@@ -39,6 +40,7 @@ export class BankPaymentFormComponent implements OnInit {
 
 
   onValidate(){
+
     let bankAccountDTO = {
       pan: this.infoForm.value.pan,
       serviceCode: this.infoForm.value.serviceCode,
@@ -47,23 +49,26 @@ export class BankPaymentFormComponent implements OnInit {
     }
 
     this.validate(bankAccountDTO);
-
   }
 
   validate(bankAccountDTO){
     setTimeout(() =>{
-      this.isValid = true;
+      this.paymentConfirmation = true;
       alert("The information are valid");
     },1000)
-    this.bankService.validate(bankAccountDTO, this.transactionId).subscribe(
+    this.bankService.validateAndReserve(bankAccountDTO, this.transactionId).subscribe(
       (success) => {
-        this.isValid = true;
+        this.paymentConfirmation = true;
         alert("The information are valid");
+      },
+      (error: any) => {
+        alert(error.message);
       }
     )
   }
 
   onPay(){
+
     let bankAccountDTO = {
       pan: this.infoForm.value.pan,
       serviceCode: this.infoForm.value.serviceCode,

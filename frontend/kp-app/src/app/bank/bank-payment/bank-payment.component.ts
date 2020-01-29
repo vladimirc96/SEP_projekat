@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, Params } from '@angular/router';
 import { BankService } from 'src/app/services/bank.service';
 import { CentralaService } from 'src/app/services/centrala.service';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { ActiveOrderService } from 'src/app/services/active-order.service';
 
 @Component({
   selector: 'app-bank-payment',
@@ -13,16 +14,25 @@ import { NgxSpinnerService } from 'ngx-spinner';
 export class BankPaymentComponent implements OnInit {
   
   rad: any = null;
-  sellerId: any;
+  id: any;
+  activeOrder: any;
 
-  constructor(private centralaService: CentralaService, private route: ActivatedRoute, private router: Router, private bankService: BankService, private spinner: NgxSpinnerService) { 
-    this.rad = this.centralaService.activeRad;
+  constructor(private activeOrderSerivce: ActiveOrderService, private route: ActivatedRoute, private router: Router, private bankService: BankService, private spinner: NgxSpinnerService) { 
 
     this.route.params.subscribe((params: Params) => {
 			const param = +params["id"];
 
 			if (!isNaN(param)) {
-				this.sellerId = param;
+        this.id = param;
+        this.activeOrderSerivce.getActiveOrder(this.id).subscribe(
+          (response) => {
+            this.activeOrder = response;
+          },
+          (error) => {
+            alert(error.message);
+          }
+        )
+
 			} else {
 				this.router.navigate(["/"]);
 			}
@@ -36,13 +46,7 @@ export class BankPaymentComponent implements OnInit {
 
   redirect(){
     this.spinner.show();
-
-    let paymentDTO = {
-      sellerId: this.sellerId,
-      amount: this.rad.price
-    }
-
-    this.bankService.paymentRequest(paymentDTO).subscribe(
+    this.bankService.paymentRequest(this.activeOrder).subscribe(
       (response: any) => {
         this.router.navigate([response.url + "/" + response.paymentId + "/form"]);
         this.spinner.hide();

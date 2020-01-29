@@ -23,8 +23,8 @@
             <input type="date"  required class="form-control" formControlName="expirationDate">
           </div>
          
-        <button type="submit" class="btn btn-success" (click)="onValidate()" style="margin-right: 10px">Validate information</button>
-        <button type="submit" class="btn btn-success" (click)="onPay()" [disabled]="!isValid">Pay</button>
+        <button type="submit" class="btn btn-success" (click)="onValidate()" [hidden]="paymentConfirmation" style="margin-right: 10px">Pay</button>
+        <button type="submit" class="btn btn-success" (click)="onPay()" [hidden]="!paymentConfirmation">Confirm payment</button>
       </form>
     </div>
   </div>

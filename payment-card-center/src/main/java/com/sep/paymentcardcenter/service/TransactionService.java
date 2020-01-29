@@ -29,5 +29,8 @@ public class TransactionService {
         transactionRepo.delete(transaction);
     }
 
+    public Transaction findOneByPaymentId(Long id){
+        return transactionRepo.findOneByPaymentId(id);
+    }
 
 }
