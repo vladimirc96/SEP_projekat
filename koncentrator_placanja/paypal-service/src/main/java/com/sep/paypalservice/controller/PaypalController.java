@@ -1,17 +1,14 @@
 package com.sep.paypalservice.controller;
 
-import com.paypal.api.payments.Links;
-import com.paypal.api.payments.Payment;
-import com.paypal.base.rest.PayPalRESTException;
 import com.sep.paypalservice.dto.OrderDTO;
 import com.sep.paypalservice.dto.PlanDTO;
 import com.sep.paypalservice.dto.ShippingDTO;
-import com.sep.paypalservice.service.CryptoService;
+import com.sep.paypalservice.dto.ShowPlansDTO;
 import com.sep.paypalservice.service.PaypalService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/paypal")
@@ -45,8 +42,14 @@ public class PaypalController {
         return service.agreement(dto);
     }
 
-    @RequestMapping(value = "/plan/execute/{tokenn}", method = RequestMethod.GET)
-    public String executeAgreement(@PathVariable("tokenn") String tokenn) {
-        return service.executePlan(tokenn);
+    @RequestMapping(value = "/plan/execute/{tokenn}/{planID}", method = RequestMethod.GET)
+    public String executeAgreement(@PathVariable("tokenn") String tokenn, @PathVariable("planID") String planID) {
+        return service.executePlan(tokenn, planID);
     }
+
+    @RequestMapping(value = "/getSpecificPlans/{sellerId}", method = RequestMethod.GET)
+    public List<ShowPlansDTO> getSpecificPlans(@PathVariable("sellerId") String sellerId) {
+        return service.getPlansEnc(sellerId);
+    }
+
 }

@@ -55,7 +55,7 @@
                     />
                 </div>
                 <hr />
-                <div class="mt-4"  *ngIf="paymentMethods">
+                <!-- <div class="mt-4"  *ngIf="paymentMethods">
                     <div class="mb-3"><strong>Servisi koje želite da registrujete</strong></div>
                     
                     
@@ -73,7 +73,7 @@
                             </label>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
                 <div class="form-row mt-5">
                     <div class="col-md-5">
@@ -98,12 +98,16 @@
 
 
                 <div class="mt-5 mb-4">
-                    <strong>Nastavite sa registracijom: </strong>
+                    <strong>Registracija servisa za plaćanje: </strong>
                 </div>
 
                 <div *ngFor="let pm of registerResponse.paymentMethods" class="mb-2">
-                    <button *ngIf="!pm.registerSuccess" class="btn btn-primary btn-pm" (click)="continueRegistration(pm)">{{pm.name}} <i class="fa fa-chevron-right" aria-hidden="true"></i></button>
-                    <button *ngIf="pm.registerSuccess" class="btn btn-light btn-pm" disabled>{{ pm.name }} <i class="fa fa-check" aria-hidden="true"></i></button>
+                    <button *ngIf="!pm.registerSuccess" class="btn btn-primary btn-pm" (click)="continueRegistration(pm)"><i class="fa fa-chevron-right mr-2" aria-hidden="true"></i>{{pm.name}}</button>
+                    <button *ngIf="pm.registerSuccess" class="btn btn-light btn-pm" disabled><i class="fa fa-check mr-2" aria-hidden="true"></i>{{ pm.name }} </button>
+                </div>
+
+                <div class="mt-5">
+                    <a class="btn btn-dark" href="http://localhost:4201/homepage/editor">Povratak na NC</a>
                 </div>
             </div>
         </div>

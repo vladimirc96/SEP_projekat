@@ -29,4 +29,8 @@ public class BillingPlanService {
         billingPlanRepository.deleteById(id);
     }
 
+    public List<BillingPlan> findBySeller(long id) {
+        return billingPlanRepository.findBySeller(id);
+    }
+
 }

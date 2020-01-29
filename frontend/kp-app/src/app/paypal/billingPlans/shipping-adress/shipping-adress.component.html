@@ -1,9 +1,9 @@
 <div class="container" [ngClass]="status ? 'wait' : 'point'">
     <div class="forma">
         <div class="centar">
-            <h4>Adresa dostave</h4>
+            <h4>Adresa</h4>
         </div>
-        <form [formGroup]="myForm" novalidate (ngSubmit)="onSubmitAdress(f)" #f="ngForm">
+        <form [formGroup]="myForm" (ngSubmit)="onSubmitAdress(f)" #f="ngForm">
             <div class="form-group polje">
                 <label for="street">Ulica</label>
                 <input required formControlName="street" type="text" class="form-control inp" name="street" id="street">
@@ -21,7 +21,7 @@
             <div class="row">
                 <div class="form-group polje col-md-6">
                     <label for="postalCode">Poštanski broj</label>
-                    <input formControlName="postalCode" type="text" class="form-control inp" name="postalCode" id="postalCode">
+                    <input formControlName="postalCode" type="text" (keydown)="onKeydown($event)" class="form-control inp" name="postalCode" id="postalCode">
                 </div>
                 <div class="form-group polje col-md-6">
                     <label for="countryCode">Sifra države</label>

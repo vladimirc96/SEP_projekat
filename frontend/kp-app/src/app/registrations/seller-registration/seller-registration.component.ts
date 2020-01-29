@@ -102,15 +102,15 @@ export class SellerRegistrationComponent implements OnInit {
 			email: this.registrationForm.get('email').value,
 			password: this.registrationForm.get('password').value,
 			organization: this.registrationForm.get('organization').value,
-			name: this.registrationForm.get('name').value,
-			paymentMethods: this.getSelectedItems(this.registrationForm.get('paymentMethods').value)
+			name: this.registrationForm.get('name').value
+			// paymentMethods: this.getSelectedItems(this.registrationForm.get('paymentMethods').value)
 		}
 
 
-		if (dto.paymentMethods.length < 1) {
-			this.errorMessage = "Morate izabrati bar jedan servis za plaćanje."
-			return;
-		}
+		// if (dto.paymentMethods.length < 1) {
+		// 	this.errorMessage = "Morate izabrati bar jedan servis za plaćanje."
+		// 	return;
+		// }
 
 		this.sellersService.register(dto).subscribe(
 			(res: any) => {

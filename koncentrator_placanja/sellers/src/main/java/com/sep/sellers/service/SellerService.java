@@ -4,7 +4,6 @@ import com.sep.sellers.client.NCRegistrationClient;
 import com.sep.sellers.dto.ActiveBillingPlanDTO;
 import com.sep.sellers.dto.ApproveDTO;
 import com.sep.sellers.dto.KPRegistrationDTO;
-import com.sep.sellers.dto.PaymentMethodDTO;
 import com.sep.sellers.dto.SellerDTO;
 import com.sep.sellers.model.ActiveBillingPlan;
 import com.sep.sellers.model.PaymentMethod;
@@ -18,7 +17,8 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.AccessDeniedException;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.Base64;
+import java.util.List;
 
 @Service
 public class SellerService {
@@ -74,14 +74,24 @@ public class SellerService {
 
         s = _sellerRepo.save(s);
 
-        for (PaymentMethodDTO pmDTO : sDTO.getPaymentMethods()) {
-            SellerPaymentMethod sellerPM  = new SellerPaymentMethod();
+        List<PaymentMethod> paymentMethods = _paymentRepo.findAll();
 
+        for (PaymentMethod pm: paymentMethods) {
+            SellerPaymentMethod sellerPM  = new SellerPaymentMethod();
             sellerPM.setSeller(s);
-            sellerPM.setPaymentMethod(choosePaymentMethod(pmDTO.getId()));
+            sellerPM.setPaymentMethod(pm);
             sellerPM.setRegistrationSuccess(false);
             s.getPaymentMethods().add(sellerPM);
         }
+
+//        for (PaymentMethodDTO pmDTO : sDTO.getPaymentMethods()) {
+//            SellerPaymentMethod sellerPM  = new SellerPaymentMethod();
+//
+//            sellerPM.setSeller(s);
+//            sellerPM.setPaymentMethod(choosePaymentMethod(pmDTO.getId()));
+//            sellerPM.setRegistrationSuccess(false);
+//            s.getPaymentMethods().add(sellerPM);
+//        }
 
         s = _sellerRepo.save(s);
 
@@ -99,6 +109,16 @@ public class SellerService {
     public ActiveBillingPlanDTO getActivePlan(long id) {
         ActiveBillingPlan a = planRepo.findOneById(id);
         return new ActiveBillingPlanDTO(a);
+    }
+
+    public String getSubscriptions(long sellerID) {
+        String id = Long.toString(sellerID);
+        String retUrl = "https://localhost:4200/subscriptions/";
+        String enc = Base64.getEncoder().encodeToString(id.getBytes());
+
+        // TODO form ACtiveOrder
+
+        return retUrl.concat(enc);
     }
 
     public void approveRegistration(ApproveDTO approveDTO) throws AccessDeniedException {

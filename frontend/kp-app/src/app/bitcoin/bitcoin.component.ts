@@ -67,9 +67,10 @@ export class BitcoinComponent implements OnInit {
 	onContinue() {
 
 		const dto = {
+			activeOrderId: this.activeOrder.id,
 			sellerId: this.activeOrder.sellerId,
 			currency: "BTC",
-			amount: this.activeOrder.amount,
+			amount: this.btcPrice,
 			title: "Payment for: " + this.activeOrder.title,
 			description: this.desc
 		}

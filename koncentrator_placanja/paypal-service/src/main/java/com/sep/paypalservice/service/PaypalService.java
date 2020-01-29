@@ -3,11 +3,11 @@ package com.sep.paypalservice.service;
 import com.paypal.api.payments.*;
 import com.paypal.api.payments.Currency;
 import com.paypal.base.rest.APIContext;
-import com.paypal.base.rest.PayPalModel;
 import com.paypal.base.rest.PayPalRESTException;
 import com.sep.paypalservice.dto.OrderDTO;
 import com.sep.paypalservice.dto.PlanDTO;
 import com.sep.paypalservice.dto.ShippingDTO;
+import com.sep.paypalservice.dto.ShowPlansDTO;
 import com.sep.paypalservice.model.BillingPlan;
 import com.sep.paypalservice.model.PPClient;
 import com.sep.paypalservice.model.PPTransaction;
@@ -16,12 +16,17 @@ import com.sep.paypalservice.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.MalformedURLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -55,6 +60,7 @@ public class PaypalService {
             tr.setStatus(payment.getState());
             PPClient cl = repo.findOneById(orderDTO.getId());
             tr.setClient(cl);
+            tr.setActiveOrderId(orderDTO.getActiveOrderId());
             transacRepo.save(tr);
 
             final PPTransaction transaction = tr;
@@ -154,8 +160,7 @@ public class PaypalService {
 
     public String agreement(ShippingDTO dto) {
         logger.logInfo("PP_AGREEMENT");
-        //TODO: pribaviti iz baze(relacije) id plana
-        BillingPlan bp = billingPlanService.findOneById((long) 1);
+        BillingPlan bp = billingPlanService.findOneById(dto.getPlanId());
         try {
             Agreement agreement = createAgreement(dto, bp.getPlanId());
             for (Links links : agreement.getLinks()) {
@@ -177,16 +182,15 @@ public class PaypalService {
         return RETURL;
     }
 
-    public String executePlan(String token) {
-
+    public String executePlan(String token, String planID) {
         Agreement agreement =  new Agreement();
         agreement.setToken(token);
         try {
             logger.logInfo("PP_EXEPLAN");
-            //TODO: OVDE TREBA IZVUCI IZ BAZE(IZ RELACIJE) KOJI JE ID SELLERA DA BI SE NAPRAVIO API CONTEXT
-            APIContext apiContext = getContextAndMerchant((long) 1);
+            long ide = Long.parseLong(planID);
+            APIContext apiContext = getContextAndMerchant(ide);
             Agreement activeAgreement = agreement.execute(apiContext, agreement.getToken());
-            System.out.println("Agreement created with ID " + activeAgreement.getId());
+            System.out.println(activeAgreement.toJSON());
             //TODO: Zabeleziti u bazi agreement
             return "success";
         } catch (PayPalRESTException e) {
@@ -249,7 +253,7 @@ public class PaypalService {
 //        ChargeModels chargeModels = new ChargeModels(); //ZA SHIPPING ITD
 
         MerchantPreferences merchantPreferences = new MerchantPreferences();
-        merchantPreferences.setReturnUrl("https://localhost:4200/paypal/plan/execute");
+        merchantPreferences.setReturnUrl("https://localhost:4200/paypal/execute/plan");
         merchantPreferences.setCancelUrl("http://localhost:4201");
         merchantPreferences.setAutoBillAmount("yes");
         merchantPreferences.setInitialFailAmountAction("CONTINUE");
@@ -284,7 +288,7 @@ public class PaypalService {
 
         Agreement agreement = new Agreement();
         agreement.setName("Base Agreement");
-        agreement.setDescription("Naucna centrala pretplata na casopis/rad");
+        agreement.setDescription("Naucna centrala - pretplata na casopis");
         Instant i = java.time.Clock.systemUTC().instant();
         Instant j = i.plusSeconds(300);
         String dandt = (j.toString());
@@ -308,7 +312,11 @@ public class PaypalService {
         shipping.setCountryCode(dto.getCountryCode());
         agreement.setShippingAddress(shipping);
 
-        APIContext apiContext = getContextAndMerchant(dto.getId());
+        byte[] actualByte = Base64.getDecoder().decode(dto.getId());
+        String dec = new String(actualByte);
+        long actualID = Long.parseLong(dec);
+
+        APIContext apiContext = getContextAndMerchant(actualID);
 
         return agreement.create(apiContext);
     }
@@ -323,6 +331,22 @@ public class PaypalService {
         APIContext apiContext = getContextAndMerchant(transaction.getClient().getId());
 
         return payment.execute(apiContext, paymentExecute);
+    }
+
+    public List<ShowPlansDTO> getPlansEnc(String selID) {
+        byte[] actualByte = Base64.getDecoder().decode(selID);
+        String dec = new String(actualByte);
+        ArrayList<ShowPlansDTO> planovi = new ArrayList<>();
+        if(!dec.equals("")) {
+            long sellerID = Long.parseLong(dec);
+            List<BillingPlan> bilplans = billingPlanService.findBySeller(sellerID);
+            for(BillingPlan bp : bilplans) {
+                ShowPlansDTO temp = new ShowPlansDTO(bp.getId(), bp.getName(), bp.getFrequency(), bp.getFreqInterval(), bp.getCycles(), bp.getAmount(), bp.getCurrency(), bp.getAmountStart());
+                planovi.add(temp);
+            }
+        }
+
+        return planovi;
     }
 
 

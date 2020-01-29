@@ -1,5 +1,6 @@
 package com.sep.sellers.controller;
 
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.sep.sellers.dto.ActiveBillingPlanDTO;
 import com.sep.sellers.dto.ApproveDTO;
 import com.sep.sellers.dto.KPRegistrationDTO;
@@ -67,5 +68,12 @@ public class SellerController {
     public @ResponseBody ResponseEntity initRegistration(@PathVariable("id") long id) {
         return new ResponseEntity(sellerService.getActivePlan(id), HttpStatus.CREATED);
     }
+
+    @PostMapping(value = "/getSubscriptions")
+    public @ResponseBody ResponseEntity getSubs(@RequestBody ActiveBillingPlanDTO dto) {
+        return new ResponseEntity(sellerService.getSubscriptions(dto.getSellerId()), HttpStatus.CREATED);
+    }
+
+
 
 }

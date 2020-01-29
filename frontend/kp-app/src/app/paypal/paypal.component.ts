@@ -47,7 +47,8 @@ export class PaypalComponent implements OnInit {
       currency: this.activeOrder.currency,
       description: this.desc,
       id: this.activeOrder.sellerId,
-      name: this.activeOrder.title
+      name: this.activeOrder.title,
+      activeOrderId: this.activeOrder.id
     }
 
     this.palService.pay(orderDTO).subscribe(
