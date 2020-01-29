@@ -4,10 +4,9 @@ import com.paypal.api.payments.*;
 import com.paypal.api.payments.Currency;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
-import com.sep.paypalservice.dto.OrderDTO;
-import com.sep.paypalservice.dto.PlanDTO;
-import com.sep.paypalservice.dto.ShippingDTO;
-import com.sep.paypalservice.dto.ShowPlansDTO;
+import com.sep.paypalservice.client.OrderClient;
+import com.sep.paypalservice.dto.*;
+import com.sep.paypalservice.enums.Enums;
 import com.sep.paypalservice.model.BillingPlan;
 import com.sep.paypalservice.model.PPClient;
 import com.sep.paypalservice.model.PPTransaction;
@@ -46,6 +45,9 @@ public class PaypalService {
     @Autowired
     private BillingPlanService billingPlanService;
 
+    @Autowired
+    OrderClient orderClient;
+
     private Logging logger = new Logging(this);
 
     private static String RETURL = "http://localhost:4201";
@@ -80,16 +82,28 @@ public class PaypalService {
 
                                 if (!t.getStatus().equals("created")) {
                                     System.out.println("Loop cancel");
+                                    FinalizeOrderDTO foDTO = new FinalizeOrderDTO();
+                                    foDTO.setOrderStatus(convertStatus(t.getStatus()));
+                                    foDTO.setActiveOrderId(t.getActiveOrderId());
+                                    orderClient.finalizeOrder(foDTO);
                                     timer.cancel();
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
+                                FinalizeOrderDTO foDTO = new FinalizeOrderDTO();
+                                foDTO.setOrderStatus(Enums.OrderStatus.FAILED);
+                                foDTO.setActiveOrderId(transaction.getActiveOrderId());
+                                orderClient.finalizeOrder(foDTO);
                                 timer.cancel();
                             }
                         } else {
                             PPTransaction t = transacRepo.findOneByOrderId(transaction.getOrderId());
                             t.setStatus("suspended");
-                            transacRepo.save(t);
+                            t = transacRepo.save(t);
+                            FinalizeOrderDTO foDTO = new FinalizeOrderDTO();
+                            foDTO.setOrderStatus(Enums.OrderStatus.FAILED);
+                            foDTO.setActiveOrderId(t.getActiveOrderId());
+                            orderClient.finalizeOrder(foDTO);
                             System.out.println("Loop cancel TIMER");
                             timer.cancel();
                         }
@@ -349,5 +363,12 @@ public class PaypalService {
         return planovi;
     }
 
+    private Enums.OrderStatus convertStatus(String status) {
+        if (status.equals("approved")) {
+            return Enums.OrderStatus.SUCCESS;
+        } else {
+            return Enums.OrderStatus.FAILED;
+        }
+    }
 
 }

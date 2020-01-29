@@ -21,7 +21,8 @@ export class SubscriptionPlanComponent implements OnInit {
 			const param = params["id"];
 
 			if (param !== "") {
-				this.id = param;
+        this.id = param;
+        //izvuci activeOrder iz urla i onda prvo posalji u seller da uzmes sellerID pa onda posalji paypalu dalje sve
 				this.getPayPalSubscriptions(param);
 			} else {
 				window.location.href = this.NC;

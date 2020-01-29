@@ -37,6 +37,7 @@ export class ExecutePlanComponent implements OnInit {
         }
       }, (error) => {
         alert("error");
+        window.location.href = "http://localhost:4201";
       }
     )
   }
