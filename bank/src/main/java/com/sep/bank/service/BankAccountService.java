@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
@@ -33,8 +35,7 @@ public class BankAccountService {
     @Autowired
     private TransactionService transactionService;
 
-    @Autowired
-    private TransactionClient transactionClient;
+
 
     @Autowired
     private BankClient bankClient;
@@ -50,27 +51,49 @@ public class BankAccountService {
         return true;
     }
 
-    public ResponseEntity<AcquirerResponseDTO> acquirerValidateAndReserve(Transaction transaction, BankAccount bankAccount, BankAccountDTO bankAccountDTO){
+//    public ResponseEntity<AcquirerResponseDTO> acquirerValidateAndReserve(Transaction transaction, BankAccount bankAccount, BankAccountDTO bankAccountDTO){
+//        logger.logInfo("INFO: Validacija podataka kartice. Transcation: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
+//        try {
+//            validation(bankAccountDTO, bankAccount, transaction);
+//        } catch (Exception e) {
+//            logger.logError("ERROR: " + e.getMessage() + ". Transaction: " + transaction.toString());
+//            e.printStackTrace();
+//            //transactionClient.updateTransactionBankService(transaction.getPaymentId(), new PaymentStatusDTO(transaction.getPaymentStatus()));
+//            return new ResponseEntity<>(new AcquirerResponseDTO(transaction.getPaymentStatus(), transaction.getId(), transaction.getTimestamp(), e.getMessage()), HttpStatus.BAD_REQUEST);
+//        }
+//        try {
+//            reserveFunds(bankAccount, transaction);
+//            addFunds(transaction.getCustomer().getBankAccount(), transaction);
+//        } catch (Exception e) {
+//            logger.logError("ERROR: " + e.getMessage() + ". Transaction: " + transaction.toString());
+//            e.printStackTrace();
+//            //transactionClient.updateTransactionBankService(transaction.getPaymentId(), new PaymentStatusDTO(transaction.getPaymentStatus()));
+//            return new ResponseEntity<>(new AcquirerResponseDTO(transaction.getPaymentStatus(), transaction.getId(), transaction.getTimestamp(), e.getMessage()), HttpStatus.BAD_REQUEST);
+//        }
+//        logger.logInfo("SUCCESS: Zahtev za placanje uspesno obradjen, sredstva su rezervisana. Transaction: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
+//        return new ResponseEntity<>(new AcquirerResponseDTO(transaction.getPaymentStatus(), transaction.getId(), transaction.getTimestamp(), "Success"), HttpStatus.OK);
+//    }
+
+        public Transaction acquirerValidateAndReserve(Transaction transaction, BankAccount bankAccount, BankAccountDTO bankAccountDTO){
         logger.logInfo("INFO: Validacija podataka kartice. Transcation: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
         try {
             validation(bankAccountDTO, bankAccount, transaction);
         } catch (Exception e) {
             logger.logError("ERROR: " + e.getMessage() + ". Transaction: " + transaction.toString());
             e.printStackTrace();
-            transactionClient.updateTransactionBankService(transaction.getPaymentId(), new PaymentStatusDTO(transaction.getPaymentStatus()));
-            return new ResponseEntity<>(new AcquirerResponseDTO(transaction.getPaymentStatus(), transaction.getId(), transaction.getTimestamp(), e.getMessage()), HttpStatus.BAD_REQUEST);
+            return transaction;
         }
         try {
             reserveFunds(bankAccount, transaction);
-            addFunds(transaction.getCustomer().getBankAccount(), transaction);
         } catch (Exception e) {
             logger.logError("ERROR: " + e.getMessage() + ". Transaction: " + transaction.toString());
             e.printStackTrace();
-            transactionClient.updateTransactionBankService(transaction.getPaymentId(), new PaymentStatusDTO(transaction.getPaymentStatus()));
-            return new ResponseEntity<>(new AcquirerResponseDTO(transaction.getPaymentStatus(), transaction.getId(), transaction.getTimestamp(), e.getMessage()), HttpStatus.BAD_REQUEST);
+            return transaction;
         }
+        transaction.setPaymentStatus(PaymentStatus.SUCCESS);
+        transaction = transactionService.save(transaction);
         logger.logInfo("SUCCESS: Zahtev za placanje uspesno obradjen, sredstva su rezervisana. Transaction: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
-        return new ResponseEntity<>(new AcquirerResponseDTO(transaction.getPaymentStatus(), transaction.getId(), transaction.getTimestamp(), "Success"), HttpStatus.OK);
+        return transaction;
     }
 
     public ResponseEntity<IssuerResponseDTO> issuerValidateAndReserve(Transaction transaction, BankAccount bankAccount, PccRequestDTO pccRequestDTO){
@@ -81,34 +104,34 @@ public class BankAccountService {
         } catch (Exception e) {
             logger.logError("ERROR: " + e.getMessage() + ". Transaction: " + transaction.toString());
             e.printStackTrace();
-            transactionClient.updateTransactionBankService(transaction.getPaymentId(), new PaymentStatusDTO(transaction.getPaymentStatus()));
-            return new ResponseEntity<>(new IssuerResponseDTO(transaction.getPaymentStatus(), transaction.getId(),
-                    transaction.getTimestamp(), transaction.getId(), transaction.getTimestamp(), e.getMessage()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new IssuerResponseDTO(transaction.getPaymentStatus(), pccRequestDTO.getAcquirerOrderId(),
+                    pccRequestDTO.getAcquirerTimepstamp(), transaction.getId(), transaction.getTimestamp(), e.getMessage()), HttpStatus.OK);
         }
 
         try {
             reserveFunds(bankAccount, transaction);
-            bankClient.transferFunds(bankAccountDTO, pccRequestDTO.getAcquirerOrderId());
         } catch (Exception e) {
             logger.logError("ERROR: " + e.getMessage() + ". Transaction: " + transaction.toString());
             e.printStackTrace();
-            transactionClient.updateTransactionBankService(transaction.getPaymentId(), new PaymentStatusDTO(transaction.getPaymentStatus()));
-            return new ResponseEntity<>(new IssuerResponseDTO(transaction.getPaymentStatus(), transaction.getId(),
-                    transaction.getTimestamp(), transaction.getId(), transaction.getTimestamp(), e.getMessage()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new IssuerResponseDTO(transaction.getPaymentStatus(), pccRequestDTO.getAcquirerOrderId(),
+                    pccRequestDTO.getAcquirerTimepstamp(), transaction.getId(), transaction.getTimestamp(), e.getMessage()), HttpStatus.OK);
         }
 
+        transaction.setPaymentStatus(PaymentStatus.SUCCESS);
+        transaction = transactionService.save(transaction);
         logger.logInfo("SUCCESS: Zahtev za placanje uspesno obradjen, sredstva su rezervisana. Issuer banka. Transaction: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
-        return new ResponseEntity<>(new IssuerResponseDTO(transaction.getPaymentStatus(), transaction.getId(),
-                transaction.getTimestamp(), transaction.getId(), transaction.getTimestamp(), "Success"), HttpStatus.OK);
+        return new ResponseEntity<>(new IssuerResponseDTO(transaction.getPaymentStatus(), pccRequestDTO.getAcquirerOrderId(),
+                pccRequestDTO.getAcquirerTimepstamp(), transaction.getId(), transaction.getTimestamp(), "SUCCESS"), HttpStatus.OK);
     }
 
     public void validation(BankAccountDTO bankAccountDTO, BankAccount bankAccount, Transaction transaction) throws Exception {
         // provera ostalih podataka
         bankAccount = validate(bankAccountDTO);
         if(bankAccount == null){
-            transaction.setPaymentStatus(PaymentStatus.FAILURE);
+            transaction.setPaymentStatus(PaymentStatus.ERROR);
             transaction = transactionService.save(transaction);
-           throw new Exception("Podaci koji su uneti za karticu nisu validni. Transaction: " + transaction.toString());
+           throw new Exception("Podaci koji su uneti za karticu nisu validni. Transaction: " + transaction.toString() + "; " + bankAccountDTO.toString());
+
         }
         if(isExpired(bankAccountDTO.getExpirationDate())){
             transaction.setPaymentStatus(PaymentStatus.FAILURE);
@@ -195,4 +218,18 @@ public class BankAccountService {
         }
     }
 
+    public BankAccountDTO parseDate(BankAccountDTO bankAccountDTO) throws ParseException {
+        System.out.println("********************************************** DATE FORMAT **********************************************");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String date = format.format(bankAccountDTO.getExpirationDate());
+        System.out.println("DATE: " + date);
+        date = date.concat(" 00:00:00");
+        System.out.println("DATE AND TIME: " + date);
+        System.out.println("********************************************** DATE FORMAT **********************************************");
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date tempDate = simpleDateFormat.parse(date);
+        bankAccountDTO.setExpirationDate(tempDate);
+        return bankAccountDTO;
+    }
 }

@@ -1,5 +1,6 @@
 package com.sep.paymentcardcenter.service;
 
+import com.sep.paymentcardcenter.dto.IssuerResponseDTO;
 import com.sep.paymentcardcenter.model.Transaction;
 import com.sep.paymentcardcenter.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,12 @@ public class TransactionService {
 
     public Transaction findOneByPaymentId(Long id){
         return transactionRepo.findOneByPaymentId(id);
+    }
+
+    public Transaction update(IssuerResponseDTO issuerResponseDTO, Transaction transaction){
+        transaction.setPaymentStatus(issuerResponseDTO.getPaymentStatus());
+        transaction = transactionRepo.save(transaction);
+        return transaction;
     }
 
 }

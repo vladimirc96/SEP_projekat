@@ -25,8 +25,6 @@ public class TransactionService {
     private final String ERROR_URL = "";
     public Logging logger = new Logging(this);
 
-    @Autowired
-    private RestTemplate restTemplate;
 
     @Autowired
     private TransactionRepository transactionRepo;
@@ -35,13 +33,7 @@ public class TransactionService {
     private BankAccountService bankAccountService;
 
     @Autowired
-    private CustomerService customerService;
-
-    @Autowired
     private TransactionClient transactionClient;
-
-    @Autowired
-    private PaymentService paymentService;
 
     public Transaction create(PccRequestDTO pccRequestDTO, Long paymentId, Customer customer){
         BankAccountDTO bankAccountDTO = pccRequestDTO.getBankAccountDTO();
@@ -85,6 +77,74 @@ public class TransactionService {
         transaction.setPaymentStatus(PaymentStatus.SUCCESS);
         transaction = transactionRepo.save(transaction);
         return transaction;
+    }
+
+    public ResponseEntity<PaymentResponseDTO> issuerProcessTransaction(IssuerResponseDTO issuerResponseDTO, Payment payment){
+        PaymentResponseDTO paymentResponseDTO =  null;
+        Transaction transaction = transactionRepo.findOneById(issuerResponseDTO.getAcquirerOrderId());
+
+        if(issuerResponseDTO.getPaymentStatus().name().equals("SUCCESS")){
+            // dodaj sredstva na racun prodavca i vrati odg
+            BankAccount bankAccount = transaction.getCustomer().getBankAccount();
+            bankAccountService.addFunds(bankAccount, transaction);
+            transaction.setPaymentStatus(issuerResponseDTO.getPaymentStatus());
+            transaction = transactionRepo.save(transaction);
+
+            paymentResponseDTO = new PaymentResponseDTO(payment.getMerchantOrderId(), issuerResponseDTO.getAcquirerOrderId(), payment.getId(),
+                    issuerResponseDTO.getAcquirerTimestamp(), issuerResponseDTO.getPaymentStatus());
+
+        }else if(issuerResponseDTO.getPaymentStatus().name().equals("ERROR")){
+
+            transaction.setPaymentStatus(issuerResponseDTO.getPaymentStatus());
+            transaction = transactionRepo.save(transaction);
+            paymentResponseDTO = new PaymentResponseDTO(payment.getMerchantOrderId(), issuerResponseDTO.getAcquirerOrderId(), payment.getId(),
+                    issuerResponseDTO.getAcquirerTimestamp(), issuerResponseDTO.getPaymentStatus());
+            transactionClient.updateTransactionBankService(payment.getMerchantOrderId(), new PaymentStatusDTO(transaction.getPaymentStatus()));
+            return new ResponseEntity<>(paymentResponseDTO, HttpStatus.BAD_REQUEST);
+
+        }else if(issuerResponseDTO.getPaymentStatus().name().equals("INSUFFICENT_FUNDS") || issuerResponseDTO.getPaymentStatus().name().equals("FAILURE")){
+
+            transaction.setPaymentStatus(issuerResponseDTO.getPaymentStatus());
+            transaction = transactionRepo.save(transaction);
+            paymentResponseDTO = new PaymentResponseDTO(payment.getMerchantOrderId(), issuerResponseDTO.getAcquirerOrderId(), payment.getId(),
+                    issuerResponseDTO.getAcquirerTimestamp(), issuerResponseDTO.getPaymentStatus());
+            transactionClient.updateTransactionBankService(payment.getMerchantOrderId(), new PaymentStatusDTO(transaction.getPaymentStatus()));
+            return new ResponseEntity<>(paymentResponseDTO, HttpStatus.CONFLICT);
+
+        }
+
+        transactionClient.updateTransactionBankService(payment.getMerchantOrderId(), new PaymentStatusDTO(transaction.getPaymentStatus()));
+        return new ResponseEntity<>(paymentResponseDTO, HttpStatus.OK);
+    }
+
+    public ResponseEntity<PaymentResponseDTO> processTransaction(Transaction transaction, Payment payment){
+        PaymentResponseDTO paymentResponseDTO =  null;
+
+        if(transaction.getPaymentStatus().name().equals("SUCCESS")){
+            // dodaj sredstva na racun prodavca i vrati odg
+            BankAccount bankAccount = transaction.getCustomer().getBankAccount();
+            bankAccountService.addFunds(bankAccount, transaction);
+            executePayment(transaction, bankAccount);
+            paymentResponseDTO = new PaymentResponseDTO(payment.getMerchantOrderId(), transaction.getId(), payment.getId(),
+                    transaction.getTimestamp(), transaction.getPaymentStatus());
+
+        }else if(transaction.getPaymentStatus().name().equals("ERROR")){
+
+            paymentResponseDTO = new PaymentResponseDTO(payment.getMerchantOrderId(), transaction.getId(), payment.getId(),
+                    transaction.getTimestamp(), transaction.getPaymentStatus());
+            transactionClient.updateTransactionBankService(payment.getMerchantOrderId(), new PaymentStatusDTO(transaction.getPaymentStatus()));
+            return new ResponseEntity<>(paymentResponseDTO, HttpStatus.BAD_REQUEST);
+
+        }else if(transaction.getPaymentStatus().name().equals("INSUFFICENT_FUNDS") || transaction.getPaymentStatus().name().equals("FAILURE")){
+
+            paymentResponseDTO = new PaymentResponseDTO(payment.getMerchantOrderId(), transaction.getId(), payment.getId(),
+                    transaction.getTimestamp(), transaction.getPaymentStatus());
+            transactionClient.updateTransactionBankService(payment.getMerchantOrderId(), new PaymentStatusDTO(transaction.getPaymentStatus()));
+            return new ResponseEntity<>(paymentResponseDTO, HttpStatus.CONFLICT);
+
+        }
+        transactionClient.updateTransactionBankService(payment.getMerchantOrderId(), new PaymentStatusDTO(transaction.getPaymentStatus()));
+        return new ResponseEntity<>(paymentResponseDTO, HttpStatus.OK);
     }
 
     public Transaction findOneById(Long id){

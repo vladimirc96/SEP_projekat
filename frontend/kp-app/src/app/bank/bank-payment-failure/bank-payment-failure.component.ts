@@ -12,4 +12,8 @@ export class BankPaymentFailureComponent implements OnInit {
   ngOnInit() {
   }
 
+  goHome() {
+    window.location.href = "http://localhost:4201";
+  }
+
 }

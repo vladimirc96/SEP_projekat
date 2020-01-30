@@ -1,9 +1,12 @@
 package com.sep.bankservice.service;
 
+import com.sep.bankservice.client.OrderClient;
 import com.sep.bankservice.dto.ActiveOrderDTO;
+import com.sep.bankservice.dto.FinalizeOrderDTO;
 import com.sep.bankservice.dto.PaymentDTO;
 import com.sep.bankservice.dto.PaymentStatusDTO;
 import com.sep.bankservice.model.Customer;
+import com.sep.bankservice.model.Enums;
 import com.sep.bankservice.model.PaymentStatus;
 import com.sep.bankservice.model.Transaction;
 import com.sep.bankservice.repository.TransactionRepository;
@@ -27,10 +30,7 @@ public class TransactionService {
     private TransactionRepository transactionRepo;
 
     @Autowired
-    private CustomerService customerService;
-
-    @Autowired
-    private RestTemplate restTemplate;
+    private OrderClient orderClient;
 
     public Transaction findOneById(Long id){
         return transactionRepo.findOneById(id);
@@ -48,6 +48,7 @@ public class TransactionService {
         transactionRepo.deleteById(id);
     }
 
+    // ubaci logger
     public Transaction create(ActiveOrderDTO activeOrderDTO, Customer customer){
         Transaction transaction = new Transaction();
         transaction.setAmount(activeOrderDTO.getAmount());
@@ -67,33 +68,62 @@ public class TransactionService {
                 public void run(){
                     System.out.println("************** LOOP **************");
                     long loopTime = System.currentTimeMillis();;
-                    Transaction transactionTemp = transactionRepo.findOneById(t.getId());
+                    try{
 
-                    if(transactionTemp.getPaymentStatus().equals(PaymentStatus.SUCCESS)){
-                        System.out.println("************** USPESNA TRANSAKCIJA **************");
-                        timer.cancel();
+                        Transaction transactionTemp = transactionRepo.findOneById(t.getId());
+
+                        if(transactionTemp.getPaymentStatus().equals(PaymentStatus.SUCCESS)){
+                            System.out.println("************** USPESNA TRANSAKCIJA **************");
+                            FinalizeOrderDTO finalizeOrderDTO = new FinalizeOrderDTO();
+                            finalizeOrderDTO.setActiveOrderId(transactionTemp.getActiveOrderId());
+                            finalizeOrderDTO.setOrderStatus(convertStatus(transactionTemp.getPaymentStatus()));
+                            orderClient.finalizeOrder(finalizeOrderDTO);
+                            timer.cancel();
+                        }
+
+                        if(transactionTemp.getPaymentStatus().equals(PaymentStatus.FAILURE) || transactionTemp.getPaymentStatus().equals(PaymentStatus.INSUFFCIENT_FUNDS)){
+                            System.out.println("************** NEUSPESNA TRANSAKCIJA **************");
+                            FinalizeOrderDTO finalizeOrderDTO = new FinalizeOrderDTO();
+                            finalizeOrderDTO.setActiveOrderId(transactionTemp.getActiveOrderId());
+                            finalizeOrderDTO.setOrderStatus(convertStatus(transactionTemp.getPaymentStatus()));
+                            orderClient.finalizeOrder(finalizeOrderDTO);
+                            timer.cancel();
+                        }
+
+                        // ako se ne promeni status posle 10 minuta onda zavrsi transakciju
+                        if(loopTime - startTime > 600000){
+                            System.out.println("************** NEUSPESNA TRANSAKCIJA - PROSLO 10 MIN **************");
+                            transactionTemp.setPaymentStatus(PaymentStatus.FAILURE);
+                            transactionTemp = transactionRepo.save(transactionTemp);
+                            FinalizeOrderDTO finalizeOrderDTO = new FinalizeOrderDTO();
+                            finalizeOrderDTO.setActiveOrderId(transactionTemp.getActiveOrderId());
+                            finalizeOrderDTO.setOrderStatus(convertStatus(transactionTemp.getPaymentStatus()));
+                            orderClient.finalizeOrder(finalizeOrderDTO);
+                            timer.cancel();
+                        }
+
+
+                    }catch (Exception e){
+
                     }
 
-                    if(transactionTemp.getPaymentStatus().equals(PaymentStatus.FAILURE) || transactionTemp.getPaymentStatus().equals(PaymentStatus.INSUFFCIENT_FUNDS)){
-                        System.out.println("************** NEUSPESNA TRANSAKCIJA **************");
-                        timer.cancel();
-                    }
 
-                    // ako se ne promeni status posle 10 minuta onda zavrsi transakciju
-                    if(loopTime - startTime > 600000){
-                        System.out.println("************** NEUSPESNA TRANSAKCIJA - PROSLO 10 MIN **************");
-                        transactionTemp.setPaymentStatus(PaymentStatus.FAILURE);
-                        transactionTemp = transactionRepo.save(transactionTemp);
-                        // posalji svima da azuriraju stanje transakcije
-                        //requestUpdateTransactionBank(transactionTemp);
-                        //requestUpdateTransactionPcc(transactionTemp);
-                        timer.cancel();
-                    }
                 }
             },5000,10000);
             return "OK";
         });
+
         return transaction;
     }
 
+    public Enums.OrderStatus convertStatus(PaymentStatus paymentStatus){
+        if(paymentStatus.name().equals("PROCESSING")){
+            return Enums.OrderStatus.PENDING;
+        }else if(paymentStatus.name().equals("FAILURE")){
+            return Enums.OrderStatus.FAILED;
+        }else if(paymentStatus.name().equals("INSUFFCIENT_FUNDS")){
+            return Enums.OrderStatus.FAILED;
+        }
+        return Enums.OrderStatus.SUCCESS;
+    }
 }

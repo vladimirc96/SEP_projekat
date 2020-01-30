@@ -1,6 +1,7 @@
 package com.sep.bank.model;
 
 import javax.persistence.*;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Entity
@@ -121,11 +122,13 @@ public class BankAccount {
 
     @Override
     public String toString() {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ");
+        String date = format.format(this.expirationDate);
         return "BankAccount{" +
                 "id=" + id +
                 ", pan='" + pan + '\'' +
                 ", cardholderName='" + cardholderName + '\'' +
-                ", expirationDate=" + expirationDate +
+                ", expirationDate=" + date +
                 ", serviceCode='" + serviceCode + '\'' +
                 ", balance=" + balance +
                 ", reserved=" + reserved +
