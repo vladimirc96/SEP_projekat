@@ -33,4 +33,6 @@ public class BillingPlanService {
         return billingPlanRepository.findBySeller(id);
     }
 
+    public BillingPlan findByPlanId(String id) { return billingPlanRepository.findByPlanId(id); }
+
 }

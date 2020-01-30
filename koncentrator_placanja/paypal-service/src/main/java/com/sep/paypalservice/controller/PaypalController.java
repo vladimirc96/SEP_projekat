@@ -1,9 +1,7 @@
 package com.sep.paypalservice.controller;
 
-import com.sep.paypalservice.dto.OrderDTO;
-import com.sep.paypalservice.dto.PlanDTO;
-import com.sep.paypalservice.dto.ShippingDTO;
-import com.sep.paypalservice.dto.ShowPlansDTO;
+import com.paypal.base.rest.PayPalRESTException;
+import com.sep.paypalservice.dto.*;
 import com.sep.paypalservice.service.PaypalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -62,6 +60,8 @@ public class PaypalController {
         return service.cancelPlan(token);
     }
 
-
-
+    @RequestMapping(value = "/getAllPlans/{sellerId}", method = RequestMethod.GET)
+    public List<ShowPlansDTO> cancelPlan(@PathVariable("sellerId") long sellerId) throws PayPalRESTException {
+        return service.getAllPlans(sellerId);
+    }
 }

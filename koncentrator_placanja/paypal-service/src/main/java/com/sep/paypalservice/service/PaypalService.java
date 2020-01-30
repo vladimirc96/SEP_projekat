@@ -212,7 +212,6 @@ public class PaypalService {
             agr.setStatus("created");
             agr.setActiveOrderId(dto.getActiveOrderId());
             agr = agreementService.save(agr);
-            //TODO: POGLEDAJ KAKO AGREEMENT IZGLEDA KAD SE NAPRAVI(STATUS), SACUVAJ GA U BAZU I STAVI TIMER
             final PPAgreement agriment = agr;
 
             CompletableFuture<Object> completableFuture = CompletableFuture.supplyAsync(() -> {
@@ -438,6 +437,24 @@ public class PaypalService {
         for(BillingPlan bp : bilplans) {
             ShowPlansDTO temp = new ShowPlansDTO(bp.getId(), bp.getName(), bp.getFrequency(), bp.getFreqInterval(), bp.getCycles(), bp.getAmount(), bp.getCurrency(), bp.getAmountStart());
             planovi.add(temp);
+        }
+
+        return planovi;
+    }
+
+    public List<ShowPlansDTO> getAllPlans(long sellerID) throws PayPalRESTException {
+        ArrayList<ShowPlansDTO> planovi = new ArrayList<>();
+        APIContext apiContext = getContextAndMerchant(sellerID);
+
+        Map<String, String> value = new HashMap<>();
+        value.put("page_size", "20");
+        PlanList planList = Plan.list(apiContext, value);
+        for(Plan plan1 : planList.getPlans()) {
+            Plan plan = Plan.get(apiContext, plan1.getId());
+            ShowPlansDTO s = new ShowPlansDTO((long) -1, plan.getName(), plan.getPaymentDefinitions().get(0).getFrequency(), plan.getPaymentDefinitions().get(0).getFrequencyInterval(),
+                    plan.getPaymentDefinitions().get(0).getCycles(), Double.parseDouble(plan.getPaymentDefinitions().get(0).getAmount().getValue()),
+                    plan.getPaymentDefinitions().get(0).getAmount().getCurrency(), Double.parseDouble(plan.getMerchantPreferences().getSetupFee().getValue()));
+            planovi.add(s);
         }
 
         return planovi;

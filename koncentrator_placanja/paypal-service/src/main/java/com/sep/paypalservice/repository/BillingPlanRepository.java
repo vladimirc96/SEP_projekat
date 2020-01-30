@@ -13,4 +13,7 @@ public interface BillingPlanRepository extends JpaRepository<BillingPlan, Long> 
 
     @Query("select b from BillingPlan b where b.sellerId = :id")
     List<BillingPlan> findBySeller(@Param("id") Long id);
+
+    @Query("select b from BillingPlan b where b.planId = :id")
+    BillingPlan findByPlanId(String id);
 }
