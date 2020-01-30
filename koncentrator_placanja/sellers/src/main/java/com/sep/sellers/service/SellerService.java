@@ -102,7 +102,7 @@ public class SellerService {
         Seller seller = _sellerRepo.findById(dto.getSellerId()).get();
         boolean imaPP = false;
         for(SellerPaymentMethod spm : seller.getPaymentMethods()) {
-            if(spm.getPaymentMethod().getName().equals("PayPal")) {
+            if(spm.getPaymentMethod().getName().equals("PayPal") && spm.isRegistrationSuccess()) {
                 imaPP = true;
                 break;
             }
