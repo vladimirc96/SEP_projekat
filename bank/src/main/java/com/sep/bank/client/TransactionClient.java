@@ -3,9 +3,7 @@ package com.sep.bank.client;
 import com.sep.bank.dto.PaymentStatusDTO;
 import com.sep.bank.model.PaymentStatus;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -16,13 +14,10 @@ public class TransactionClient {
     private RestTemplate restTemplate;
 
     public void updateTransactionBankService(Long id, PaymentStatusDTO paymentStatusDTO){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<PaymentStatusDTO> httpEntity = new HttpEntity<>(paymentStatusDTO);
         ResponseEntity responseEntity = restTemplate.exchange("https://localhost:8500/bank-service/bank/transaction/" + id, HttpMethod.PUT, httpEntity, String.class);
-    }
-
-    public void updateTransactionPcc(Long id, PaymentStatusDTO paymentStatusDTO){
-        HttpEntity<PaymentStatusDTO> httpEntity = new HttpEntity<>(paymentStatusDTO);
-        ResponseEntity responseEntity = restTemplate.exchange("https://localhost:8452/pcc/transaction/" + id, HttpMethod.PUT, httpEntity, String.class);
     }
 
 

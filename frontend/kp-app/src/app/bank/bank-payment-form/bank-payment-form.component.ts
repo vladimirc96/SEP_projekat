@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { BankService } from 'src/app/services/bank.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-bank-payment-form',
@@ -26,7 +27,7 @@ export class BankPaymentFormComponent implements OnInit {
   paymentConfirmation: boolean = false;
   
   
-  constructor(private route: ActivatedRoute, private router: Router, private bankService: BankService) { 
+  constructor(private spinner: NgxSpinnerService,private route: ActivatedRoute, private router: Router, private bankService: BankService) { 
 
     this.route.parent.params.subscribe((params: Params) => {
 			const param = +params["id"];
@@ -43,9 +44,8 @@ export class BankPaymentFormComponent implements OnInit {
   ngOnInit() {
   }
 
-
-  onValidate(){
-
+  onPay(){
+    this.spinner.show();
     let bankAccountDTO = {
       pan: this.infoForm.value.pan,
       serviceCode: this.infoForm.value.serviceCode,
@@ -53,81 +53,25 @@ export class BankPaymentFormComponent implements OnInit {
       expirationDate: this.infoForm.value.expirationDate
     }
 
-    this.validate(bankAccountDTO);
-  }
+    this.bankService.payment(bankAccountDTO, this.transactionId).subscribe(
+      (response: any) => {
+        this.spinner.hide();
+        this.router.navigate(['/bank/' + this.transactionId + '/success']);
 
-  validate(bankAccountDTO){
-    this.bankService.validateAndReserve(bankAccountDTO, this.transactionId).subscribe(
-      (response) => {
-        this.paymentConfirmation = true;
-        this.responseDto = response;
-        alert("The information are valid");
       },
       (error: any) => {
-        alert(error.message);
+        this.spinner.hide();
+        if(error.status == '409'){
+          this.router.navigate(['/bank/' + this.transactionId + '/failure']);
+        }
+        if(error.status == '400'){
+          alert("Podaci nisu validni");
+        }
+
       }
     )
-  }
-
-  onPay(){
-
-    let bankAccountDTO = {
-      pan: this.infoForm.value.pan,
-      serviceCode: this.infoForm.value.serviceCode,
-      cardholderName: this.infoForm.value.cardholderName,
-      expirationDate: this.infoForm.value.expirationDate
-    }
-
-    if(this.responseDto.hasOwnProperty('acquirerOrderId') && this.responseDto.hasOwnProperty('issuerOrderId')){
-      
-      this.confirmPaymentAcquirer(bankAccountDTO);
-      this.confirmPaymentIssuer(bankAccountDTO);
-      if(this.acquirerSuccess == true && this.issuerSuccess == true){
-        this.router.navigate(['bank/' + this.transactionId + '/success']);
-      }else{
-        this.router.navigate(['bank/' + this.transactionId + '/failure']);
-      }
-
-
-    }else{
-
-      this.confirmPaymentAcquirer(bankAccountDTO);
-      if(this.acquirerSuccess == true){
-        this.router.navigate(['bank/' + this.transactionId + '/success']);
-      }else{
-        this.router.navigate(['bank/' + this.transactionId + '/failure']);
-      }
-
-    }
     
+
   }
-
-
-  confirmPaymentAcquirer(bankAccountDTO){
-    this.bankService.confirmPaymentAcquirer(bankAccountDTO, this.transactionId).subscribe(
-      (response: any) => { 
-        alert("Success");
-        this.acquirerSuccess = true;
-      },
-      (error) => {
-        alert("Fail");
-        this.acquirerSuccess = false;
-      }
-    )
-  }
-
-  confirmPaymentIssuer(bankAccountDTO){
-    this.bankService.confirmPaymentIssuer(bankAccountDTO, this.transactionId).subscribe(
-      (response: any) => {
-        alert("Success"); 
-        this.issuerSuccess = true;
-      },
-      (error) => {
-        alert("Fail");
-        this.issuerSuccess = false;
-      }
-    )
-  }
-
 
 }

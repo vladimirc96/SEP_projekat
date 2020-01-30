@@ -14,7 +14,7 @@ export class BankService {
         return this.http.post("/api/bank-service/bank/payment-request", paymentDTO);
     }
 
-    validateAndReserve(bankAccountDTO, transactionId){
+    payment(bankAccountDTO, transactionId){
         return this.http.put("https://localhost:8450/bank/acquirer/payment/" + transactionId, bankAccountDTO);
     }
 

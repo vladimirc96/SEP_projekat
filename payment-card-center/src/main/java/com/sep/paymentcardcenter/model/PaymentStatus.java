@@ -4,5 +4,6 @@ public enum PaymentStatus {
     PROCESSING,
     SUCCESS,
     FAILURE,
+    ERROR,
     INSUFFCIENT_FUNDS
 }

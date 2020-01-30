@@ -1,5 +1,6 @@
 package com.sep.bank.dto;
 
+
 import com.sep.bank.model.PaymentStatus;
 
 public class PaymentStatusDTO {

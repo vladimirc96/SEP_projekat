@@ -1,5 +1,6 @@
 package com.sep.bank.dto;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class BankAccountDTO {
@@ -53,11 +54,13 @@ public class BankAccountDTO {
 
     @Override
     public String toString() {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ");
+        String date = format.format(this.expirationDate);
         return "BankAccountDTO{" +
                 "pan='" + pan + '\'' +
                 ", serviceCode='" + serviceCode + '\'' +
                 ", cardholderName='" + cardholderName + '\'' +
-                ", expirationDate=" + expirationDate +
+                ", expirationDate=" + date +
                 '}';
     }
 }
