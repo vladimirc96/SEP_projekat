@@ -23,6 +23,8 @@ import { PaypalRegistrationComponent } from './registrations/paypal-registration
 import { BankRegistrationComponent } from './registrations/bank-registration/bank-registration.component';
 import { SellerRegistrationComponent } from './registrations/seller-registration/seller-registration.component';
 import { SubscriptionPlanComponent } from './subscription-plan/subscription-plan.component';
+import { CancelPaymentComponent } from './paypal/cancel/cancel-payment/cancel-payment.component';
+import { CancelPlanComponent } from './paypal/cancel/cancel-plan/cancel-plan.component';
 
 const appRoutes: Routes = [
 	{ path: '', redirectTo: '/centrala', pathMatch: 'full'},
@@ -33,8 +35,11 @@ const appRoutes: Routes = [
 	{ path: 'paypal/plan/:id', component: CreatePlanComponent},
 	{ path: 'paypal/plan/subscribe/:pl/:id', component: ShippingAdressComponent},
 	{ path: 'paypal/execute/plan', component: ExecutePlanComponent},
+	{ path: 'cancel/paypal/plan', component: CancelPlanComponent},
+	{ path: 'cancel/payment/paypal', component: CancelPaymentComponent},
 	{ path: 'centrala', component: CentralaMockComponent},
 	{ path: 'centrala/rad/:id', component: RadComponent},
+
 	{ path: 'sellers/:id', component: SellerMethodsComponent},
 	{ path: 'bitcoin/:id', component: BitcoinComponent },
 	{ path: 'bank', component: BankComponent },

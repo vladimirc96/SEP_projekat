@@ -17,16 +17,14 @@ export class ExecutePlanComponent implements OnInit {
     this.ref = this.router.url;
     const str: string[] = this.ref.split("?");
     const tkn: string[] = str[1].split("=");
-    const plan = localStorage.getItem("plan");
-    console.log(plan);
-    this.pass(tkn[1], plan);
+    this.pass(tkn[1]);
   }
 
   ngOnInit() {
   }
 
-  pass(token, planID) {
-    this.palService.executePlan(token, planID).subscribe(
+  pass(token) {
+    this.palService.executePlan(token).subscribe(
       (data) => {
         this.ret = data;
         if(this.ret === "success") {

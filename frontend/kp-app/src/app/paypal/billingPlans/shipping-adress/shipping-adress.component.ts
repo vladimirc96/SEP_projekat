@@ -4,6 +4,7 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { PaypalService } from 'src/app/services/paypal.service';
 import { FormGroup, FormControl, Validators, NgForm } from '@angular/forms';
 import { isNgTemplate } from '@angular/compiler';
+import { ActiveOrderService } from 'src/app/services/active-order.service';
 
 @Component({
   selector: 'app-shipping-adress',
@@ -15,9 +16,10 @@ export class ShippingAdressComponent implements OnInit {
   status: boolean = false;
   rad: any = null;
   ret: any;
-  id: any;
+  activeId: any;
   planId: any;
   NC: string = "http://localhost:4201";
+  activeOrder: any;
   
   myForm: FormGroup;
   street: FormControl;
@@ -26,14 +28,15 @@ export class ShippingAdressComponent implements OnInit {
   postalCode: FormControl;
   countryCode: FormControl;
 
-  constructor(private palService: PaypalService, private router: Router, private route: ActivatedRoute) {
+  constructor(private palService: PaypalService, private activeOrderService: ActiveOrderService, private router: Router, private route: ActivatedRoute) {
     this.route.params.subscribe((params: Params) => {
       const plan = +params["pl"];
-      const id = +params["id"]
+      const activeId = +params["id"]
 
-			if (!isNaN(id) || !isNaN(plan)) {
-        this.id = id;
+			if (!isNaN(activeId) || !isNaN(plan)) {
+        this.activeId = activeId;
         this.planId = plan;
+        this.getActiveOrder(activeId);
 			} else {
 				window.location.href = this.NC;
 			}
@@ -43,6 +46,15 @@ export class ShippingAdressComponent implements OnInit {
   ngOnInit() {
     this.createFormControls();
     this.createForm();
+  }
+
+  getActiveOrder(id){
+		this.activeOrderService.getActiveOrder(id).subscribe(
+			(success) => {
+        this.activeOrder = success;
+			},
+			error => alert(error.error),
+		);
   }
 
   createFormControls(){
@@ -73,7 +85,8 @@ export class ShippingAdressComponent implements OnInit {
       postalCode: this.myForm.value.postalCode,
       countryCode: this.myForm.value.countryCode,
       planId: this.planId,
-      id: this.id
+      activeOrderId: this.activeOrder.id,
+      id: this.activeOrder.sellerId
     }
     console.log(shippingDTO);
     this.palService.createAgreement(shippingDTO).subscribe(

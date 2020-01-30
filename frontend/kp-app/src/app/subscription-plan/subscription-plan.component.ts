@@ -62,8 +62,7 @@ export class SubscriptionPlanComponent implements OnInit {
   }
 
   onPPSub() {
-    localStorage.setItem("plan", this.ppizbor);
-    window.location.href = "https://localhost:4200/paypal/plan/subscribe/".concat(this.ppizbor).concat("/").concat(this.activeOrder.sellerId);
+    window.location.href = "https://localhost:4200/paypal/plan/subscribe/".concat(this.ppizbor).concat("/").concat(this.id);
   }
 
 }
