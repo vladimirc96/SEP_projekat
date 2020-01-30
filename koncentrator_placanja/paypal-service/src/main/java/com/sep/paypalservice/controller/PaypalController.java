@@ -42,14 +42,26 @@ public class PaypalController {
         return service.agreement(dto);
     }
 
-    @RequestMapping(value = "/plan/execute/{tokenn}/{planID}", method = RequestMethod.GET)
-    public String executeAgreement(@PathVariable("tokenn") String tokenn, @PathVariable("planID") String planID) {
-        return service.executePlan(tokenn, planID);
+    @RequestMapping(value = "/plan/execute/{tokenn}", method = RequestMethod.GET)
+    public String executeAgreement(@PathVariable("tokenn") String tokenn) {
+        return service.executePlan(tokenn);
     }
 
     @RequestMapping(value = "/getSpecificPlans/{sellerId}", method = RequestMethod.GET)
-    public List<ShowPlansDTO> getSpecificPlans(@PathVariable("sellerId") String sellerId) {
-        return service.getPlansEnc(sellerId);
+    public List<ShowPlansDTO> getSpecificPlans(@PathVariable("sellerId") long sellerId) {
+        return service.getPlans(sellerId);
     }
+
+    @RequestMapping(value = "/cancelPayment/{token}", method = RequestMethod.GET)
+    public String cancelPayment(@PathVariable("token") String token) {
+        return service.cancelPayment(token);
+    }
+
+    @RequestMapping(value = "/cancelPlan/{token}", method = RequestMethod.GET)
+    public String cancelPlan(@PathVariable("token") String token) {
+        return service.cancelPlan(token);
+    }
+
+
 
 }

@@ -42,4 +42,8 @@ export class SellersService {
         return this.http.get(this.ENDPOINT_URI.concat("/sellers/getActivePlan/").concat(id));
     }
 
+    removeActivePlan(id) {
+        return this.http.get(this.ENDPOINT_URI.concat("/sellers/removeActivePlan/").concat(id), {responseType: 'text'});
+    }
+
 }

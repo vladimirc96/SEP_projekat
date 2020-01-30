@@ -1,35 +1,32 @@
 package com.sep.paypalservice.service;
 
-import com.paypal.api.payments.*;
 import com.paypal.api.payments.Currency;
+import com.paypal.api.payments.*;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
-import com.sep.paypalservice.dto.OrderDTO;
-import com.sep.paypalservice.dto.PlanDTO;
-import com.sep.paypalservice.dto.ShippingDTO;
-import com.sep.paypalservice.dto.ShowPlansDTO;
+import com.sep.paypalservice.client.OrderClient;
+import com.sep.paypalservice.dto.*;
+import com.sep.paypalservice.enums.Enums;
 import com.sep.paypalservice.model.BillingPlan;
+import com.sep.paypalservice.model.PPAgreement;
 import com.sep.paypalservice.model.PPClient;
 import com.sep.paypalservice.model.PPTransaction;
 import com.sep.paypalservice.repository.ClientsRepository;
 import com.sep.paypalservice.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.MalformedURLException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.regex.Pattern;
 
 @Service
 public class PaypalService {
@@ -46,6 +43,15 @@ public class PaypalService {
     @Autowired
     private BillingPlanService billingPlanService;
 
+    @Autowired
+    OrderClient orderClient;
+
+    @Autowired
+    RestTemplate restTemplate;
+
+    @Autowired
+    PPAgreementService agreementService;
+
     private Logging logger = new Logging(this);
 
     private static String RETURL = "http://localhost:4201";
@@ -61,6 +67,16 @@ public class PaypalService {
             PPClient cl = repo.findOneById(orderDTO.getId());
             tr.setClient(cl);
             tr.setActiveOrderId(orderDTO.getActiveOrderId());
+            for(Links link:payment.getLinks()) {
+                if(link.getRel().equals("approval_url")) {
+                    String temp =  link.getHref();
+                    String[] split1 = temp.split("\\?");
+                    String[] split2 = split1[1].split("&");
+                    String[] split3 = split2[1].split("=");
+                    String tkn = split3[1];
+                    tr.setPaymentToken(tkn);
+                }
+            }
             transacRepo.save(tr);
 
             final PPTransaction transaction = tr;
@@ -80,16 +96,28 @@ public class PaypalService {
 
                                 if (!t.getStatus().equals("created")) {
                                     System.out.println("Loop cancel");
+                                    FinalizeOrderDTO foDTO = new FinalizeOrderDTO();
+                                    foDTO.setOrderStatus(convertStatus(t.getStatus()));
+                                    foDTO.setActiveOrderId(t.getActiveOrderId());
+                                    orderClient.finalizeOrder(foDTO);
                                     timer.cancel();
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
+                                FinalizeOrderDTO foDTO = new FinalizeOrderDTO();
+                                foDTO.setOrderStatus(Enums.OrderStatus.FAILED);
+                                foDTO.setActiveOrderId(transaction.getActiveOrderId());
+                                orderClient.finalizeOrder(foDTO);
                                 timer.cancel();
                             }
                         } else {
                             PPTransaction t = transacRepo.findOneByOrderId(transaction.getOrderId());
                             t.setStatus("suspended");
-                            transacRepo.save(t);
+                            t = transacRepo.save(t);
+                            FinalizeOrderDTO foDTO = new FinalizeOrderDTO();
+                            foDTO.setOrderStatus(Enums.OrderStatus.FAILED);
+                            foDTO.setActiveOrderId(t.getActiveOrderId());
+                            orderClient.finalizeOrder(foDTO);
                             System.out.println("Loop cancel TIMER");
                             timer.cancel();
                         }
@@ -108,6 +136,20 @@ public class PaypalService {
             e.printStackTrace();
         }
         return RETURL;
+    }
+
+    public String cancelPayment(String token) {
+        PPTransaction tr = transacRepo.findOneByPaymentToken(token);
+        tr.setStatus("canceled");
+        transacRepo.save(tr);
+        return "done";
+    }
+
+    public String cancelPlan(String token) {
+        PPAgreement ag = agreementService.findOneByTokenn(token);
+        ag.setStatus("canceled");
+        agreementService.save(ag);
+        return "done";
     }
 
     public String successPay(String paymentId, String payerId) {
@@ -163,6 +205,61 @@ public class PaypalService {
         BillingPlan bp = billingPlanService.findOneById(dto.getPlanId());
         try {
             Agreement agreement = createAgreement(dto, bp.getPlanId());
+            PPAgreement agr = new PPAgreement();
+            agr.setPlanId(agreement.getPlan().getId());
+            agr.setTokenn(agreement.getToken());
+            agr.setSellerId(bp.getSellerId());
+            agr.setStatus("created");
+            agr.setActiveOrderId(dto.getActiveOrderId());
+            agr = agreementService.save(agr);
+            //TODO: POGLEDAJ KAKO AGREEMENT IZGLEDA KAD SE NAPRAVI(STATUS), SACUVAJ GA U BAZU I STAVI TIMER
+            final PPAgreement agriment = agr;
+
+            CompletableFuture<Object> completableFuture = CompletableFuture.supplyAsync(() -> {
+                Timer timer = new Timer();
+                long startTime = System.currentTimeMillis();
+                timer.scheduleAtFixedRate(new TimerTask(){
+                    @Override
+                    public void run(){
+
+                        System.out.println("Loop ping agreement");
+                        long stopTime = System.currentTimeMillis();
+                        if(stopTime - startTime < 600000) {
+                            try {
+                                PPAgreement pa = agreementService.findOneByTokenn(agriment.getTokenn());
+
+                                if (!pa.getStatus().equals("created")) {
+                                    System.out.println("Loop cancel agreement");
+                                    FinalizeOrderDTO foDTO = new FinalizeOrderDTO();
+                                    foDTO.setOrderStatus(convertStatus(pa.getStatus()));
+                                    foDTO.setActiveOrderId(pa.getActiveOrderId());
+                                    orderClient.finalizeOrder(foDTO);
+                                    timer.cancel();
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                FinalizeOrderDTO foDTO = new FinalizeOrderDTO();
+                                foDTO.setOrderStatus(Enums.OrderStatus.FAILED);
+                                foDTO.setActiveOrderId(agriment.getActiveOrderId());
+                                orderClient.finalizeOrder(foDTO);
+                                timer.cancel();
+                            }
+                        } else {
+                            PPAgreement pa = agreementService.findOneByTokenn(agriment.getTokenn());
+                            pa.setStatus("suspended");
+                            pa = agreementService.save(pa);
+                            FinalizeOrderDTO foDTO = new FinalizeOrderDTO();
+                            foDTO.setOrderStatus(Enums.OrderStatus.FAILED);
+                            foDTO.setActiveOrderId(pa.getActiveOrderId());
+                            orderClient.finalizeOrder(foDTO);
+                            System.out.println("Loop cancel agreement TIMER");
+                            timer.cancel();
+                        }
+                    }
+                },5000,10000);
+                return "OK";
+            });
+
             for (Links links : agreement.getLinks()) {
                 if ("approval_url".equals(links.getRel())) {
                     return links.getHref();
@@ -182,16 +279,22 @@ public class PaypalService {
         return RETURL;
     }
 
-    public String executePlan(String token, String planID) {
+    public String executePlan(String token) {
         Agreement agreement =  new Agreement();
         agreement.setToken(token);
+        PPAgreement agr = agreementService.findOneByTokenn(token);
         try {
             logger.logInfo("PP_EXEPLAN");
-            long ide = Long.parseLong(planID);
-            APIContext apiContext = getContextAndMerchant(ide);
+            APIContext apiContext = getContextAndMerchant(agr.getSellerId());
             Agreement activeAgreement = agreement.execute(apiContext, agreement.getToken());
             System.out.println(activeAgreement.toJSON());
-            //TODO: Zabeleziti u bazi agreement
+            agr.setActiveAgreementId(activeAgreement.getId());
+            agr.setStatus("approved");
+            agr.setPayerEmail(activeAgreement.getPayer().getPayerInfo().getEmail());
+            agr.setPayerId(activeAgreement.getPayer().getPayerInfo().getPayerId());
+            agr.setStartDate(activeAgreement.getStartDate());
+            agr.setFinalPaymentDate(activeAgreement.getAgreementDetails().getFinalPaymentDate());
+            agreementService.save(agr);
             return "success";
         } catch (PayPalRESTException e) {
             logger.logError("PP_EXEPLAN_ERR: " + e.getMessage());
@@ -227,7 +330,7 @@ public class PaypalService {
         payment.setPayer(payer);
         payment.setTransactions(transactions);
         RedirectUrls redirectUrls = new RedirectUrls();
-        redirectUrls.setCancelUrl("http://localhost:4201");
+        redirectUrls.setCancelUrl("https://localhost:4200/cancel/payment/paypal");
         redirectUrls.setReturnUrl("https://localhost:4200/payment/verifying");
         payment.setRedirectUrls(redirectUrls);
 
@@ -254,7 +357,7 @@ public class PaypalService {
 
         MerchantPreferences merchantPreferences = new MerchantPreferences();
         merchantPreferences.setReturnUrl("https://localhost:4200/paypal/execute/plan");
-        merchantPreferences.setCancelUrl("http://localhost:4201");
+        merchantPreferences.setCancelUrl("https://localhost:4200/cancel/paypal/plan");
         merchantPreferences.setAutoBillAmount("yes");
         merchantPreferences.setInitialFailAmountAction("CONTINUE");
         merchantPreferences.setMaxFailAttempts("1");
@@ -312,11 +415,7 @@ public class PaypalService {
         shipping.setCountryCode(dto.getCountryCode());
         agreement.setShippingAddress(shipping);
 
-        byte[] actualByte = Base64.getDecoder().decode(dto.getId());
-        String dec = new String(actualByte);
-        long actualID = Long.parseLong(dec);
-
-        APIContext apiContext = getContextAndMerchant(actualID);
+        APIContext apiContext = getContextAndMerchant(dto.getId());
 
         return agreement.create(apiContext);
     }
@@ -333,21 +432,23 @@ public class PaypalService {
         return payment.execute(apiContext, paymentExecute);
     }
 
-    public List<ShowPlansDTO> getPlansEnc(String selID) {
-        byte[] actualByte = Base64.getDecoder().decode(selID);
-        String dec = new String(actualByte);
+    public List<ShowPlansDTO> getPlans(long sellerID) {
         ArrayList<ShowPlansDTO> planovi = new ArrayList<>();
-        if(!dec.equals("")) {
-            long sellerID = Long.parseLong(dec);
-            List<BillingPlan> bilplans = billingPlanService.findBySeller(sellerID);
-            for(BillingPlan bp : bilplans) {
-                ShowPlansDTO temp = new ShowPlansDTO(bp.getId(), bp.getName(), bp.getFrequency(), bp.getFreqInterval(), bp.getCycles(), bp.getAmount(), bp.getCurrency(), bp.getAmountStart());
-                planovi.add(temp);
-            }
+        List<BillingPlan> bilplans = billingPlanService.findBySeller(sellerID);
+        for(BillingPlan bp : bilplans) {
+            ShowPlansDTO temp = new ShowPlansDTO(bp.getId(), bp.getName(), bp.getFrequency(), bp.getFreqInterval(), bp.getCycles(), bp.getAmount(), bp.getCurrency(), bp.getAmountStart());
+            planovi.add(temp);
         }
 
         return planovi;
     }
 
+    private Enums.OrderStatus convertStatus(String status) {
+        if (status.equals("approved")) {
+            return Enums.OrderStatus.SUCCESS;
+        } else {
+            return Enums.OrderStatus.FAILED;
+        }
+    }
 
 }

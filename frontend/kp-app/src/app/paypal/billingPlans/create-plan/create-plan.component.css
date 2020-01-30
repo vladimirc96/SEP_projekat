@@ -6,3 +6,11 @@
     text-align: center;
     margin-top: 20px;
 }
+
+.point {
+    cursor: default;
+}
+  
+.wait {
+    cursor: wait;
+}

@@ -39,6 +39,9 @@ public class PPTransaction {
     @Column
     private String createdAt;
 
+    @Column
+    private String paymentToken;
+
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private PPClient client;
 
@@ -46,7 +49,7 @@ public class PPTransaction {
     public PPTransaction() {
     }
 
-    public PPTransaction(long activeOrderId, String orderId, String payerId, String payerEmail, String currency, double amount, String status, String payee, String createdAt, PPClient client) {
+    public PPTransaction(long activeOrderId, String orderId, String payerId, String payerEmail, String currency, double amount, String status, String payee, String createdAt, String token, PPClient client) {
         this.activeOrderId = activeOrderId;
         this.orderId = orderId;
         this.payerId = payerId;
@@ -56,7 +59,16 @@ public class PPTransaction {
         this.status = status;
         this.payee = payee;
         this.createdAt = createdAt;
+        this.paymentToken = token;
         this.client = client;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public long getActiveOrderId() {
@@ -67,73 +79,77 @@ public class PPTransaction {
         this.activeOrderId = activeOrderId;
     }
 
-    public long getId() {
-        return id;
-    }
-
     public String getOrderId() {
         return orderId;
-    }
-
-    public String getPayerId() {
-        return payerId;
-    }
-
-    public String getPayerEmail() {
-        return payerEmail;
-    }
-
-    public String getCurrency() {
-        return currency;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public String getPayee() {
-        return payee;
-    }
-
-    public String getCreatedAt() { return createdAt; }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public void setOrderId(String orderId) {
         this.orderId = orderId;
     }
 
+    public String getPayerId() {
+        return payerId;
+    }
+
     public void setPayerId(String payerId) {
         this.payerId = payerId;
+    }
+
+    public String getPayerEmail() {
+        return payerEmail;
     }
 
     public void setPayerEmail(String payerEmail) {
         this.payerEmail = payerEmail;
     }
 
+    public String getCurrency() {
+        return currency;
+    }
+
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    public double getAmount() {
+        return amount;
     }
 
     public void setAmount(double amount) {
         this.amount = amount;
     }
 
-    public void setStatus(String state) {
-        this.status = state;
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getPayee() {
+        return payee;
     }
 
     public void setPayee(String payee) {
         this.payee = payee;
     }
 
-    public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getPaymentToken() {
+        return paymentToken;
+    }
+
+    public void setPaymentToken(String paymentToken) {
+        this.paymentToken = paymentToken;
+    }
 
     public PPClient getClient() {
         return client;
