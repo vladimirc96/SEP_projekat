@@ -34,7 +34,7 @@ public class BankController {
 
     // metoda koja prihvata zahtev za placanje i prosledjuje banci na proveru
     @RequestMapping(value = "/payment-request", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    private ResponseEntity<RedirectDTO> payment(@RequestBody ActiveOrderDTO activeOrderDTO) {
+    public ResponseEntity<RedirectDTO> payment(@RequestBody ActiveOrderDTO activeOrderDTO) {
         Customer customer = customerService.findOneById(activeOrderDTO.getSellerId());
         Transaction transaction = transactionService.create(activeOrderDTO, customer);
 
@@ -50,7 +50,7 @@ public class BankController {
 
     // belezi ishod transakcije u odnosu na to sta banka posalje
     @RequestMapping(value  = "/transaction/{id}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
-    private ResponseEntity<String> updateTransaction(@RequestBody PaymentStatusDTO paymentStatusDTO, @PathVariable("id") String id){
+    public ResponseEntity<String> updateTransaction(@RequestBody PaymentStatusDTO paymentStatusDTO, @PathVariable("id") String id){
         Transaction transaction = transactionService.findOneById(Long.parseLong(id));
         transaction.setPaymentStatus(paymentStatusDTO.getPaymentStatus());
         transaction = transactionService.save(transaction);

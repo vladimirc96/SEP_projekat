@@ -27,7 +27,7 @@ public class PccController {
     private TransactionService transactionService;
 
     @RequestMapping(value = "/forward-payment/{paymentId}", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    public ResponseEntity<?> forward(@RequestBody PccRequestDTO pccRequestDTO, @PathVariable("paymentId") String id){
+    public ResponseEntity<IssuerResponseDTO> forward(@RequestBody PccRequestDTO pccRequestDTO, @PathVariable("paymentId") String id){
 
         if(!isValid(pccRequestDTO)){
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -45,21 +45,11 @@ public class PccController {
         ResponseEntity<IssuerResponseDTO> responseEntity = restTemplate.exchange("https://localhost:8451/bank/issuer/payment/" + id,
                 HttpMethod.PUT, entity, IssuerResponseDTO.class);
 
+        // sacuvaj odma stanje transakcije kad dobijes odg
+        transaction = transactionService.update(responseEntity.getBody(), transaction);
+
         // responseEntity odgovor proslediti prodavcu
         return responseEntity;
-    }
-
-    // belezi ishod transakcije u odnosu na to sta banka posalje
-    @RequestMapping(value  = "/transaction/{paymentId}", method = RequestMethod.PUT)
-    private ResponseEntity<String> updateTransaction(@RequestBody PaymentStatusDTO paymentStatusDTO, @PathVariable("id") String id){
-        Transaction transaction = transactionService.findOneByPaymentId(Long.parseLong(id));
-        if(transaction == null){
-            return new ResponseEntity<>("Transakcija ne postoji.", HttpStatus.NOT_FOUND);
-        }
-        transaction.setPaymentStatus(paymentStatusDTO.getPaymentStatus());
-        transaction = transactionService.save(transaction);
-        System.out.println(transaction);
-        return new ResponseEntity<>("Transakcija azurirana.", HttpStatus.OK);
     }
 
     private boolean isValid(PccRequestDTO pccRequestDTO){

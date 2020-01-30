@@ -10,6 +10,7 @@ public class AcquirerResponseDTO {
     private Long acquirerOrderId;
     private Date acquirerTimestamp;
     private String message;
+    private String confirmUrl;
 
     public AcquirerResponseDTO(){}
 

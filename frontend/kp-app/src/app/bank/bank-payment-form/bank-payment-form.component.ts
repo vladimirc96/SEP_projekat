@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { BankService } from 'src/app/services/bank.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-bank-payment-form',
@@ -18,10 +19,15 @@ export class BankPaymentFormComponent implements OnInit {
   })
 
   isValid: boolean = false;
+  acquirerSuccess: boolean = false;
+  issuerSuccess: boolean = false;
+
+  responseDto: any;
   transactionId: any;
   paymentConfirmation: boolean = false;
   
-  constructor(private route: ActivatedRoute, private router: Router, private bankService: BankService) { 
+  
+  constructor(private spinner: NgxSpinnerService,private route: ActivatedRoute, private router: Router, private bankService: BankService) { 
 
     this.route.parent.params.subscribe((params: Params) => {
 			const param = +params["id"];
@@ -38,37 +44,8 @@ export class BankPaymentFormComponent implements OnInit {
   ngOnInit() {
   }
 
-
-  onValidate(){
-
-    let bankAccountDTO = {
-      pan: this.infoForm.value.pan,
-      serviceCode: this.infoForm.value.serviceCode,
-      cardholderName: this.infoForm.value.cardholderName,
-      expirationDate: this.infoForm.value.expirationDate
-    }
-
-    this.validate(bankAccountDTO);
-  }
-
-  validate(bankAccountDTO){
-    setTimeout(() =>{
-      this.paymentConfirmation = true;
-      alert("The information are valid");
-    },1000)
-    this.bankService.validateAndReserve(bankAccountDTO, this.transactionId).subscribe(
-      (success) => {
-        this.paymentConfirmation = true;
-        alert("The information are valid");
-      },
-      (error: any) => {
-        alert(error.message);
-      }
-    )
-  }
-
   onPay(){
-
+    this.spinner.show();
     let bankAccountDTO = {
       pan: this.infoForm.value.pan,
       serviceCode: this.infoForm.value.serviceCode,
@@ -77,14 +54,24 @@ export class BankPaymentFormComponent implements OnInit {
     }
 
     this.bankService.payment(bankAccountDTO, this.transactionId).subscribe(
-      (response: any) => { 
-        this.router.navigate(['bank/' + this.transactionId + '/success']);
+      (response: any) => {
+        this.spinner.hide();
+        this.router.navigate(['/bank/' + this.transactionId + '/success']);
+
       },
-      (error) => {
-        this.router.navigate(['bank/' + this.transactionId + '/failure']);
+      (error: any) => {
+        this.spinner.hide();
+        if(error.status == '409'){
+          this.router.navigate(['/bank/' + this.transactionId + '/failure']);
+        }
+        if(error.status == '400'){
+          alert("Podaci nisu validni");
+        }
+
       }
     )
-  }
+    
 
+  }
 
 }

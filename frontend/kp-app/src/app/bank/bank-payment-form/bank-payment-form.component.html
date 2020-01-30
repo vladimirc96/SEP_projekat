@@ -1,4 +1,4 @@
-<div class="wrapper fadeInDown">
+<div class="wrapper">
     <div id="formContent">
       <!-- Tabs Titles -->
   
@@ -23,8 +23,17 @@
             <input type="date"  required class="form-control" formControlName="expirationDate">
           </div>
          
-        <button type="submit" class="btn btn-success" (click)="onValidate()" [hidden]="paymentConfirmation" style="margin-right: 10px">Pay</button>
-        <button type="submit" class="btn btn-success" (click)="onPay()" [hidden]="!paymentConfirmation">Confirm payment</button>
+        <button type="submit" class="btn btn-success" (click)="onPay()" [disabled]="!infoForm.valid" style="margin-right: 10px">Pay</button>
       </form>
     </div>
+
+    <ngx-spinner
+    bdColor="rgba(51,51,51,0.8)"
+    size="medium"
+    color="#fff"
+    type="ball-scale-multiple"
+  >
+    <p style="font-size: 20px; color: white">Obrada placanja...</p>
+  </ngx-spinner>
+
   </div>

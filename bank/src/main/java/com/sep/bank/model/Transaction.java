@@ -1,5 +1,7 @@
 package com.sep.bank.model;
 
+import com.sep.bank.model.enums.BankType;
+
 import javax.persistence.*;
 import java.util.Date;
 

@@ -14,13 +14,19 @@ export class BankService {
         return this.http.post("/api/bank-service/bank/payment-request", paymentDTO);
     }
 
-    validateAndReserve(bankAccountDTO, transactionId){
+    payment(bankAccountDTO, transactionId){
         return this.http.put("https://localhost:8450/bank/acquirer/payment/" + transactionId, bankAccountDTO);
     }
 
-    payment(bankAccountDTO, transactionId){
-        return this.http.put("https://localhost:8450/bank/payment/" + transactionId, bankAccountDTO);
+    confirmPaymentAcquirer(bankAccountDTO, transactionId){
+        return this.http.put("https://localhost:8450/bank/confirm-payment-acquirer/" + transactionId, bankAccountDTO);
     }
+
+    confirmPaymentIssuer(bankAccountDTO, transactionId){
+        return this.http.put("https://localhost:8450/bank/confirm-payment-issuer/" + transactionId, bankAccountDTO);
+    }
+
+    
 
 
 }
