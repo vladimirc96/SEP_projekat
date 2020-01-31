@@ -9,9 +9,8 @@ import java.util.Set;
 public class Customer {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "client_id")
-    private Long id;
+    private Long id; //seller id
 
     @Column(name = "merchant_id")
     private String merchantId;
@@ -79,4 +78,9 @@ public class Customer {
     public void setTransactions(Set<Transaction> transactions) {
         this.transactions = transactions;
     }
+
+    public void setMerchantId(String merchantId) {
+        this.merchantId = merchantId;
+    }
+
 }

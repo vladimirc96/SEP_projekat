@@ -67,4 +67,5 @@ public class CustomerDTO {
     public void setName(String name) {
         this.name = name;
     }
+
 }

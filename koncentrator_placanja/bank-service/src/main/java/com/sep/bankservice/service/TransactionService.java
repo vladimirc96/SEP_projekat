@@ -3,6 +3,7 @@ package com.sep.bankservice.service;
 import com.sep.bankservice.client.OrderClient;
 import com.sep.bankservice.dto.ActiveOrderDTO;
 import com.sep.bankservice.dto.FinalizeOrderDTO;
+import com.sep.bankservice.dto.ActiveOrderDTO;
 import com.sep.bankservice.dto.PaymentDTO;
 import com.sep.bankservice.dto.PaymentStatusDTO;
 import com.sep.bankservice.model.Customer;

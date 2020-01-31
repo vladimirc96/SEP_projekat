@@ -18,7 +18,6 @@ export class BankPaymentComponent implements OnInit {
   activeOrder: any;
 
   constructor(private activeOrderSerivce: ActiveOrderService, private route: ActivatedRoute, private router: Router, private bankService: BankService, private spinner: NgxSpinnerService) { 
-
     this.route.params.subscribe((params: Params) => {
 			const param = +params["id"];
 
