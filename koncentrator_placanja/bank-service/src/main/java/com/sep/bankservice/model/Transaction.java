@@ -23,6 +23,9 @@ public class Transaction {
     @Column(name = "active_order_id")
     private Long activeOrderId;
 
+    @Column(name = "payment_id")
+    private Long paymentId;
+
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Customer customer;
 
@@ -83,6 +86,14 @@ public class Transaction {
         this.activeOrderId = activeOrderId;
     }
 
+    public Long getPaymentId() {
+        return paymentId;
+    }
+
+    public void setPaymentId(Long paymentId) {
+        this.paymentId = paymentId;
+    }
+
     @Override
     public String toString() {
         return "Transaction{" +
@@ -91,6 +102,7 @@ public class Transaction {
                 ", timestamp=" + timestamp +
                 ", paymentStatus=" + paymentStatus +
                 ", activeOrderId=" + activeOrderId +
+                ", paymentId=" + paymentId +
                 ", customer=" + customer +
                 '}';
     }

@@ -41,6 +41,7 @@ public class BankController {
 
         String merchantPasswordDecrypted = cryptoService.decrypt(customer.getMerchantPassword());
         ResponseEntity<RedirectDTO> responseEntity = bankClient.forwardPaymentRequest(transaction, customer, merchantPasswordDecrypted);
+        transaction = transactionService.setPaymentId(transaction, responseEntity.getBody().getPaymentId());
         return responseEntity;
     }
 

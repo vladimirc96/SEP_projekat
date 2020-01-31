@@ -4,10 +4,7 @@ import com.sep.bank.client.BankClient;
 import com.sep.bank.client.PccClient;
 import com.sep.bank.client.TransactionClient;
 import com.sep.bank.dto.*;
-import com.sep.bank.model.BankAccount;
-import com.sep.bank.model.Customer;
-import com.sep.bank.model.Payment;
-import com.sep.bank.model.Transaction;
+import com.sep.bank.model.*;
 import com.sep.bank.model.enums.BankType;
 import com.sep.bank.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +24,6 @@ public class BankController {
 
     public Logging logger = new Logging(this);
 
-    @Autowired
-    private RestTemplate restTemplate;
 
     @Autowired
     private BankAccountService bankAccountService;
@@ -68,6 +63,12 @@ public class BankController {
     public ResponseEntity<PaymentResponseDTO> acquirerValidate(@RequestBody BankAccountDTO bankAccountDTO, @PathVariable("paymentId") String id) {
         Payment payment = paymentService.findOneById(Long.parseLong(id));
         Transaction transaction = transactionService.findOneById(payment.getAcquirerOrderId());
+
+        if(transaction.getPaymentStatus().name().equals("FAILURE")){
+            return new ResponseEntity<>(new PaymentResponseDTO(payment.getMerchantOrderId(), transaction.getId(), payment.getId(),
+                    transaction.getTimestamp(), transaction.getPaymentStatus()), HttpStatus.CONFLICT);
+        }
+
         ResponseEntity<IssuerResponseDTO> responseEntity = null;
         try {
             bankAccountDTO = bankAccountService.parseDate(bankAccountDTO);
@@ -82,6 +83,7 @@ public class BankController {
         // obrada transakcije - ako ima issuer banka
         if(responseEntity != null){
             payment.setIssuerOrderId(responseEntity.getBody().getIssuerOrderId());
+            payment.setPccUrlUpdate(responseEntity.getBody().getIssuerUpdateUrl());
             return transactionService.issuerProcessTransaction(responseEntity.getBody(), payment);
         }
 
@@ -110,5 +112,23 @@ public class BankController {
         return bankAccountService.issuerValidateAndReserve(transaction, bankAccount, pccRequestDTO);
     }
 
+
+    @RequestMapping(value = "/transaction-failed", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
+    public ResponseEntity<String> updateTransaction(@RequestBody PaymentIdDTO paymentId){
+        Payment payment = paymentService.findOneById(paymentId.getId());
+        Transaction transaction = transactionService.findOneById(payment.getAcquirerOrderId());
+        transaction.setPaymentStatus(PaymentStatus.FAILURE);
+        transaction = transactionService.save(transaction);
+        transactionService.notifyIsFaield(payment);
+        return new ResponseEntity("Updated", HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/transaction-failed/{issuerOrderId}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
+    public ResponseEntity<String> updateIssuerTransaction(@PathVariable("issuerOrderId") String id){
+        Transaction transaction = transactionService.findOneById(Long.parseLong(id));
+        transaction.setPaymentStatus(PaymentStatus.FAILURE);
+        transaction = transactionService.save(transaction);
+        return new ResponseEntity("Updated", HttpStatus.OK);
+    }
 
 }

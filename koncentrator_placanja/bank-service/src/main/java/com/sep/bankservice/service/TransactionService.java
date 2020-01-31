@@ -1,10 +1,8 @@
 package com.sep.bankservice.service;
 
+import com.sep.bankservice.client.BankClient;
 import com.sep.bankservice.client.OrderClient;
-import com.sep.bankservice.dto.ActiveOrderDTO;
-import com.sep.bankservice.dto.FinalizeOrderDTO;
-import com.sep.bankservice.dto.PaymentDTO;
-import com.sep.bankservice.dto.PaymentStatusDTO;
+import com.sep.bankservice.dto.*;
 import com.sep.bankservice.model.Customer;
 import com.sep.bankservice.model.Enums;
 import com.sep.bankservice.model.PaymentStatus;
@@ -33,6 +31,8 @@ public class TransactionService {
     @Autowired
     private OrderClient orderClient;
 
+    @Autowired
+    private BankClient bankClient;
 
     private final long paymentMethodId = 1;
 
@@ -111,6 +111,7 @@ public class TransactionService {
                             System.out.println("************** NEUSPESNA TRANSAKCIJA - PROSLO 10 MIN **************");
                             transactionTemp.setPaymentStatus(PaymentStatus.FAILURE);
                             transactionTemp = transactionRepo.save(transactionTemp);
+                            bankClient.updateTransaction(new PaymentIdDTO(transactionTemp.getPaymentId()));
                             FinalizeOrderDTO finalizeOrderDTO = new FinalizeOrderDTO();
                             finalizeOrderDTO.setActiveOrderId(transactionTemp.getActiveOrderId());
                             finalizeOrderDTO.setOrderStatus(convertStatus(transactionTemp.getPaymentStatus()));
@@ -141,5 +142,14 @@ public class TransactionService {
             return Enums.OrderStatus.FAILED;
         }
         return Enums.OrderStatus.SUCCESS;
+    }
+
+    public Transaction setPaymentId(Transaction transaction,Long paymentId) {
+
+        if(paymentId != null){
+            transaction.setPaymentId(paymentId);
+            transaction = transactionRepo.save(transaction);
+        }
+        return transaction;
     }
 }
