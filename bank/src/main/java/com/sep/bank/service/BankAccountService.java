@@ -1,5 +1,6 @@
 package com.sep.bank.service;
 
+import com.sep.bank.client.TransactionClient;
 import com.sep.bank.dto.*;
 import com.sep.bank.model.*;
 import com.sep.bank.repository.BankAccountRepository;
@@ -26,27 +27,38 @@ public class BankAccountService {
     @Autowired
     private TransactionService transactionService;
 
+    @Autowired
+    private TransactionClient transactionClient;
 
-    public boolean isBankSame(Transaction transaction, BankAccount bankAccount){
-        Customer acquirer = transaction.getCustomer();
-        Customer issuer = bankAccount.getCustomer();
-        if(issuer.getBankAccount().getBank().getId() != acquirer.getBankAccount().getBank().getId()){
+    public boolean isBankSame(Transaction transaction,BankAccount bankAccountAcquirer, BankAccountDTO bankAccountDTO){
+        String acquirerBIN = bankAccountAcquirer.getPan().substring(0,5);
+        String issuerBIN = bankAccountDTO.getPan().substring(0,5);
+        if(!acquirerBIN.equals(issuerBIN)){
             logger.logInfo("INFO: Banka prodavca i bank kupca nisu iste. Prosledjivanje zahteva PCC-u. Transaction: " + transaction.toString() +
-                    "; bank account data: " + bankAccount.toString());
+                    "; bank account data: " + bankAccountAcquirer.toString());
             return false;
         }
         return true;
     }
 
-        public Transaction acquirerValidateAndReserve(Transaction transaction, BankAccount bankAccount, BankAccountDTO bankAccountDTO){
+    public Transaction acquirerValidate(Transaction transaction, BankAccount bankAccount, BankAccountDTO bankAccountDTO, Payment payment){
         logger.logInfo("INFO: Validacija podataka kartice. Transcation: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
         try {
             validation(bankAccountDTO, bankAccount, transaction);
         } catch (Exception e) {
             logger.logError("ERROR: " + e.getMessage() + ". Transaction: " + transaction.toString());
             e.printStackTrace();
+            transactionClient.updateTransactionBankService(new PaymentStatusDTO(payment.getMerchantOrderId(),transaction.getPaymentStatus()), payment);
             return transaction;
         }
+        transaction.setPaymentStatus(PaymentStatus.PROCESSING);
+        transaction = transactionService.save(transaction);
+        logger.logInfo("SUCCESS: Podaci kartice su validni. Transaction: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
+        return transaction;
+    }
+
+    public Transaction acquirerReserveFunds(Transaction transaction, BankAccount bankAccount, BankAccountDTO bankAccountDTO){
+        logger.logInfo("INFO: Rezervacija sredstava. Transcation: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
         try {
             reserveFunds(bankAccount, transaction);
         } catch (Exception e) {
@@ -59,6 +71,28 @@ public class BankAccountService {
         logger.logInfo("SUCCESS: Zahtev za placanje uspesno obradjen, sredstva su rezervisana. Transaction: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
         return transaction;
     }
+
+//    public Transaction acquirerValidateAndReserve(Transaction transaction, BankAccount bankAccount, BankAccountDTO bankAccountDTO){
+//        logger.logInfo("INFO: Validacija podataka kartice. Transcation: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
+//        try {
+//            validation(bankAccountDTO, bankAccount, transaction);
+//        } catch (Exception e) {
+//            logger.logError("ERROR: " + e.getMessage() + ". Transaction: " + transaction.toString());
+//            e.printStackTrace();
+//            return transaction;
+//        }
+//        try {
+//            reserveFunds(bankAccount, transaction);
+//        } catch (Exception e) {
+//            logger.logError("ERROR: " + e.getMessage() + ". Transaction: " + transaction.toString());
+//            e.printStackTrace();
+//            return transaction;
+//        }
+//        transaction.setPaymentStatus(PaymentStatus.SUCCESS);
+//        transaction = transactionService.save(transaction);
+//        logger.logInfo("SUCCESS: Zahtev za placanje uspesno obradjen, sredstva su rezervisana. Transaction: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
+//        return transaction;
+//    }
 
     public ResponseEntity<IssuerResponseDTO> issuerValidateAndReserve(Transaction transaction, BankAccount bankAccount, PccRequestDTO pccRequestDTO){
         BankAccountDTO bankAccountDTO = pccRequestDTO.getBankAccountDTO();
@@ -89,12 +123,11 @@ public class BankAccountService {
     }
 
     public void validation(BankAccountDTO bankAccountDTO, BankAccount bankAccount, Transaction transaction) throws Exception {
-        // provera ostalih podataka
         bankAccount = validate(bankAccountDTO);
         if(bankAccount == null){
             transaction.setPaymentStatus(PaymentStatus.ERROR);
             transaction = transactionService.save(transaction);
-           throw new Exception("Podaci koji su uneti za karticu nisu validni. Transaction: " + transaction.toString() + "; " + bankAccountDTO.toString());
+           throw new Exception("Podaci koji su uneti za karticu nisu validni.");
 
         }
         if(isExpired(bankAccountDTO.getExpirationDate())){
@@ -109,7 +142,7 @@ public class BankAccountService {
         final Transaction t = transaction;
         //provera raspolozivih sredstava
         if(!hasFunds(bankAccount.getBalance(), transaction.getAmount())){
-            transaction.setPaymentStatus(PaymentStatus.INSUFFCIENT_FUNDS);
+            transaction.setPaymentStatus(PaymentStatus.INSUFFICIENT_FUNDS);
             transaction = transactionService.save(transaction);
             throw new Exception("Nedovoljno sredstava.");
         }else{
@@ -125,6 +158,7 @@ public class BankAccountService {
                     logger.logInfo("INFO: Stanje racuna:" + ba.getBalance() + ". Transaction " + t.toString() + "; bank account data: ");
                     logger.logInfo("INFO: Rezervisana sredstva: "+ ba.getReserved() + ". Transaction " + t.toString() + "; bank account data: ");
                     ba.setBalance(ba.getBalance()-ba.getReserved());
+                    ba.setReserved(0);
                     bankAccountRepo.save(ba);
                     logger.logInfo("INFO: Stanje racuna nakon rezervacije: "+ ba.getBalance() + ". Transaction " + t.toString() + "; bank account data: ");
                     timer.cancel();

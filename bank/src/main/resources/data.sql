@@ -13,12 +13,12 @@ insert into bank (id, name) values (3, "Addiko bank");
 insert into bank_account (id, pan, cardholder_name, expiration_date, service_code, balance, reserved, bank_id, customer_id)
 values (1, "1111111111111111", "Vladimir Cvetanovic", '2020-03-20 00:00:00', "111", 10000, 0, 1, 1);
 insert into bank_account (id, pan, cardholder_name, expiration_date, service_code, balance, reserved, bank_id, customer_id)
-values (2, "2222222222222222", "Marko Stevanov", '2020-04-20 00:00:00', "222", 10000, 0, 2, 2);
+values (2, "3333332222222222", "Marko Stevanov", '2020-04-20 00:00:00', "222", 10000, 0, 2, 2);
 
 /* CASOPISI - RACUNI */
 insert into bank_account (id, pan, cardholder_name, expiration_date, service_code, balance, reserved, bank_id, customer_id)
-values (3, "3333333333333333", "Naucni kutak", '2020-05-20 00:00:00', "333", 10000, 0, 2, 3);
+values (3, "1111113333333333", "Naucni kutak", '2020-05-20 00:00:00', "333", 10000, 0, 2, 3);
 insert into bank_account (id, pan, cardholder_name, expiration_date, service_code, balance, reserved, bank_id, customer_id)
-values (4, "4444444444444444", "Savremena psihologija", '2020-05-20 00:00:00', "444", 10000, 0, 1, 4);
+values (4, "2222224444444444", "Savremena psihologija", '2020-05-20 00:00:00', "444", 10000, 0, 1, 4);
 insert into bank_account (id, pan, cardholder_name, expiration_date, service_code, balance, reserved, bank_id, customer_id)
-values (5, "5555555555555555", "Nauka danas", '2020-05-20 00:00:00', "555", 10000, 0, 3, 5);
+values (5, "2222225555555555", "Nauka danas", '2020-05-20 00:00:00', "555", 10000, 0, 3, 5);
