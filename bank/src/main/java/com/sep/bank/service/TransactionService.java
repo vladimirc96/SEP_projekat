@@ -100,7 +100,7 @@ public class TransactionService {
             transactionClient.updateTransactionBankService(new PaymentStatusDTO(payment.getMerchantOrderId(), transaction.getPaymentStatus()), payment);
             return new ResponseEntity<>(paymentResponseDTO, HttpStatus.BAD_REQUEST);
 
-        }else if(issuerResponseDTO.getPaymentStatus().name().equals("INSUFFICENT_FUNDS") || issuerResponseDTO.getPaymentStatus().name().equals("FAILURE")){
+        }else if(issuerResponseDTO.getPaymentStatus().name().equals("INSUFFICIENT_FUNDS") || issuerResponseDTO.getPaymentStatus().name().equals("FAILURE")){
 
             transaction.setPaymentStatus(issuerResponseDTO.getPaymentStatus());
             transaction = transactionRepo.save(transaction);
@@ -133,7 +133,7 @@ public class TransactionService {
             transactionClient.updateTransactionBankService(new PaymentStatusDTO(payment.getMerchantOrderId(),transaction.getPaymentStatus()), payment);
             return new ResponseEntity<>(paymentResponseDTO, HttpStatus.BAD_REQUEST);
 
-        }else if(transaction.getPaymentStatus().name().equals("INSUFFICENT_FUNDS") || transaction.getPaymentStatus().name().equals("FAILURE")){
+        }else if(transaction.getPaymentStatus().name().equals("INSUFFICIENT_FUNDS") || transaction.getPaymentStatus().name().equals("FAILURE")){
 
             paymentResponseDTO = new PaymentResponseDTO(payment.getMerchantOrderId(), transaction.getId(), payment.getId(),
                     transaction.getTimestamp(), transaction.getPaymentStatus());

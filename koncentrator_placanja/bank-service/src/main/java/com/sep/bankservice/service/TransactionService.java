@@ -81,7 +81,7 @@ public class TransactionService {
                             timer.cancel();
                         }
 
-                        if(transactionTemp.getPaymentStatus().equals(PaymentStatus.FAILURE) || transactionTemp.getPaymentStatus().equals(PaymentStatus.INSUFFCIENT_FUNDS)){
+                        if(transactionTemp.getPaymentStatus().equals(PaymentStatus.FAILURE) || transactionTemp.getPaymentStatus().equals(PaymentStatus.INSUFFICIENT_FUNDS)){
                             System.out.println("************** NEUSPESNA TRANSAKCIJA **************");
                             FinalizeOrderDTO finalizeOrderDTO = new FinalizeOrderDTO();
                             finalizeOrderDTO.setActiveOrderId(transactionTemp.getActiveOrderId());
@@ -121,7 +121,7 @@ public class TransactionService {
             return Enums.OrderStatus.PENDING;
         }else if(paymentStatus.name().equals("FAILURE")){
             return Enums.OrderStatus.FAILED;
-        }else if(paymentStatus.name().equals("INSUFFCIENT_FUNDS")){
+        }else if(paymentStatus.name().equals("INSUFFICIENT_FUNDS")){
             return Enums.OrderStatus.FAILED;
         }
         return Enums.OrderStatus.SUCCESS;
