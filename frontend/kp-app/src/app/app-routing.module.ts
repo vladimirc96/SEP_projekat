@@ -25,6 +25,7 @@ import { SellerRegistrationComponent } from './registrations/seller-registration
 import { SubscriptionPlanComponent } from './subscription-plan/subscription-plan.component';
 import { CancelPaymentComponent } from './paypal/cancel/cancel-payment/cancel-payment.component';
 import { CancelPlanComponent } from './paypal/cancel/cancel-plan/cancel-plan.component';
+import { PlanListComponent } from './paypal/billingPlans/plan-list/plan-list.component';
 
 const appRoutes: Routes = [
 	{ path: '', redirectTo: '/centrala', pathMatch: 'full'},
@@ -35,6 +36,7 @@ const appRoutes: Routes = [
 	{ path: 'paypal/plan/:id', component: CreatePlanComponent},
 	{ path: 'paypal/plan/subscribe/:pl/:id', component: ShippingAdressComponent},
 	{ path: 'paypal/execute/plan', component: ExecutePlanComponent},
+	{ path: 'plans/paypal/show/:id', component: PlanListComponent},
 	{ path: 'cancel/paypal/plan', component: CancelPlanComponent},
 	{ path: 'cancel/payment/paypal', component: CancelPaymentComponent},
 	{ path: 'centrala', component: CentralaMockComponent},

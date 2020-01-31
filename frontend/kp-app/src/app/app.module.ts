@@ -37,6 +37,7 @@ import { SellerRegistrationComponent } from './registrations/seller-registration
 import { SubscriptionPlanComponent } from './subscription-plan/subscription-plan.component';
 import { CancelPaymentComponent } from './paypal/cancel/cancel-payment/cancel-payment.component';
 import { CancelPlanComponent } from './paypal/cancel/cancel-plan/cancel-plan.component';
+import { PlanListComponent } from './paypal/billingPlans/plan-list/plan-list.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -65,6 +66,7 @@ import { CancelPlanComponent } from './paypal/cancel/cancel-plan/cancel-plan.com
     SubscriptionPlanComponent,
     CancelPaymentComponent,
     CancelPlanComponent,
+    PlanListComponent,
   ],
   imports: [
     BrowserModule,

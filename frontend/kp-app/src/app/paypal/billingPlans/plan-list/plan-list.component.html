@@ -1,0 +1,23 @@
+<div class="container">
+    <div *ngIf="pribavio && imaPlanova">
+        <h3>Planovi</h3>
+        <button class="btn btn-primary homebtn" (click)="goHome()">Go home</button>
+        <div *ngFor="let plan of billingPlans">
+            <div class="right-side">
+                <h6>Naslov: {{ plan.name }}</h6>
+                <p>Cena: {{ plan.amount }} {{plan.currency}}</p>
+                <p>Cena start: {{ plan.amountStart }} {{plan.currency}}</p>
+                <p>Naplata: {{ plan.cycles}} puta, na {{ plan.freqInterval}} {{ plan.frequency}} </p>
+            </div>
+            <div class="left-side d-flex justify-content-end">
+                <button class="btn btn-primary d-flex flex-row-reverse"> Some action </button>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="pribavio && !imaPlanova">
+        <h5>Magazin nema kreiranih planova.</h5>
+    </div>
+    <div *ngIf="!pribavio">
+        <h5>Pribavljaju se planovi sa PayPal servera...</h5>
+    </div>
+</div>

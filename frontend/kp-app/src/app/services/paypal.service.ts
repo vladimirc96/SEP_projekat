@@ -51,4 +51,8 @@ export class PaypalService {
         return this.http.get("api/paypal-service/paypal/cancelPlan/".concat(token), {responseType: 'text'});
     }
 
+    getAllPlans(selId) {
+        return this.http.get("api/paypal-service/paypal/getAllPlans/".concat(selId));
+    }
+
 }

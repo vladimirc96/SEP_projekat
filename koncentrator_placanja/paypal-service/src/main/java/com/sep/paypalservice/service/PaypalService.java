@@ -447,7 +447,7 @@ public class PaypalService {
         APIContext apiContext = getContextAndMerchant(sellerID);
 
         Map<String, String> value = new HashMap<>();
-        value.put("page_size", "20");
+        value.put("page_size", "10");
         PlanList planList = Plan.list(apiContext, value);
         for(Plan plan1 : planList.getPlans()) {
             Plan plan = Plan.get(apiContext, plan1.getId());

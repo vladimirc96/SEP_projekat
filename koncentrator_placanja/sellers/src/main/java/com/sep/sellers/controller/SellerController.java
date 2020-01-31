@@ -66,12 +66,17 @@ public class SellerController {
 
     @GetMapping(value = "/getActivePlan/{id}")
     public @ResponseBody ResponseEntity initRegistration(@PathVariable("id") long id) {
-        return new ResponseEntity(sellerService.getActivePlan(id), HttpStatus.CREATED);
+        return new ResponseEntity(sellerService.getActivePlan(id), HttpStatus.OK);
     }
 
     @GetMapping(value = "/removeActivePlan/{id}")
     public @ResponseBody ResponseEntity removeActivePlan(@PathVariable("id") long id) {
-        return new ResponseEntity(sellerService.removeActivePlan(id), HttpStatus.CREATED);
+        return new ResponseEntity(sellerService.removeActivePlan(id), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/getPlans/{id}")
+    public @ResponseBody ResponseEntity getPlansLink(@PathVariable("id") long id) {
+        return new ResponseEntity("https://localhost:4200/plans/paypal/show/" + id, HttpStatus.OK);
     }
 
 }

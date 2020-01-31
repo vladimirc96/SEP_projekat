@@ -1,0 +1,21 @@
+h3 {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+h5 {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.homebtn {
+    float: right;
+}
+
+.left-side{
+    width: 60%;
+}
+
+.right-side{
+    width: 40%;
+}
