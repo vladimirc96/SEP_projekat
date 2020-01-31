@@ -61,6 +61,8 @@ public class TransactionService implements ITransactionService {
     private final String CoinGateAPI = "https://api-sandbox.coingate.com/v2/orders";
     private final String CoinGateExchangeRateAPI = "https://api-sandbox.coingate.com/v2/rates/merchant";
 
+    private final long paymentMethodId = 3;
+
     @Override
     public TransactionDTO getTransaction(long id) {
         return TransactionDTO.formDto(transactionRepo.findById(id).get());
@@ -145,6 +147,7 @@ public class TransactionService implements ITransactionService {
 
         t.setSeller(s);
         t = transactionRepo.save(t);
+        orderClient.setActiveOrderStatus(new ActiveOrderDTO(t.getActiveOrderId(), Enums.OrderStatus.PENDING, this.paymentMethodId));
         logger.logInfo("Transaction saved: " + t.getId());
 
         return TransactionDTO.formDto(t);

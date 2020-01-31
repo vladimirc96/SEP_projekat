@@ -34,7 +34,8 @@ public class ActiveOrderService {
     public ActiveOrderDTO findOneById(Long id){
         ActiveOrder activeOrder = activeOrderRepo.findOneById(id);
         return new ActiveOrderDTO(activeOrder.getId(),activeOrder.getNc_order_id(),activeOrder.getTitle(), activeOrder.getCurrency(), activeOrder.getSeller_id(),
-                activeOrder.getAmount(), activeOrder.getReturn_url(), activeOrder.getOrderType(), activeOrder.getOrderStatus());
+                activeOrder.getAmount(), activeOrder.getReturn_url(), activeOrder.getOrderType(),
+                activeOrder.getOrderStatus(), activeOrder.getPaymentMethodId());
     }
 
     public InitOrderResponseDTO create(InitOrderRequestDTO initOrderRequestDTO){
@@ -42,7 +43,7 @@ public class ActiveOrderService {
         activeOrder.setAmount(initOrderRequestDTO.getAmount());
         activeOrder.setCurrency(initOrderRequestDTO.getCurrency());
         activeOrder.setNc_order_id(initOrderRequestDTO.getNcOrderId());
-        activeOrder.setOrderStatus(initOrderRequestDTO.getOrderStatus());
+        activeOrder.setOrderStatus(Enums.OrderStatus.CREATED);
         activeOrder.setOrderType(initOrderRequestDTO.getOrderType());
         activeOrder.setTitle(initOrderRequestDTO.getTitle());
         activeOrder.setSeller_id(initOrderRequestDTO.getSellerId());
@@ -61,8 +62,10 @@ public class ActiveOrderService {
         return new InitOrderResponseDTO(redirectUrl + activeOrder.getId());
     }
 
-    // Tajmer koji nakon 20 minuta proverava status ActiveOrder instance i ukoliko je i dalje
-    // PENDING, salje zahtev
+    // Tajmer koji nakon 10 minuta proverava status ActiveOrder instance i ukoliko je i dalje
+    // CREATED stavlja na FAILED jer nije nastavljen proces placanja
+    // ako je PENDING trebalo bi poslati zahtev mikroservisu na osnovu polja paymentMethodId i proveriti
+    // sta se desava pa na osnovu toga dalje delovati
     private void setTimerForCheckingOrderStatus(long activeOrderId) {
         CompletableFuture<Object> completableFuture = CompletableFuture.supplyAsync(() -> {
             Timer timer = new Timer();
@@ -71,17 +74,27 @@ public class ActiveOrderService {
                 public void run(){
 
                     ActiveOrder ao = activeOrderRepo.findOneById(activeOrderId);
-                    if (ao.getOrderStatus() == Enums.OrderStatus.PENDING) {
+                    if (ao.getOrderStatus() == Enums.OrderStatus.CREATED) {
                         FinalizeOrderDTO foDTO = new FinalizeOrderDTO();
                         foDTO.setNcOrderId(ao.getNc_order_id());
                         foDTO.setActiveOrderId(activeOrderId);
                         foDTO.setOrderStatus(Enums.OrderStatus.FAILED);
                         finalizeOrder(foDTO);
+                        System.out.println("Setting order status to FAILED for ActiveOrder id: " + ao.getId() + ". " +
+                                "Time is up. Sorry " +
+                                "but no " +
+                                "sorry.");
+
+                        timer.cancel();
+                    } else if (ao.getOrderStatus() == Enums.OrderStatus.PENDING) {
+                        System.out.println("TODO: ask microservice what is happening!!!?");
+                    } else {
+                        timer.cancel();
                     }
 
-                    timer.cancel();
+
                 }
-            },900000,0);
+            },600000,300000);
             return "OK";
         });
     }
@@ -93,5 +106,16 @@ public class ActiveOrderService {
         ao.setOrderStatus(foDTO.getOrderStatus());
         activeOrderRepo.save(ao);
         ncFinalizeClient.finalizeOrder(foDTO, ao.getReturn_url());
+    }
+
+    // MAINLY USED FOR SETTING STATUS TO PENDING
+    public void setActiveOrderStatus(ActiveOrderDTO aoDTO) {
+        ActiveOrder ao = activeOrderRepo.findOneById(aoDTO.getId());
+        if (aoDTO.getOrderStatus() == Enums.OrderStatus.PENDING) {
+            ao.setOrderStatus(aoDTO.getOrderStatus());
+            ao.setPaymentMethodId(ao.getPaymentMethodId());
+        }
+        activeOrderRepo.save(ao);
+
     }
 }

@@ -1,0 +1,1 @@
+INSERT INTO `seller_` (`id`,`auth_token`) VALUES (1,'IaXauPizTfW51yghD7d9Kw==:JiRQDUVBRRdxVCuESXu3/e33muGuGOzq2Q0qQ6AmNUXvsJtA6i2XreO9G5S4LvSy');

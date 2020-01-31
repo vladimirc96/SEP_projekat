@@ -37,6 +37,9 @@ public class ActiveOrder {
     @Enumerated(EnumType.STRING)
     private Enums.OrderStatus orderStatus;
 
+    @Column
+    private long paymentMethodId;
+
     public ActiveOrder() {
     }
 
@@ -110,5 +113,13 @@ public class ActiveOrder {
 
     public void setOrderStatus(Enums.OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
+    }
+
+    public long getPaymentMethodId() {
+        return paymentMethodId;
+    }
+
+    public void setPaymentMethodId(long paymentMethodId) {
+        this.paymentMethodId = paymentMethodId;
     }
 }

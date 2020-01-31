@@ -34,6 +34,12 @@ public class ActiveOrderController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/status", method = RequestMethod.PUT)
+    public @ResponseBody ResponseEntity setActiveOrderStatus(@RequestBody ActiveOrderDTO aoDTO){
+        activeOrderService.setActiveOrderStatus(aoDTO);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 
 
 
