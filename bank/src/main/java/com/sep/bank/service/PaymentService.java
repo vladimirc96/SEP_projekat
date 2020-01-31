@@ -26,6 +26,7 @@ public class PaymentService {
         payment.setAmount(paymentRequest.getAmount());
         payment.setAcquirerOrderId(acquirerOrderId);
         payment.setMerchantOrderId(merchantOrderId);
+        payment.setReturnUrl(paymentRequest.getReturnUrl());
         payment = paymentRepo.save(payment);
         return payment;
     }

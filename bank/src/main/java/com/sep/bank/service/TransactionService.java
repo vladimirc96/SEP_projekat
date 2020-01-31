@@ -59,15 +59,13 @@ public class TransactionService {
 
     public ResponseEntity<RedirectDTO> checkPaymentRequest(PaymentRequestDTO paymentRequest, Transaction transaction, Customer customer, Payment payment){
         logger.logInfo("INFO: Provera podataka zahteva. " + paymentRequest.toString());
-
         if(!isRequestValid(paymentRequest, customer)){
             logger.logError("ERROR: Zahtev nije validan.");
             transaction.setPaymentStatus(PaymentStatus.FAILURE);
             transaction = transactionRepo.save(transaction);
-            transactionClient.updateTransactionBankService(transaction.getPaymentId(), new PaymentStatusDTO(transaction.getPaymentStatus()));
+            transactionClient.updateTransactionBankService(new PaymentStatusDTO(payment.getMerchantOrderId(),transaction.getPaymentStatus()), payment);
             return new ResponseEntity<>(new RedirectDTO(FAILED_URL, null), HttpStatus.BAD_REQUEST);
         }
-
         logger.logInfo("SUCCESS: Uspesna provera podataka zahteva. " + paymentRequest.toString());
         return new ResponseEntity<>(new RedirectDTO(SUCCESS_URL, payment.getId()), HttpStatus.OK);
     }
@@ -99,7 +97,7 @@ public class TransactionService {
             transaction = transactionRepo.save(transaction);
             paymentResponseDTO = new PaymentResponseDTO(payment.getMerchantOrderId(), issuerResponseDTO.getAcquirerOrderId(), payment.getId(),
                     issuerResponseDTO.getAcquirerTimestamp(), issuerResponseDTO.getPaymentStatus());
-            transactionClient.updateTransactionBankService(payment.getMerchantOrderId(), new PaymentStatusDTO(transaction.getPaymentStatus()));
+            transactionClient.updateTransactionBankService(new PaymentStatusDTO(payment.getMerchantOrderId(), transaction.getPaymentStatus()), payment);
             return new ResponseEntity<>(paymentResponseDTO, HttpStatus.BAD_REQUEST);
 
         }else if(issuerResponseDTO.getPaymentStatus().name().equals("INSUFFICENT_FUNDS") || issuerResponseDTO.getPaymentStatus().name().equals("FAILURE")){
@@ -108,12 +106,12 @@ public class TransactionService {
             transaction = transactionRepo.save(transaction);
             paymentResponseDTO = new PaymentResponseDTO(payment.getMerchantOrderId(), issuerResponseDTO.getAcquirerOrderId(), payment.getId(),
                     issuerResponseDTO.getAcquirerTimestamp(), issuerResponseDTO.getPaymentStatus());
-            transactionClient.updateTransactionBankService(payment.getMerchantOrderId(), new PaymentStatusDTO(transaction.getPaymentStatus()));
+            transactionClient.updateTransactionBankService(new PaymentStatusDTO(payment.getMerchantOrderId(),transaction.getPaymentStatus()), payment);
             return new ResponseEntity<>(paymentResponseDTO, HttpStatus.CONFLICT);
 
         }
 
-        transactionClient.updateTransactionBankService(payment.getMerchantOrderId(), new PaymentStatusDTO(transaction.getPaymentStatus()));
+        transactionClient.updateTransactionBankService(new PaymentStatusDTO(payment.getMerchantOrderId(),transaction.getPaymentStatus()), payment);
         return new ResponseEntity<>(paymentResponseDTO, HttpStatus.OK);
     }
 
@@ -132,18 +130,18 @@ public class TransactionService {
 
             paymentResponseDTO = new PaymentResponseDTO(payment.getMerchantOrderId(), transaction.getId(), payment.getId(),
                     transaction.getTimestamp(), transaction.getPaymentStatus());
-            transactionClient.updateTransactionBankService(payment.getMerchantOrderId(), new PaymentStatusDTO(transaction.getPaymentStatus()));
+            transactionClient.updateTransactionBankService(new PaymentStatusDTO(payment.getMerchantOrderId(),transaction.getPaymentStatus()), payment);
             return new ResponseEntity<>(paymentResponseDTO, HttpStatus.BAD_REQUEST);
 
         }else if(transaction.getPaymentStatus().name().equals("INSUFFICENT_FUNDS") || transaction.getPaymentStatus().name().equals("FAILURE")){
 
             paymentResponseDTO = new PaymentResponseDTO(payment.getMerchantOrderId(), transaction.getId(), payment.getId(),
                     transaction.getTimestamp(), transaction.getPaymentStatus());
-            transactionClient.updateTransactionBankService(payment.getMerchantOrderId(), new PaymentStatusDTO(transaction.getPaymentStatus()));
+            transactionClient.updateTransactionBankService(new PaymentStatusDTO(payment.getMerchantOrderId(),transaction.getPaymentStatus()), payment);
             return new ResponseEntity<>(paymentResponseDTO, HttpStatus.CONFLICT);
 
         }
-        transactionClient.updateTransactionBankService(payment.getMerchantOrderId(), new PaymentStatusDTO(transaction.getPaymentStatus()));
+        transactionClient.updateTransactionBankService(new PaymentStatusDTO(payment.getMerchantOrderId(),transaction.getPaymentStatus()), payment);
         return new ResponseEntity<>(paymentResponseDTO, HttpStatus.OK);
     }
 

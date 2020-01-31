@@ -1,17 +1,12 @@
 package com.sep.bank.service;
 
-import com.sep.bank.client.BankClient;
-import com.sep.bank.client.TransactionClient;
 import com.sep.bank.dto.*;
 import com.sep.bank.model.*;
 import com.sep.bank.repository.BankAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -19,7 +14,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.CompletableFuture;
 
 @Service
 public class BankAccountService {
@@ -27,18 +21,11 @@ public class BankAccountService {
     public Logging logger = new Logging(this);
 
     @Autowired
-    private RestTemplate restTemplate;
-
-    @Autowired
     private BankAccountRepository bankAccountRepo;
 
     @Autowired
     private TransactionService transactionService;
 
-
-
-    @Autowired
-    private BankClient bankClient;
 
     public boolean isBankSame(Transaction transaction, BankAccount bankAccount){
         Customer acquirer = transaction.getCustomer();
@@ -50,29 +37,6 @@ public class BankAccountService {
         }
         return true;
     }
-
-//    public ResponseEntity<AcquirerResponseDTO> acquirerValidateAndReserve(Transaction transaction, BankAccount bankAccount, BankAccountDTO bankAccountDTO){
-//        logger.logInfo("INFO: Validacija podataka kartice. Transcation: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
-//        try {
-//            validation(bankAccountDTO, bankAccount, transaction);
-//        } catch (Exception e) {
-//            logger.logError("ERROR: " + e.getMessage() + ". Transaction: " + transaction.toString());
-//            e.printStackTrace();
-//            //transactionClient.updateTransactionBankService(transaction.getPaymentId(), new PaymentStatusDTO(transaction.getPaymentStatus()));
-//            return new ResponseEntity<>(new AcquirerResponseDTO(transaction.getPaymentStatus(), transaction.getId(), transaction.getTimestamp(), e.getMessage()), HttpStatus.BAD_REQUEST);
-//        }
-//        try {
-//            reserveFunds(bankAccount, transaction);
-//            addFunds(transaction.getCustomer().getBankAccount(), transaction);
-//        } catch (Exception e) {
-//            logger.logError("ERROR: " + e.getMessage() + ". Transaction: " + transaction.toString());
-//            e.printStackTrace();
-//            //transactionClient.updateTransactionBankService(transaction.getPaymentId(), new PaymentStatusDTO(transaction.getPaymentStatus()));
-//            return new ResponseEntity<>(new AcquirerResponseDTO(transaction.getPaymentStatus(), transaction.getId(), transaction.getTimestamp(), e.getMessage()), HttpStatus.BAD_REQUEST);
-//        }
-//        logger.logInfo("SUCCESS: Zahtev za placanje uspesno obradjen, sredstva su rezervisana. Transaction: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
-//        return new ResponseEntity<>(new AcquirerResponseDTO(transaction.getPaymentStatus(), transaction.getId(), transaction.getTimestamp(), "Success"), HttpStatus.OK);
-//    }
 
         public Transaction acquirerValidateAndReserve(Transaction transaction, BankAccount bankAccount, BankAccountDTO bankAccountDTO){
         logger.logInfo("INFO: Validacija podataka kartice. Transcation: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
