@@ -25,7 +25,10 @@ export class BankPaymentComponent implements OnInit {
 			if (!isNaN(param)) {
         this.id = param;
         this.activeOrderSerivce.getActiveOrder(this.id).subscribe(
-          (response) => {
+          (response: any) => {
+            if (response.orderStatus !== "CREATED") {
+              this.orderProcessedByAnotherServiceError();
+            }
             this.activeOrder = response;
           },
           (error) => {
@@ -61,5 +64,14 @@ export class BankPaymentComponent implements OnInit {
 
 
   }
+
+  orderProcessedByAnotherServiceError() {
+		alert('Order is beeing processed by another service.');
+		this.goHome();
+	}
+
+	goHome() {
+		window.location.href = "http://localhost:4201/";
+	}
 
 }

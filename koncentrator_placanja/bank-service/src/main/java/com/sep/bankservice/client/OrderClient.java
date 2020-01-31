@@ -1,5 +1,6 @@
 package com.sep.bankservice.client;
 
+import com.sep.bankservice.dto.ActiveOrderDTO;
 import com.sep.bankservice.dto.FinalizeOrderDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -14,6 +15,7 @@ public class OrderClient {
     RestTemplate restTemplate;
 
     private final String KP_FINALIZE_ORDER_URL = "https://localhost:8342/active-order/finalize";
+    private final String KP_SET_ACTIVE_ORDER_STATUS_URL = "https://localhost:8342/active-order/status";
 
     public void finalizeOrder(FinalizeOrderDTO foDTO)  {
 
@@ -21,5 +23,12 @@ public class OrderClient {
                 FinalizeOrderDTO.class);
 
     }
+
+    public void setActiveOrderStatus(ActiveOrderDTO foDTO)  {
+
+        restTemplate.put(this.KP_SET_ACTIVE_ORDER_STATUS_URL, new HttpEntity<>(foDTO));
+
+    }
+
 
 }

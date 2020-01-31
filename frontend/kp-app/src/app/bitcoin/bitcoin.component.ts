@@ -51,6 +51,9 @@ export class BitcoinComponent implements OnInit {
 	fetchActiveOrder() {
 		this.aoService.getActiveOrder(this.activeOrderId).subscribe(
 			(res: any) => {
+				if (res.orderStatus !== "CREATED") {
+					this.orderProcessedByAnotherServiceError();
+				}
 				this.activeOrder = res;
 				this.convertPrice();
 			}, err => console.log(err.error)
@@ -84,7 +87,11 @@ export class BitcoinComponent implements OnInit {
 				
 				this.setRefreshInterval();
 
-			}, error => console.log(error)
+			}, error => {
+				if (error.status == 409) {
+					this.orderProcessedByAnotherServiceError();
+				}
+			}
 		);
 	}
 
@@ -94,8 +101,13 @@ export class BitcoinComponent implements OnInit {
 		}, 6000);
 	}
 
+	orderProcessedByAnotherServiceError() {
+		alert('Order is beeing processed by another service.');
+		this.goHome();
+	}
+
 	goHome() {
-		window.location.href = "https://localhost:4200/centrala";
+		window.location.href = "http://localhost:4201/";
 	}
 	
 

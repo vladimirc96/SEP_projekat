@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.UnsupportedEncodingException;
@@ -56,8 +57,20 @@ public class PaypalService {
 
     private static String RETURL = "http://localhost:4201";
 
+
+    private final long paymentMethodId = 2;
+
     public String payment(OrderDTO orderDTO) {
         logger.logInfo("PP_PAYMENT");
+
+        // Inform Seller-service that status is PENDING
+        try {
+            orderClient.setActiveOrderStatus(new ActiveOrderDTO(orderDTO.getActiveOrderId(), Enums.OrderStatus.PENDING,
+                    this.paymentMethodId));
+        } catch (HttpClientErrorException ex) {
+            throw new IllegalStateException("Active order status is already PENDING.");
+        }
+
         try {
             Payment payment = createPayment(orderDTO.getPrice(), orderDTO.getCurrency(), orderDTO.getDescription(), orderDTO.getId());
             PPTransaction tr = new PPTransaction();

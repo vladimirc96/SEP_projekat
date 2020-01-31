@@ -30,7 +30,10 @@ export class PaypalComponent implements OnInit {
 
   ngOnInit() {
     this.aoService.getActiveOrder(this.orderId).subscribe(
-      (response) => {
+      (response: any) => {
+        if (response.orderStatus !== "CREATED") {
+					this.orderProcessedByAnotherServiceError();
+				}
         this.activeOrder = response;
       },
       (error) => {
@@ -38,6 +41,15 @@ export class PaypalComponent implements OnInit {
       }
     );
   }
+
+  orderProcessedByAnotherServiceError() {
+		alert('Order is beeing processed by another service.');
+		this.goHome();
+	}
+
+	goHome() {
+		window.location.href = "http://localhost:4201/";
+	}
 
   onProcceed() {
     this.status = true;

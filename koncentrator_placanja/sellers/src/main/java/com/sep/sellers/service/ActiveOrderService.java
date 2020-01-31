@@ -12,6 +12,7 @@ import net.bytebuddy.dynamic.TypeResolutionStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Base64;
 import java.util.Timer;
@@ -108,12 +109,17 @@ public class ActiveOrderService {
         ncFinalizeClient.finalizeOrder(foDTO, ao.getReturn_url());
     }
 
-    // MAINLY USED FOR SETTING STATUS TO PENDING
-    public void setActiveOrderStatus(ActiveOrderDTO aoDTO) {
+    // User for setting status to PENDING and returnin error HTTP status if already PENDING
+    public void setActiveOrderStatus(ActiveOrderDTO aoDTO) throws IllegalStateException{
         ActiveOrder ao = activeOrderRepo.findOneById(aoDTO.getId());
+
+        if (ao.getOrderStatus() != Enums.OrderStatus.CREATED) {
+            throw new IllegalStateException("Active order status is already PENDING.");
+        }
+
         if (aoDTO.getOrderStatus() == Enums.OrderStatus.PENDING) {
             ao.setOrderStatus(aoDTO.getOrderStatus());
-            ao.setPaymentMethodId(ao.getPaymentMethodId());
+            ao.setPaymentMethodId(aoDTO.getPaymentMethodId());
         }
         activeOrderRepo.save(ao);
 

@@ -1,5 +1,6 @@
 package com.sep.paypalservice.client;
 
+import com.sep.paypalservice.dto.ActiveOrderDTO;
 import com.sep.paypalservice.dto.FinalizeOrderDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -16,10 +17,18 @@ public class OrderClient {
 
     private final String KP_FINALIZE_ORDER_URL = "https://localhost:8342/active-order/finalize";
 
+    private final String KP_SET_ACTIVE_ORDER_STATUS_URL = "https://localhost:8342/active-order/status";
+
     public void finalizeOrder(FinalizeOrderDTO foDTO)  {
 
         ResponseEntity response = restTemplate.postForEntity(this.KP_FINALIZE_ORDER_URL, new HttpEntity<>(foDTO),
                 FinalizeOrderDTO.class);
+
+    }
+
+    public void setActiveOrderStatus(ActiveOrderDTO foDTO)  {
+
+        restTemplate.put(this.KP_SET_ACTIVE_ORDER_STATUS_URL, new HttpEntity<>(foDTO));
 
     }
 

@@ -8,29 +8,14 @@ import com.sep.bitcoinservice.model.Transaction;
 import com.sep.bitcoinservice.repository.SellerRepository;
 import com.sep.bitcoinservice.repository.TransactionRepository;
 import com.sep.bitcoinservice.service.contracts.ITransactionService;
-import org.apache.http.config.Registry;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.socket.PlainConnectionSocketFactory;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
-import org.hibernate.criterion.Order;
-import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.management.InstanceAlreadyExistsException;
-import java.io.InterruptedIOException;
-import java.net.SocketTimeoutException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -79,6 +64,14 @@ public class TransactionService implements ITransactionService {
         Seller s = sellerRepo.findById(order.getSellerId()).get();
         String authToken = s.getAuthToken();
 
+        // Inform Seller-service that status is PENDING
+        try {
+            orderClient.setActiveOrderStatus(new ActiveOrderDTO(order.getActiveOrderId(), Enums.OrderStatus.PENDING,
+                    this.paymentMethodId));
+        } catch (HttpClientErrorException ex) {
+            throw new IllegalStateException("Active order status is already PENDING.");
+        }
+
         HttpEntity<?> request = formPostRequest(authToken, new CGOrderDTO(order));
         HttpEntity<?> checkoutRequest = formPostRequest(authToken, new CGCheckoutDTO(Enums.Currency.BTC));
 
@@ -99,6 +92,9 @@ public class TransactionService implements ITransactionService {
         if (transactionRepo.existsById(t.getOrderId())) {
             throw new InstanceAlreadyExistsException("Order is already created.");
         }
+
+
+
 
         final Transaction transaction = t;
 
@@ -147,7 +143,6 @@ public class TransactionService implements ITransactionService {
 
         t.setSeller(s);
         t = transactionRepo.save(t);
-        orderClient.setActiveOrderStatus(new ActiveOrderDTO(t.getActiveOrderId(), Enums.OrderStatus.PENDING, this.paymentMethodId));
         logger.logInfo("Transaction saved: " + t.getId());
 
         return TransactionDTO.formDto(t);

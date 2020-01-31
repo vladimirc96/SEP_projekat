@@ -36,8 +36,12 @@ public class ActiveOrderController {
 
     @RequestMapping(value = "/status", method = RequestMethod.PUT)
     public @ResponseBody ResponseEntity setActiveOrderStatus(@RequestBody ActiveOrderDTO aoDTO){
-        activeOrderService.setActiveOrderStatus(aoDTO);
-        return new ResponseEntity<>(HttpStatus.OK);
+        try {
+            activeOrderService.setActiveOrderStatus(aoDTO);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (IllegalStateException ise) {
+            return new ResponseEntity(ise.getMessage(), HttpStatus.CONFLICT);
+        }
     }
 
 

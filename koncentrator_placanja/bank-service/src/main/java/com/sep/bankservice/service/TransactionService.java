@@ -16,6 +16,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.awt.*;
@@ -31,6 +32,9 @@ public class TransactionService {
 
     @Autowired
     private OrderClient orderClient;
+
+
+    private final long paymentMethodId = 1;
 
     public Transaction findOneById(Long id){
         return transactionRepo.findOneById(id);
@@ -50,6 +54,18 @@ public class TransactionService {
 
     // ubaci logger
     public Transaction create(ActiveOrderDTO activeOrderDTO, Customer customer){
+
+        // Inform Seller-service that status is PENDING
+        try {
+            ActiveOrderDTO aoDTOsellers = new ActiveOrderDTO();
+            aoDTOsellers.setPaymentMethodId(this.paymentMethodId);
+            aoDTOsellers.setId(activeOrderDTO.getId());
+            aoDTOsellers.setOrderStatus(Enums.OrderStatus.PENDING);
+            orderClient.setActiveOrderStatus(aoDTOsellers);
+        } catch (HttpClientErrorException ex) {
+            throw new IllegalStateException("Active order status is already PENDING.");
+        }
+
         Transaction transaction = new Transaction();
         transaction.setAmount(activeOrderDTO.getAmount());
         transaction.setTimestamp(new Date());

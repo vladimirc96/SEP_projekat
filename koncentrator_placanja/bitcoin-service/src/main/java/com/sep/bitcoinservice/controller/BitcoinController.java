@@ -37,6 +37,8 @@ public class BitcoinController {
             return new ResponseEntity<>(_transactionService.createPayment(oDTO), HttpStatus.CREATED);
         } catch (InstanceAlreadyExistsException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+        } catch (IllegalStateException ise) {
+            return new ResponseEntity<>(ise.getMessage(), HttpStatus.CONFLICT);
         }
     }
 
