@@ -21,11 +21,8 @@ public class Payment {
     @Column(name = "amount")
     private double amount;
 
-    @Column(name = "acquirer_url")
-    private String acquirerUrl;
-
-    @Column(name = "issuer_url")
-    private String issuerUrl;
+    @Column(name = "return_url")
+    private String returnUrl;
 
     public Payment() {
     }
@@ -36,6 +33,14 @@ public class Payment {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getMerchantOrderId() {
+        return merchantOrderId;
+    }
+
+    public void setMerchantOrderId(Long merchantOrderId) {
+        this.merchantOrderId = merchantOrderId;
     }
 
     public Long getAcquirerOrderId() {
@@ -54,22 +59,6 @@ public class Payment {
         this.issuerOrderId = issuerOrderId;
     }
 
-    public String getAcquirerUrl() {
-        return acquirerUrl;
-    }
-
-    public void setAcquirerUrl(String acquirerUrl) {
-        this.acquirerUrl = acquirerUrl;
-    }
-
-    public String getIssuerUrl() {
-        return issuerUrl;
-    }
-
-    public void setIssuerUrl(String issuerUrl) {
-        this.issuerUrl = issuerUrl;
-    }
-
     public double getAmount() {
         return amount;
     }
@@ -78,11 +67,11 @@ public class Payment {
         this.amount = amount;
     }
 
-    public Long getMerchantOrderId() {
-        return merchantOrderId;
+    public String getReturnUrl() {
+        return returnUrl;
     }
 
-    public void setMerchantOrderId(Long merchantOrderId) {
-        this.merchantOrderId = merchantOrderId;
+    public void setReturnUrl(String returnUrl) {
+        this.returnUrl = returnUrl;
     }
 }

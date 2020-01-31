@@ -15,13 +15,15 @@ public class PaymentRequestDTO {
     private double amount;
     private Long merchantOrderId; // id transakcije
     private Date merchantTimestamp; // timestamp transakcije
+    private String returnUrl;
 
-    public PaymentRequestDTO(String merchantId, String merchantPassword, double amount, Long merchantOrderId, Date merchantTimestamp) {
+    public PaymentRequestDTO(String merchantId, String merchantPassword, double amount, Long merchantOrderId, Date merchantTimestamp, String returnUrl) {
         this.merchantId = merchantId;
         this.merchantPassword = merchantPassword;
         this.amount = amount;
         this.merchantOrderId = merchantOrderId;
         this.merchantTimestamp = merchantTimestamp;
+        this.returnUrl = returnUrl;
     }
 
     public String getMerchantId() {
@@ -55,6 +57,7 @@ public class PaymentRequestDTO {
     public void setMerchantOrderId(Long merchantOrderId) {
         this.merchantOrderId = merchantOrderId;
     }
+
     public Date getMerchantTimestamp() {
         return merchantTimestamp;
     }
@@ -63,4 +66,11 @@ public class PaymentRequestDTO {
         this.merchantTimestamp = merchantTimestamp;
     }
 
+    public String getReturnUrl() {
+        return returnUrl;
+    }
+
+    public void setReturnUrl(String returnUrl) {
+        this.returnUrl = returnUrl;
+    }
 }

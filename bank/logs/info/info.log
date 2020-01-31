@@ -1,0 +1,18 @@
+2020-01-31 12:13:53,875 INFO org.springframework.boot.StartupInfoLogger [main] Starting BankApplication on DESKTOP-7EFKHD1 with PID 3736 (C:\GITHUB\SEP_projekat\bank\target\classes started by Vladimir in C:\GITHUB\SEP_projekat)
+2020-01-31 12:13:53,880 DEBUG org.springframework.boot.StartupInfoLogger [main] Running with Spring Boot v2.1.5.RELEASE, Spring v5.1.7.RELEASE
+2020-01-31 12:13:53,881 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2020-01-31 12:16:43,565 INFO org.springframework.boot.StartupInfoLogger [main] Starting BankApplication on DESKTOP-7EFKHD1 with PID 9700 (C:\GITHUB\SEP_projekat\bank\target\classes started by Vladimir in C:\GITHUB\SEP_projekat)
+2020-01-31 12:16:43,626 DEBUG org.springframework.boot.StartupInfoLogger [main] Running with Spring Boot v2.1.5.RELEASE, Spring v5.1.7.RELEASE
+2020-01-31 12:16:43,627 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2020-01-31 12:20:59,848 INFO org.springframework.boot.StartupInfoLogger [main] Starting BankApplication on DESKTOP-7EFKHD1 with PID 11920 (C:\GITHUB\SEP_projekat\bank\target\classes started by Vladimir in C:\GITHUB\SEP_projekat)
+2020-01-31 12:20:59,869 DEBUG org.springframework.boot.StartupInfoLogger [main] Running with Spring Boot v2.1.5.RELEASE, Spring v5.1.7.RELEASE
+2020-01-31 12:20:59,870 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2020-01-31 12:25:15,672 INFO org.springframework.boot.StartupInfoLogger [main] Starting BankApplication on DESKTOP-7EFKHD1 with PID 13744 (C:\GITHUB\SEP_projekat\bank\target\classes started by Vladimir in C:\GITHUB\SEP_projekat)
+2020-01-31 12:25:15,678 DEBUG org.springframework.boot.StartupInfoLogger [main] Running with Spring Boot v2.1.5.RELEASE, Spring v5.1.7.RELEASE
+2020-01-31 12:25:15,679 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2020-01-31 12:26:19,304 INFO org.springframework.boot.StartupInfoLogger [main] Starting BankApplication on DESKTOP-7EFKHD1 with PID 13284 (C:\GITHUB\SEP_projekat\bank\target\classes started by Vladimir in C:\GITHUB\SEP_projekat)
+2020-01-31 12:26:19,315 DEBUG org.springframework.boot.StartupInfoLogger [main] Running with Spring Boot v2.1.5.RELEASE, Spring v5.1.7.RELEASE
+2020-01-31 12:26:19,316 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
+2020-01-31 12:28:49,032 INFO org.springframework.boot.StartupInfoLogger [main] Starting BankApplication on DESKTOP-7EFKHD1 with PID 3700 (C:\GITHUB\SEP_projekat\bank\target\classes started by Vladimir in C:\GITHUB\SEP_projekat)
+2020-01-31 12:28:49,063 DEBUG org.springframework.boot.StartupInfoLogger [main] Running with Spring Boot v2.1.5.RELEASE, Spring v5.1.7.RELEASE
+2020-01-31 12:28:49,065 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default

@@ -28,9 +28,6 @@ public class BankController {
     public Logging logger = new Logging(this);
 
     @Autowired
-    private RestTemplate restTemplate;
-
-    @Autowired
     private BankAccountService bankAccountService;
 
     @Autowired
@@ -110,49 +107,5 @@ public class BankController {
         BankAccount bankAccount = bankAccountService.findOneByPan(bankAccountDTO.getPan());
         return bankAccountService.issuerValidateAndReserve(transaction, bankAccount, pccRequestDTO);
     }
-
-//    @RequestMapping(value = "/transfer-funds/{acquirerOrderId}", method = RequestMethod.PUT, consumes = "application/json", produces = "applicatin/json")
-//    public ResponseEntity<?> transferFunds(@RequestBody BankAccountDTO bankAccountDTO, @PathVariable("acquirerOrderId") String id){
-//        Transaction transaction = transactionService.findOneById(Long.parseLong(id));
-//        Customer customer = transaction.getCustomer();
-//        bankAccountService.addFunds(customer.getBankAccount(), transaction);
-//        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
-//    }
-//
-//    @RequestMapping(value = "/confirm-payment-acquirer/{paymentId}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
-//    public ResponseEntity<?> paymentAcquirer(@RequestBody BankAccountDTO bankAccountDTO, @PathVariable("paymentId") String id){
-//        Payment payment = paymentService.findOneById(Long.parseLong(id));
-//        Transaction transaction = transactionService.findOneById(payment.getAcquirerOrderId());
-//        BankAccount bankAccount = bankAccountService.findOneByPan(bankAccountDTO.getPan());
-//        try{
-//            transaction = transactionService.executePayment(transaction, bankAccount);
-//        }catch (Exception e){
-//            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
-//        }
-//
-//        transactionClient.updateTransactionBankService(transaction.getPaymentId(), new PaymentStatusDTO(transaction.getPaymentStatus()));
-//
-//        logger.logInfo("SUCCESS: Uspesna potvrda placanja. Transaction: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
-//        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
-//    }
-//
-//    @RequestMapping(value = "/confirm-payment-issuer/{paymentId}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
-//    public ResponseEntity<?> paymentIssuer(@RequestBody BankAccountDTO bankAccountDTO, @PathVariable("paymentId") String id){
-//        Payment payment = paymentService.findOneById(Long.parseLong(id));
-//        Transaction transaction = transactionService.findOneById(payment.getIssuerOrderId());
-//        BankAccount bankAccount = bankAccountService.findOneByPan(bankAccountDTO.getPan());
-//        try{
-//            transaction = transactionService.executePayment(transaction, bankAccount);
-//        }catch (Exception e){
-//            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
-//        }
-//        transactionClient.updateTransactionPcc(transaction.getPaymentId(), new PaymentStatusDTO(transaction.getPaymentStatus()));
-//
-//        logger.logInfo("SUCCESS: Uspesna potvrda placanja. Transaction: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
-//        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
-//    }
-
-
-
 
 }

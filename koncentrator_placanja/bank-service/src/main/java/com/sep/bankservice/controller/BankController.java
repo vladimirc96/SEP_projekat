@@ -1,5 +1,6 @@
 package com.sep.bankservice.controller;
 
+import com.sep.bankservice.client.BankClient;
 import com.sep.bankservice.dto.*;
 import com.sep.bankservice.model.Customer;
 import com.sep.bankservice.model.Transaction;
@@ -19,10 +20,6 @@ import org.springframework.web.client.RestTemplate;
 @RequestMapping(value="/bank")
 public class BankController {
 
-
-    @Autowired
-    private RestTemplate restTemplate;
-
     @Autowired
     private TransactionService transactionService;
 
@@ -32,6 +29,9 @@ public class BankController {
     @Autowired
     private CryptoService cryptoService;
 
+    @Autowired
+    private BankClient bankClient;
+
     // metoda koja prihvata zahtev za placanje i prosledjuje banci na proveru
     @RequestMapping(value = "/payment-request", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public ResponseEntity<RedirectDTO> payment(@RequestBody ActiveOrderDTO activeOrderDTO) {
@@ -39,19 +39,14 @@ public class BankController {
         Transaction transaction = transactionService.create(activeOrderDTO, customer);
 
         String merchantPasswordDecrypted = cryptoService.decrypt(customer.getMerchantPassword());
-        PaymentRequestDTO paymentRequestDTO = new PaymentRequestDTO(customer.getMerchantId(),
-                merchantPasswordDecrypted,
-                transaction.getAmount(), transaction.getId(), transaction.getTimestamp());
-        // poslati zahtev banci
-        HttpEntity<PaymentRequestDTO> entity = new HttpEntity<>(paymentRequestDTO);
-        ResponseEntity<RedirectDTO> responseEntity = restTemplate.exchange("https://localhost:8450/bank/check-payment-request", HttpMethod.PUT, entity, RedirectDTO.class);
+        ResponseEntity<RedirectDTO> responseEntity = bankClient.forwardPaymentRequest(transaction, customer, merchantPasswordDecrypted);
         return responseEntity;
     }
 
     // belezi ishod transakcije u odnosu na to sta banka posalje
-    @RequestMapping(value  = "/transaction/{id}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
-    public ResponseEntity<String> updateTransaction(@RequestBody PaymentStatusDTO paymentStatusDTO, @PathVariable("id") String id){
-        Transaction transaction = transactionService.findOneById(Long.parseLong(id));
+    @RequestMapping(value  = "/transaction", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
+    public ResponseEntity<String> updateTransaction(@RequestBody PaymentStatusDTO paymentStatusDTO){
+        Transaction transaction = transactionService.findOneById(paymentStatusDTO.getId());
         transaction.setPaymentStatus(paymentStatusDTO.getPaymentStatus());
         transaction = transactionService.save(transaction);
         System.out.println(transaction);
