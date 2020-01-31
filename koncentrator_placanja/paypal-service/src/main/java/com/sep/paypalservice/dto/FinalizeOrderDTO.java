@@ -3,19 +3,31 @@ package com.sep.paypalservice.dto;
 
 import com.sep.paypalservice.enums.Enums;
 
+import java.util.Date;
+
 public class FinalizeOrderDTO {
 
     private long activeOrderId;
     private Enums.OrderStatus orderStatus;
     private long ncOrderId;
+    private Date finalDate;
 
     public FinalizeOrderDTO() {
     }
 
-    public FinalizeOrderDTO(long activeOrderId, Enums.OrderStatus orderStatus, long ncOrderId) {
+    public FinalizeOrderDTO(long activeOrderId, Enums.OrderStatus orderStatus, long ncOrderId, Date finalDate) {
         this.activeOrderId = activeOrderId;
         this.orderStatus = orderStatus;
         this.ncOrderId = ncOrderId;
+        this.finalDate = finalDate;
+    }
+
+    public Date getFinalDate() {
+        return finalDate;
+    }
+
+    public void setFinalDate(Date finalDate) {
+        this.finalDate = finalDate;
     }
 
     public long getActiveOrderId() {

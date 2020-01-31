@@ -66,45 +66,44 @@ public class BankController {
     // validira podatke za placanje unete na sajtu banke i proverava da li postoji dovoljno sredstava
     @RequestMapping(value = "/acquirer/payment/{paymentId}", method = RequestMethod.PUT)
     public ResponseEntity<PaymentResponseDTO> acquirerValidate(@RequestBody BankAccountDTO bankAccountDTO, @PathVariable("paymentId") String id) {
+        Payment payment = paymentService.findOneById(Long.parseLong(id));
+        Transaction transaction = transactionService.findOneById(payment.getAcquirerOrderId());
+        ResponseEntity<IssuerResponseDTO> responseEntity = null;
         try {
             bankAccountDTO = bankAccountService.parseDate(bankAccountDTO);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        Payment payment = paymentService.findOneById(Long.parseLong(id));
-        Transaction transaction = transactionService.findOneById(payment.getAcquirerOrderId());
-        BankAccount bankAccount = bankAccountService.findOneByPan(bankAccountDTO.getPan());
 
-        ResponseEntity<IssuerResponseDTO> responseEntity = null;
         // ako nisu iste banke, prosledi zahtev PCC-u
-        if(!bankAccountService.isBankSame(transaction, bankAccount)){
-            PccRequestDTO pccRequestDTO = new PccRequestDTO(transaction.getId(), transaction.getTimestamp(), transaction.getAmount(),
-                    transaction.getPaymentStatus(), bankAccountDTO);
-           responseEntity = pccClient.forward(pccRequestDTO, payment);
+        if(!bankAccountService.isBankSame(transaction, transaction.getCustomer().getBankAccount(), bankAccountDTO)){
+            responseEntity = pccClient.forward(transaction, bankAccountDTO, payment);
         }
-
         // obrada transakcije - ako ima issuer banka
         if(responseEntity != null){
             payment.setIssuerOrderId(responseEntity.getBody().getIssuerOrderId());
             return transactionService.issuerProcessTransaction(responseEntity.getBody(), payment);
         }
 
-        // obrada transakcije - ako nema issuer banke
-        transaction = bankAccountService.acquirerValidateAndReserve(transaction, bankAccount, bankAccountDTO);
+        BankAccount bankAccount = bankAccountService.findOneByPan(bankAccountDTO.getPan());
+        transaction = bankAccountService.acquirerValidate(transaction, bankAccount, bankAccountDTO, payment);
+        if(transaction.getPaymentStatus().name().equals("ERROR")){
+            return new ResponseEntity<>(new PaymentResponseDTO(payment.getMerchantOrderId(), transaction.getId(), payment.getId(),
+                    transaction.getTimestamp(), transaction.getPaymentStatus()), HttpStatus.BAD_REQUEST);
+        }
+        transaction = bankAccountService.acquirerReserveFunds(transaction, bankAccount, bankAccountDTO);
         return transactionService.processTransaction(transaction, payment);
     }
 
     // validira podatke u ulozi issuer banke (banke kupca) i proverava da li postoji dovoljno sredstava
     @RequestMapping(value = "/issuer/payment/{paymentId}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
     public ResponseEntity<IssuerResponseDTO> issuerValidate(@RequestBody PccRequestDTO pccRequestDTO, @PathVariable("paymentId") String id){
-        // napraviti novu transakciju za issuer-a
         BankAccountDTO bankAccountDTO = pccRequestDTO.getBankAccountDTO();
         try {
             bankAccountDTO = bankAccountService.parseDate(pccRequestDTO.getBankAccountDTO());
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
         Customer customer = customerService.findOneByPan(bankAccountDTO.getPan());
         Transaction transaction = transactionService.create(pccRequestDTO, Long.parseLong(id), customer);
         BankAccount bankAccount = bankAccountService.findOneByPan(bankAccountDTO.getPan());

@@ -24,6 +24,7 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.MalformedURLException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -245,6 +246,11 @@ public class PaypalService {
                                     FinalizeOrderDTO foDTO = new FinalizeOrderDTO();
                                     foDTO.setOrderStatus(convertStatus(pa.getStatus()));
                                     foDTO.setActiveOrderId(pa.getActiveOrderId());
+                                    try {
+                                        foDTO.setFinalDate(new SimpleDateFormat("yyyy-MM-dd").parse(pa.getFinalPaymentDate().split("T")[0]));
+                                    } catch (Exception e) {
+
+                                    }
                                     orderClient.finalizeOrder(foDTO);
                                     timer.cancel();
                                 }

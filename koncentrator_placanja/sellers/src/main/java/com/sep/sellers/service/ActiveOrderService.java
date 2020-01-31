@@ -14,9 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.util.Base64;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -105,6 +103,20 @@ public class ActiveOrderService {
         ActiveOrder ao = activeOrderRepo.findOneById(foDTO.getActiveOrderId());
         foDTO.setNcOrderId(ao.getNc_order_id());
         ao.setOrderStatus(foDTO.getOrderStatus());
+
+        if (ao.getOrderStatus() == Enums.OrderStatus.SUCCESS) {
+            if (ao.getOrderType() == Enums.OrderType.ORDER_SUBSCRIPTION) {
+                if (foDTO.getFinalDate() == null) {
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(new Date(System.currentTimeMillis()));
+                    c.add(Calendar.DATE, 30);
+                    foDTO.setFinalDate(c.getTime());
+                    System.out.println("FINAL date regular subscription: " + foDTO.getFinalDate());
+                }
+
+            }
+        }
+
         activeOrderRepo.save(ao);
         ncFinalizeClient.finalizeOrder(foDTO, ao.getReturn_url());
     }
