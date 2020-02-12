@@ -43,6 +43,32 @@ public class BankAccountService {
         return true;
     }
 
+    public Transaction acquirerValidateAndReserve(Transaction transaction, BankAccount bankAccount, BankAccountDTO bankAccountDTO, Payment payment){
+        logger.logInfo("INFO: Validacija podataka kartice. Transcation: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
+        try {
+            validation(bankAccountDTO, bankAccount, transaction);
+        } catch (Exception e) {
+            logger.logError("ERROR: " + e.getMessage() + ". Transaction: " + transaction.toString());
+            e.printStackTrace();
+            transactionClient.updateTransactionBankService(new PaymentStatusDTO(payment.getMerchantOrderId(),transaction.getPaymentStatus()), payment);
+            return transaction;
+        }
+        logger.logInfo("SUCCESS: Podaci kartice su validni. Transaction: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
+
+        logger.logInfo("INFO: Rezervacija sredstava. Transcation: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
+        try {
+            reserveFunds(bankAccount, transaction);
+        } catch (Exception e) {
+            logger.logError("ERROR: " + e.getMessage() + ". Transaction: " + transaction.toString());
+            e.printStackTrace();
+            return transaction;
+        }
+        transaction.setPaymentStatus(PaymentStatus.SUCCESS);
+        transaction = transactionService.save(transaction);
+        logger.logInfo("SUCCESS: Zahtev za placanje uspesno obradjen, sredstva su rezervisana. Transaction: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
+        return transaction;
+    }
+
     public Transaction acquirerValidate(Transaction transaction, BankAccount bankAccount, BankAccountDTO bankAccountDTO, Payment payment){
         logger.logInfo("INFO: Validacija podataka kartice. Transcation: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
         try {

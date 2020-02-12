@@ -75,7 +75,6 @@ public class BankController {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
         // ako nisu iste banke, prosledi zahtev PCC-u
         if(!bankAccountService.isBankSame(transaction, transaction.getCustomer().getBankAccount(), bankAccountDTO)){
             responseEntity = pccClient.forward(transaction, bankAccountDTO, payment);
@@ -86,14 +85,8 @@ public class BankController {
             payment.setPccUrlUpdate(responseEntity.getBody().getIssuerUpdateUrl());
             return transactionService.issuerProcessTransaction(responseEntity.getBody(), payment);
         }
-
         BankAccount bankAccount = bankAccountService.findOneByPan(bankAccountDTO.getPan());
-        transaction = bankAccountService.acquirerValidate(transaction, bankAccount, bankAccountDTO, payment);
-        if(transaction.getPaymentStatus().name().equals("ERROR")){
-            return new ResponseEntity<>(new PaymentResponseDTO(payment.getMerchantOrderId(), transaction.getId(), payment.getId(),
-                    transaction.getTimestamp(), transaction.getPaymentStatus()), HttpStatus.BAD_REQUEST);
-        }
-        transaction = bankAccountService.acquirerReserveFunds(transaction, bankAccount, bankAccountDTO);
+        transaction = bankAccountService.acquirerValidateAndReserve(transaction,bankAccount,bankAccountDTO,payment);
         return transactionService.processTransaction(transaction, payment);
     }
 
