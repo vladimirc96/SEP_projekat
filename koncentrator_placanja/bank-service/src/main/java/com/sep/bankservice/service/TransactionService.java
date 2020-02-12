@@ -107,7 +107,7 @@ public class TransactionService {
                         }
 
                         // ako se ne promeni status posle 10 minuta onda zavrsi transakciju
-                        if(loopTime - startTime > 600000){
+                        if(loopTime - startTime > 60000){
                             System.out.println("************** NEUSPESNA TRANSAKCIJA - PROSLO 10 MIN **************");
                             transactionTemp.setPaymentStatus(PaymentStatus.FAILURE);
                             transactionTemp = transactionRepo.save(transactionTemp);

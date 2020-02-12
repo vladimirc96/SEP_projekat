@@ -81,8 +81,6 @@ public class BankController {
         }
         // obrada transakcije - ako ima issuer banka
         if(responseEntity != null){
-            payment.setIssuerOrderId(responseEntity.getBody().getIssuerOrderId());
-            payment.setPccUrlUpdate(responseEntity.getBody().getIssuerUpdateUrl());
             return transactionService.issuerProcessTransaction(responseEntity.getBody(), payment);
         }
         BankAccount bankAccount = bankAccountService.findOneByPan(bankAccountDTO.getPan());

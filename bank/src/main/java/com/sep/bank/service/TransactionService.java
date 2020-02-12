@@ -178,10 +178,10 @@ public class TransactionService {
     }
 
     public void notifyIsFaield(Payment payment) {
-        if(!payment.getPccUrlUpdate().equals("")){
+        if(payment.getPccUrlUpdate() != null){
             transactionClient.updateTransactionPcc(payment.getPccUrlUpdate(), payment.getPccOrderId());
         }
-        if(!payment.getIssuerUpdateUrl().equals("")){
+        if(payment.getIssuerUpdateUrl() != null){
             transactionClient.updateTransactionIssuer(payment.getIssuerUpdateUrl(), payment.getIssuerOrderId());
         }
     }
