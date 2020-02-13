@@ -108,4 +108,19 @@ public class Payment {
     public void setIssuerUpdateUrl(String issuerUpdateUrl) {
         this.issuerUpdateUrl = issuerUpdateUrl;
     }
+
+    @Override
+    public String toString() {
+        return "Payment{" +
+                "id=" + id +
+                ", merchantOrderId=" + merchantOrderId +
+                ", acquirerOrderId=" + acquirerOrderId +
+                ", issuerOrderId=" + issuerOrderId +
+                ", pccOrderId=" + pccOrderId +
+                ", amount=" + amount +
+                ", returnUrl='" + returnUrl + '\'' +
+                ", pccUrlUpdate='" + pccUrlUpdate + '\'' +
+                ", issuerUpdateUrl='" + issuerUpdateUrl + '\'' +
+                '}';
+    }
 }

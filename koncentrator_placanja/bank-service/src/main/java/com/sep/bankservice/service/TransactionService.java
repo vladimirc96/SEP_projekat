@@ -25,6 +25,8 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public class TransactionService {
 
+    public Logging logger = new Logging(this);
+
     @Autowired
     private TransactionRepository transactionRepo;
 
@@ -54,7 +56,7 @@ public class TransactionService {
 
     // ubaci logger
     public Transaction create(ActiveOrderDTO activeOrderDTO, Customer customer){
-
+        logger.logInfo("INFO: Kreiranje transakcije. ActiveOrder: " + activeOrderDTO.toString());
         // Inform Seller-service that status is PENDING
         try {
             ActiveOrderDTO aoDTOsellers = new ActiveOrderDTO();
@@ -76,20 +78,21 @@ public class TransactionService {
 
         final Transaction t = transaction;
 
+        logger.logInfo("INFO: Upaljen tajmer za proveravanje statusa transakcije. Transaction: " + transaction.toString());
         CompletableFuture<Object> completableFuture = CompletableFuture.supplyAsync(() -> {
             Timer timer = new Timer();
             long startTime = System.currentTimeMillis();
             timer.scheduleAtFixedRate(new TimerTask(){
                 @Override
                 public void run(){
-                    System.out.println("************** LOOP **************");
+
                     long loopTime = System.currentTimeMillis();;
                     try{
 
                         Transaction transactionTemp = transactionRepo.findOneById(t.getId());
 
                         if(transactionTemp.getPaymentStatus().equals(PaymentStatus.SUCCESS)){
-                            System.out.println("************** USPESNA TRANSAKCIJA **************");
+                            logger.logInfo("INFO: Transakcija uspesna. Transaction: " + transactionTemp.toString());
                             FinalizeOrderDTO finalizeOrderDTO = new FinalizeOrderDTO();
                             finalizeOrderDTO.setActiveOrderId(transactionTemp.getActiveOrderId());
                             finalizeOrderDTO.setOrderStatus(convertStatus(transactionTemp.getPaymentStatus()));
@@ -98,7 +101,7 @@ public class TransactionService {
                         }
 
                         if(transactionTemp.getPaymentStatus().equals(PaymentStatus.FAILURE) || transactionTemp.getPaymentStatus().equals(PaymentStatus.INSUFFICIENT_FUNDS)){
-                            System.out.println("************** NEUSPESNA TRANSAKCIJA **************");
+                            logger.logInfo("ERROR: Transakcija neuspesna. Transaction: " + transactionTemp.toString());
                             FinalizeOrderDTO finalizeOrderDTO = new FinalizeOrderDTO();
                             finalizeOrderDTO.setActiveOrderId(transactionTemp.getActiveOrderId());
                             finalizeOrderDTO.setOrderStatus(convertStatus(transactionTemp.getPaymentStatus()));
@@ -107,8 +110,8 @@ public class TransactionService {
                         }
 
                         // ako se ne promeni status posle 10 minuta onda zavrsi transakciju
-                        if(loopTime - startTime > 600000){
-                            System.out.println("************** NEUSPESNA TRANSAKCIJA - PROSLO 10 MIN **************");
+                        if(loopTime - startTime > 60000){
+                            logger.logError("ERROR: Transakcija neuspesna, isteklo 10 minuta. Transaction: " + transactionTemp.toString());
                             transactionTemp.setPaymentStatus(PaymentStatus.FAILURE);
                             transactionTemp = transactionRepo.save(transactionTemp);
                             bankClient.updateTransaction(new PaymentIdDTO(transactionTemp.getPaymentId()));
@@ -129,7 +132,7 @@ public class TransactionService {
             },5000,10000);
             return "OK";
         });
-
+        logger.logInfo("INFO: Transakcija uspesno kreirana. ActiveOrder: " + activeOrderDTO.toString());
         return transaction;
     }
 

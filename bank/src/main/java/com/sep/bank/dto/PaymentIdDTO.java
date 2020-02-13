@@ -4,6 +4,9 @@ public class PaymentIdDTO {
 
     Long id;
 
+    public PaymentIdDTO() {
+    }
+
     public PaymentIdDTO(Long id) {
         this.id = id;
     }

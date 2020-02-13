@@ -24,11 +24,17 @@ public class TransactionClient {
     }
 
     public void updateTransactionIssuer(String url, Long transactionId){
-        ResponseEntity<String> responseEntity = restTemplate.exchange(url + "/" + transactionId,HttpMethod.PUT, null, String.class);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<HttpHeaders> entity = new HttpEntity<>(headers);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(url + "/" + transactionId,HttpMethod.PUT, entity, String.class);
     }
 
     public void updateTransactionPcc(String url, Long transactionId){
-        ResponseEntity<String> responseEntity = restTemplate.exchange(url + "/" + transactionId,HttpMethod.PUT, null, String.class);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<HttpHeaders> entity = new HttpEntity<>(headers);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(url + "/" + transactionId,HttpMethod.PUT, entity, String.class);
     }
 
 }
