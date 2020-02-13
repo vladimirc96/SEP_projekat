@@ -18,11 +18,21 @@ public class Payment {
     @Column(name = "issuer_order_id")
     private Long issuerOrderId;
 
+    @Column(name = "pcc_order_id")
+    private Long pccOrderId;
+
     @Column(name = "amount")
     private double amount;
 
     @Column(name = "return_url")
     private String returnUrl;
+
+    @Column(name = "pcc_update_url")
+    private String pccUrlUpdate;
+
+    @Column(name = "issuer_update_url")
+    private String issuerUpdateUrl;
+
 
     public Payment() {
     }
@@ -59,6 +69,14 @@ public class Payment {
         this.issuerOrderId = issuerOrderId;
     }
 
+    public Long getPccOrderId() {
+        return pccOrderId;
+    }
+
+    public void setPccOrderId(Long pccOrderId) {
+        this.pccOrderId = pccOrderId;
+    }
+
     public double getAmount() {
         return amount;
     }
@@ -73,5 +91,21 @@ public class Payment {
 
     public void setReturnUrl(String returnUrl) {
         this.returnUrl = returnUrl;
+    }
+
+    public String getPccUrlUpdate() {
+        return pccUrlUpdate;
+    }
+
+    public void setPccUrlUpdate(String pccUrlUpdate) {
+        this.pccUrlUpdate = pccUrlUpdate;
+    }
+
+    public String getIssuerUpdateUrl() {
+        return issuerUpdateUrl;
+    }
+
+    public void setIssuerUpdateUrl(String issuerUpdateUrl) {
+        this.issuerUpdateUrl = issuerUpdateUrl;
     }
 }

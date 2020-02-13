@@ -177,4 +177,12 @@ public class TransactionService {
         return true;
     }
 
+    public void notifyIsFaield(Payment payment) {
+        if(!payment.getPccUrlUpdate().equals("")){
+            transactionClient.updateTransactionPcc(payment.getPccUrlUpdate(), payment.getPccOrderId());
+        }
+        if(!payment.getIssuerUpdateUrl().equals("")){
+            transactionClient.updateTransactionIssuer(payment.getIssuerUpdateUrl(), payment.getIssuerOrderId());
+        }
+    }
 }

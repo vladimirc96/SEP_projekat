@@ -1,9 +1,11 @@
 package com.sep.paymentcardcenter.controller;
 
+import com.sep.paymentcardcenter.client.BankClient;
 import com.sep.paymentcardcenter.dto.BankAccountDTO;
 import com.sep.paymentcardcenter.dto.IssuerResponseDTO;
 import com.sep.paymentcardcenter.dto.PaymentStatusDTO;
 import com.sep.paymentcardcenter.dto.PccRequestDTO;
+import com.sep.paymentcardcenter.model.PaymentStatus;
 import com.sep.paymentcardcenter.model.Transaction;
 import com.sep.paymentcardcenter.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +23,7 @@ import java.util.Date;
 public class PccController {
 
     @Autowired
-    private RestTemplate restTemplate;
+    private BankClient bankClient;
 
     @Autowired
     private TransactionService transactionService;
@@ -32,24 +34,19 @@ public class PccController {
         if(!isValid(pccRequestDTO)){
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
-        Transaction transaction = new Transaction();
-        transaction.setTimestamp(new Date());
-        transaction.setAmount(pccRequestDTO.getAmount());
-        transaction.setPaymentStatus(pccRequestDTO.getPaymentStatus());
-        transaction.setPaymentId(Long.parseLong(id));
-        transaction = transactionService.save(transaction);
-
-        // proslediti zahtev banci kupca
-        HttpEntity<PccRequestDTO> entity = new HttpEntity<>(pccRequestDTO);
-        ResponseEntity<IssuerResponseDTO> responseEntity = restTemplate.exchange("https://localhost:8451/bank/issuer/payment/" + id,
-                HttpMethod.PUT, entity, IssuerResponseDTO.class);
-
+        Transaction transaction = transactionService.create(pccRequestDTO, Long.parseLong(id));
+        ResponseEntity<IssuerResponseDTO> responseEntity = bankClient.forward(pccRequestDTO, transaction, id);
         // sacuvaj odma stanje transakcije kad dobijes odg
         transaction = transactionService.update(responseEntity.getBody(), transaction);
-
-        // responseEntity odgovor proslediti prodavcu
         return responseEntity;
+    }
+
+    @RequestMapping(value = "/transaction-failed/{pccOrderId}", method = RequestMethod.PUT, consumes = "application/json", produces = "applciation/json")
+    private ResponseEntity<String> update(@PathVariable("pccOrderId") String id){
+        Transaction transaction = transactionService.findOneById(Long.parseLong(id));
+        transaction.setPaymentStatus(PaymentStatus.FAILURE);
+        transaction = transactionService.save(transaction);
+        return new ResponseEntity("Updated", HttpStatus.OK);
     }
 
     private boolean isValid(PccRequestDTO pccRequestDTO){

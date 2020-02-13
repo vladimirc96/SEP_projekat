@@ -19,6 +19,8 @@ import java.util.TimerTask;
 @Service
 public class BankAccountService {
 
+    private static final String updateUrl = "https://localhost:8451/bank/transaction-failed";
+
     public Logging logger = new Logging(this);
 
     @Autowired
@@ -39,6 +41,32 @@ public class BankAccountService {
             return false;
         }
         return true;
+    }
+
+    public Transaction acquirerValidateAndReserve(Transaction transaction, BankAccount bankAccount, BankAccountDTO bankAccountDTO, Payment payment){
+        logger.logInfo("INFO: Validacija podataka kartice. Transcation: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
+        try {
+            validation(bankAccountDTO, bankAccount, transaction);
+        } catch (Exception e) {
+            logger.logError("ERROR: " + e.getMessage() + ". Transaction: " + transaction.toString());
+            e.printStackTrace();
+            transactionClient.updateTransactionBankService(new PaymentStatusDTO(payment.getMerchantOrderId(),transaction.getPaymentStatus()), payment);
+            return transaction;
+        }
+        logger.logInfo("SUCCESS: Podaci kartice su validni. Transaction: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
+
+        logger.logInfo("INFO: Rezervacija sredstava. Transcation: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
+        try {
+            reserveFunds(bankAccount, transaction);
+        } catch (Exception e) {
+            logger.logError("ERROR: " + e.getMessage() + ". Transaction: " + transaction.toString());
+            e.printStackTrace();
+            return transaction;
+        }
+        transaction.setPaymentStatus(PaymentStatus.SUCCESS);
+        transaction = transactionService.save(transaction);
+        logger.logInfo("SUCCESS: Zahtev za placanje uspesno obradjen, sredstva su rezervisana. Transaction: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
+        return transaction;
     }
 
     public Transaction acquirerValidate(Transaction transaction, BankAccount bankAccount, BankAccountDTO bankAccountDTO, Payment payment){
@@ -72,27 +100,6 @@ public class BankAccountService {
         return transaction;
     }
 
-//    public Transaction acquirerValidateAndReserve(Transaction transaction, BankAccount bankAccount, BankAccountDTO bankAccountDTO){
-//        logger.logInfo("INFO: Validacija podataka kartice. Transcation: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
-//        try {
-//            validation(bankAccountDTO, bankAccount, transaction);
-//        } catch (Exception e) {
-//            logger.logError("ERROR: " + e.getMessage() + ". Transaction: " + transaction.toString());
-//            e.printStackTrace();
-//            return transaction;
-//        }
-//        try {
-//            reserveFunds(bankAccount, transaction);
-//        } catch (Exception e) {
-//            logger.logError("ERROR: " + e.getMessage() + ". Transaction: " + transaction.toString());
-//            e.printStackTrace();
-//            return transaction;
-//        }
-//        transaction.setPaymentStatus(PaymentStatus.SUCCESS);
-//        transaction = transactionService.save(transaction);
-//        logger.logInfo("SUCCESS: Zahtev za placanje uspesno obradjen, sredstva su rezervisana. Transaction: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
-//        return transaction;
-//    }
 
     public ResponseEntity<IssuerResponseDTO> issuerValidateAndReserve(Transaction transaction, BankAccount bankAccount, PccRequestDTO pccRequestDTO){
         BankAccountDTO bankAccountDTO = pccRequestDTO.getBankAccountDTO();
@@ -103,7 +110,7 @@ public class BankAccountService {
             logger.logError("ERROR: " + e.getMessage() + ". Transaction: " + transaction.toString());
             e.printStackTrace();
             return new ResponseEntity<>(new IssuerResponseDTO(transaction.getPaymentStatus(), pccRequestDTO.getAcquirerOrderId(),
-                    pccRequestDTO.getAcquirerTimepstamp(), transaction.getId(), transaction.getTimestamp(), e.getMessage()), HttpStatus.OK);
+                    pccRequestDTO.getAcquirerTimepstamp(), transaction.getId(), transaction.getTimestamp(), e.getMessage(), this.updateUrl, "", null), HttpStatus.OK);
         }
 
         try {
@@ -112,14 +119,14 @@ public class BankAccountService {
             logger.logError("ERROR: " + e.getMessage() + ". Transaction: " + transaction.toString());
             e.printStackTrace();
             return new ResponseEntity<>(new IssuerResponseDTO(transaction.getPaymentStatus(), pccRequestDTO.getAcquirerOrderId(),
-                    pccRequestDTO.getAcquirerTimepstamp(), transaction.getId(), transaction.getTimestamp(), e.getMessage()), HttpStatus.OK);
+                    pccRequestDTO.getAcquirerTimepstamp(), transaction.getId(), transaction.getTimestamp(), e.getMessage(), this.updateUrl, "", null), HttpStatus.OK);
         }
 
         transaction.setPaymentStatus(PaymentStatus.SUCCESS);
         transaction = transactionService.save(transaction);
         logger.logInfo("SUCCESS: Zahtev za placanje uspesno obradjen, sredstva su rezervisana. Issuer banka. Transaction: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
         return new ResponseEntity<>(new IssuerResponseDTO(transaction.getPaymentStatus(), pccRequestDTO.getAcquirerOrderId(),
-                pccRequestDTO.getAcquirerTimepstamp(), transaction.getId(), transaction.getTimestamp(), "SUCCESS"), HttpStatus.OK);
+                pccRequestDTO.getAcquirerTimepstamp(), transaction.getId(), transaction.getTimestamp(), "SUCCESS", this.updateUrl, "", null), HttpStatus.OK);
     }
 
     public void validation(BankAccountDTO bankAccountDTO, BankAccount bankAccount, Transaction transaction) throws Exception {
