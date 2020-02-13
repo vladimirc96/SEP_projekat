@@ -5,6 +5,7 @@ import { PaypalService } from 'src/app/services/paypal.service';
 import { FormGroup, FormControl, Validators, NgForm } from '@angular/forms';
 import { isNgTemplate } from '@angular/compiler';
 import { ActiveOrderService } from 'src/app/services/active-order.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-shipping-adress',
@@ -53,7 +54,13 @@ export class ShippingAdressComponent implements OnInit {
 			(success) => {
         this.activeOrder = success;
 			},
-			error => alert(error.error),
+      error => {
+        Swal.fire({
+          icon: "error",
+          title: 'Greška',
+          text: 'Došlo je do greške prilikom preuzimanja aktivne porudžbine.'
+        });
+      }
 		);
   }
 
@@ -89,13 +96,17 @@ export class ShippingAdressComponent implements OnInit {
       id: this.activeOrder.sellerId
     }
     console.log(shippingDTO);
-    this.palService.createAgreement(shippingDTO).subscribe(
+    this.palService.createAgreement(shippingDTO, this.activeOrder.username).subscribe(
       (data) => {
         this.ret = data;
         window.location.href = this.ret;
         // window.open(this.ret, '_blank', 'toolbar=no,top=100,left=500,width=600,height=550');
       }, (error) => {
-        alert("error");
+        Swal.fire({
+          icon: "error",
+          title: 'Greška',
+          text: 'Došlo je do greške prilikom inicijalizacije pretplate.'
+        });
       }
     );
   }

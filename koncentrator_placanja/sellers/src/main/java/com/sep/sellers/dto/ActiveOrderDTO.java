@@ -14,10 +14,11 @@ public class ActiveOrderDTO {
     private Enums.OrderType orderType;
     private Enums.OrderStatus orderStatus;
     private long paymentMethodId;
+    private String username;
 
     public ActiveOrderDTO(Long id, Long ncOrderId, String title, String currency, Long sellerId, double amount,
                           String returnUrl, Enums.OrderType orderType,
-                          Enums.OrderStatus orderStatus, long paymentMethodId) {
+                          Enums.OrderStatus orderStatus, long paymentMethodId, String username) {
         this.id = id;
         this.ncOrderId = ncOrderId;
         this.title = title;
@@ -28,6 +29,7 @@ public class ActiveOrderDTO {
         this.orderType = orderType;
         this.orderStatus = orderStatus;
         this.paymentMethodId = paymentMethodId;
+        this.username = username;
     }
 
     public long getPaymentMethodId() {
@@ -108,5 +110,13 @@ public class ActiveOrderDTO {
 
     public void setOrderStatus(Enums.OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

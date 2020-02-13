@@ -4,6 +4,7 @@ import { CentralaService } from 'src/app/services/centrala.service';
 import { FormGroup, FormControl, Validators, NgForm } from '@angular/forms';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { SellersService } from 'src/app/services/sellers.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-create-plan',
@@ -89,7 +90,7 @@ export class CreatePlanComponent implements OnInit {
       cycles: this.myForm.value.cycles,
       amount: this.myForm.value.amount,
       currency: this.myForm.value.currency,
-      amountStart: this.myForm.value.amountStart,
+      amountStart: this.myForm.value.amount,
       merchantId: this.rad.sellerId
     }
 
@@ -99,10 +100,18 @@ export class CreatePlanComponent implements OnInit {
         if(this.ret === "PlanCreated") {
           this.sellersService.removeActivePlan(this.id).subscribe(
               (data) => {
-                alert("Plan created!");
+                Swal.fire({
+                  icon: "success",
+                  title: 'Uspešno',
+                  text: 'Novi plan je kreiran.'
+                });
                 window.location.href = "http://localhost:4201/";
               }, (error) => {
-                alert("error");
+                Swal.fire({
+                  icon: "error",
+                  title: 'Greška',
+                  text: 'Došlo je do greške prilikom kreiranja novog plana.'
+                });
               }
             );
         } else {

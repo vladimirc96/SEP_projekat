@@ -32,4 +32,5 @@ public class PPAgreementService {
     public PPAgreement findOneByTokenn(String tokenn) {
         return agreementRepository.findOneByTokenn(tokenn);
     }
+    public List<PPAgreement> findAllByUsername(String username) { return agreementRepository.findAllByUsername(username); }
 }

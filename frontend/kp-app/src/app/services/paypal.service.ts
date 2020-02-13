@@ -29,8 +29,8 @@ export class PaypalService {
         // return this.http.post("http://localhost:8443/paypal/plan", planDTO, {responseType: 'text'});
     }
 
-    createAgreement(dto) {
-        return this.http.post("api/paypal-service/paypal/plan/agreement", dto, {responseType: 'text'});
+    createAgreement(dto, username) {
+        return this.http.post("api/paypal-service/paypal/plan/agreement/" + username, dto, {responseType: 'text'});
         // return this.http.post("http://localhost:8443/paypal/plan/agreement", dto, {responseType: 'text'});
     }
 
@@ -48,11 +48,15 @@ export class PaypalService {
     }
 
     cancelSubscription(token) {
-        return this.http.get("api/paypal-service/paypal/cancelPlan/".concat(token), {responseType: 'text'});
+        return this.http.get("api/paypal-service/paypal/cancelSubscription/".concat(token), {responseType: 'text'});
     }
 
     getAllPlans(selId) {
         return this.http.get("api/paypal-service/paypal/getAllPlans/".concat(selId));
+    }
+
+    cancelBillingPlan(planID, sellerID) {
+        return this.http.put("api/paypal-service/paypal/cancelBillingPlan/".concat(planID).concat("/").concat(sellerID), null, {responseType: 'text'});
     }
 
 }

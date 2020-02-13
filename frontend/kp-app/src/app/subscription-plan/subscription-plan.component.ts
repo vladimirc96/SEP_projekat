@@ -3,6 +3,7 @@ import { ActivatedRoute, Params, Router } from "@angular/router";
 import { PaypalService } from "../services/paypal.service";
 import { ActiveOrderService } from "../services/active-order.service";
 import { SellersService } from "../services/sellers.service";
+import Swal from 'sweetalert2';
 
 @Component({
     selector: "app-subscription-plan",
@@ -14,6 +15,7 @@ export class SubscriptionPlanComponent implements OnInit {
     NC: string = "http://localhost:4201";
     ppizbor: any;
     PayPalPlans: any;
+    mesecnaCena: any;
 
     imaPPPlanova: boolean = false;
     seller: any = null;
@@ -44,9 +46,16 @@ export class SubscriptionPlanComponent implements OnInit {
         this.activeOrderService.getActiveOrder(this.id).subscribe(
             success => {
                 this.activeOrder = success;
+                this.mesecnaCena = this.activeOrder.amount + (this.activeOrder.amount)/2;
                 this.getPayPalSubscriptions(this.activeOrder.sellerId);
             },
-            error => alert(error.error)
+            error => {
+                Swal.fire({
+                    icon: "error",
+                    title: 'Greška',
+                    text: 'Došlo je do greške prilikom preuzimanja aktivne porudžbine.'
+                  });
+            }
         );
     }
 
@@ -63,7 +72,11 @@ export class SubscriptionPlanComponent implements OnInit {
                 }
             },
             error => {
-                alert(error.message);
+                Swal.fire({
+                    icon: "error",
+                    title: 'Greška',
+                    text: 'Došlo je do greške prilikom preuzimanja liste pretplata.'
+                  });
             }
         );
     }

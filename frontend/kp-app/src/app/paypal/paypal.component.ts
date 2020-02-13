@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { PaypalService } from '../services/paypal.service';
 import { ActivatedRoute, Router, Params } from '@angular/router';
-import { CentralaService } from '../services/centrala.service';
-import { SellersService } from '../services/sellers.service';
 import { ActiveOrderService } from '../services/active-order.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-paypal',
@@ -37,13 +36,20 @@ export class PaypalComponent implements OnInit {
         this.activeOrder = response;
       },
       (error) => {
-        alert("error active order");
+        Swal.fire({
+          icon: "error",
+          title: 'Greška',
+          text: 'Došlo je do greške prilikom preuzimanja aktivne porudžbine.'
+        });
       }
     );
   }
 
   orderProcessedByAnotherServiceError() {
-		alert('Order is beeing processed by another service.');
+    Swal.fire({
+      icon: "warning",
+      text: 'Porudžbina je u fazi procesiranja od strane drugog servisa.'
+    });
 		this.goHome();
 	}
 
@@ -68,7 +74,11 @@ export class PaypalComponent implements OnInit {
         this.ret = data;
         window.location.href = this.ret;
       }, (error) => {
-        alert("error");
+        Swal.fire({
+          icon: "error",
+          title: 'Greška',
+          text: 'Došlo je do greške prilikom plaćanja.'
+        });
       }
     )
   }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { PaypalService } from 'src/app/services/paypal.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-execute-plan',
@@ -28,13 +29,25 @@ export class ExecutePlanComponent implements OnInit {
       (data) => {
         this.ret = data;
         if(this.ret === "success") {
-          alert("You are now subscribed!");
+          Swal.fire({
+            icon: "success",
+            title: 'Uspešno',
+            text: 'Pretplaćeni ste na plan.'
+          });
           window.location.href = "http://localhost:4201";
         } else {
-          alert("Error while executing subscription plan.");
+          Swal.fire({
+            icon: "error",
+            title: 'Greška',
+            text: 'Došlo je do greške prilikom izvršavanja pretplate.'
+          });
         }
       }, (error) => {
-        alert("error");
+        Swal.fire({
+          icon: "error",
+          title: 'Greška',
+          text: 'Došlo je do greške prilikom izvršavanja pretplate.'
+        });
         window.location.href = "http://localhost:4201";
       }
     )
