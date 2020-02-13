@@ -40,6 +40,8 @@ import { CancelPlanComponent } from './paypal/cancel/cancel-plan/cancel-plan.com
 import { PlanListComponent } from './paypal/billingPlans/plan-list/plan-list.component';
 import { PmDirective } from './directives/pm.directive';
 import { IRegistrationComponent } from 'src/app/interfaces/i-registration.component';
+import { PaymentMethodsComponent } from './payment-methods/payment-methods.component';
+import { NewPaymentMethodComponent } from './payment-methods/new-payment-method/new-payment-method.component';
 
 @NgModule({
   declarations: [
@@ -70,7 +72,9 @@ import { IRegistrationComponent } from 'src/app/interfaces/i-registration.compon
     CancelPaymentComponent,
     CancelPlanComponent,
     PlanListComponent,
-    PmDirective
+    PmDirective,
+    PaymentMethodsComponent,
+    NewPaymentMethodComponent
   ],
   imports: [
     BrowserModule,
