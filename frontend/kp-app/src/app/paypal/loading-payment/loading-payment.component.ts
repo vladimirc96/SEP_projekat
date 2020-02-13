@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router  } from '@angular/router';
 import { PaypalService } from 'src/app/services/paypal.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-loading-payment',
@@ -37,7 +38,11 @@ export class LoadingPaymentComponent implements OnInit {
           this.showInvalid = true;
         }
       }, (error) => {
-        alert("error");
+        Swal.fire({
+          icon: "error",
+          title: 'Greška',
+          text: 'Došlo je do greške prilikom provere statusa transakcije.'
+        });
       }
     );
   }
@@ -48,7 +53,11 @@ export class LoadingPaymentComponent implements OnInit {
         this.ret = data;
         window.location.href = this.ret;
       }, (error) => {
-        alert("error");
+        Swal.fire({
+          icon: "error",
+          title: 'Greška',
+          text: 'Došlo je do greške prilikom završavanja transakcije.'
+        });
       }
     );
   }

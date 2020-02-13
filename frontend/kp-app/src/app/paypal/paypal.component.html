@@ -8,7 +8,6 @@
     <label for="description">Opis transakcije</label>
     <input type="text" id="description" [(ngModel)] = 'desc' class="form-control" name="description" placeholder="Opis...">
 
-    <button class="btn btn-primary polja" (click)="onProcceed()" [ngClass]="status ? 'wait' : 'point'"><i class="fa fa-paypal"></i> Continue to checkout</button>
-    <!-- <button class="btn btn-primary polja2" routerLink="/paypal/plan/subscribe"  [ngClass]="status ? 'wait' : 'point'"><i class="fa fa-paypal"></i> Subscribe</button> -->
+    <button class="btn btn-primary polja" (click)="onProcceed()" [ngClass]="status ? 'wait' : 'point'"><i class="fa fa-paypal"></i> Checkout</button>
 
 </div>

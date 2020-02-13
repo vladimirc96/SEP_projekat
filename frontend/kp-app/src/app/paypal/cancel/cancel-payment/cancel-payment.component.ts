@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { PaypalService } from 'src/app/services/paypal.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-cancel-payment',
@@ -27,7 +28,11 @@ export class CancelPaymentComponent implements OnInit {
       (data) => {
         this.ret = data;
       }, (error) => {
-        alert("error");
+        Swal.fire({
+          icon: "error",
+          title: 'Greška',
+          text: 'Došlo je do greške prilikom otkazivanja transakcije.'
+        });
       }
     );
   }
