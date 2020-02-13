@@ -27,6 +27,9 @@ public class PccClient {
         HttpEntity<PccRequestDTO> httpEntity = new HttpEntity<PccRequestDTO>(pccRequestDTO);
         ResponseEntity<IssuerResponseDTO> responseEntity = restTemplate.postForEntity("https://localhost:8452/pcc/forward-payment/" + payment.getId(), httpEntity, IssuerResponseDTO.class);
         payment.setIssuerOrderId(responseEntity.getBody().getIssuerOrderId());
+        payment.setIssuerUpdateUrl(responseEntity.getBody().getIssuerUpdateUrl());
+        payment.setPccOrderId(responseEntity.getBody().getPccOrderId());
+        payment.setPccUrlUpdate(responseEntity.getBody().getPccUpdateUrl());
         payment = paymentService.save(payment);
         return responseEntity;
     }

@@ -113,7 +113,8 @@
         </div>
 
         <div class="col-md-5">
-            <div *ngIf="showBankForm">
+            <ng-template appPm></ng-template>
+            <!-- <div *ngIf="showBankForm">
                 <app-bank-registration [sellerId]="registerResponse.id" [registrationLink]="activePm.registrationLink" (output)="onEmitBank($event)"></app-bank-registration>
             </div>
             <div *ngIf="showPPForm">
@@ -121,7 +122,7 @@
             </div>
             <div *ngIf="showBTCForm">
                 <app-bitcoin-registration [sellerId]="registerResponse.id" [registrationLink]="activePm.registrationLink"  (output)="onEmitBTC($event)"></app-bitcoin-registration>
-            </div>
+            </div> -->
             
         </div>
     </div>

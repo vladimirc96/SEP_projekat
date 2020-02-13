@@ -166,4 +166,17 @@ public class SellerService {
     private boolean checkPass(String pw, String hashpw) { return BCrypt.checkpw(pw, hashpw); }
 
 
+    public void registerNewPaymentService(PaymentMethod pm) {
+
+        List<Seller> sellers = _sellerRepo.findAll();
+
+        for (Seller s: sellers) {
+            SellerPaymentMethod spm = new SellerPaymentMethod();
+            spm.setRegistrationSuccess(false);
+            spm.setPaymentMethod(pm);
+            spm.setSeller(s);
+            s.getPaymentMethods().add(spm);
+            _sellerRepo.save(s);
+        }
+    }
 }

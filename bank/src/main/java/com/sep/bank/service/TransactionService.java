@@ -82,7 +82,7 @@ public class TransactionService {
         Transaction transaction = transactionRepo.findOneById(issuerResponseDTO.getAcquirerOrderId());
 
         if(issuerResponseDTO.getPaymentStatus().name().equals("SUCCESS")){
-            // dodaj sredstva na racun prodavca i vrati odg
+            // dodaj sredstva na racun prodavca
             BankAccount bankAccount = transaction.getCustomer().getBankAccount();
             bankAccountService.addFunds(bankAccount, transaction);
             transaction.setPaymentStatus(issuerResponseDTO.getPaymentStatus());
@@ -177,4 +177,12 @@ public class TransactionService {
         return true;
     }
 
+    public void notifyIsFaield(Payment payment) {
+        if(payment.getPccUrlUpdate() != null){
+            transactionClient.updateTransactionPcc(payment.getPccUrlUpdate(), payment.getPccOrderId());
+        }
+        if(payment.getIssuerUpdateUrl() != null){
+            transactionClient.updateTransactionIssuer(payment.getIssuerUpdateUrl(), payment.getIssuerOrderId());
+        }
+    }
 }

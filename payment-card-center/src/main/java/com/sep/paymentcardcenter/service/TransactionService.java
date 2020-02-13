@@ -1,11 +1,13 @@
 package com.sep.paymentcardcenter.service;
 
 import com.sep.paymentcardcenter.dto.IssuerResponseDTO;
+import com.sep.paymentcardcenter.dto.PccRequestDTO;
 import com.sep.paymentcardcenter.model.Transaction;
 import com.sep.paymentcardcenter.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -32,6 +34,16 @@ public class TransactionService {
 
     public Transaction findOneByPaymentId(Long id){
         return transactionRepo.findOneByPaymentId(id);
+    }
+
+    public Transaction create(PccRequestDTO pccRequestDTO, Long paymentId){
+        Transaction transaction = new Transaction();
+        transaction.setTimestamp(new Date());
+        transaction.setAmount(pccRequestDTO.getAmount());
+        transaction.setPaymentStatus(pccRequestDTO.getPaymentStatus());
+        transaction.setPaymentId(paymentId);
+        transaction = transactionRepo.save(transaction);
+        return  transaction;
     }
 
     public Transaction update(IssuerResponseDTO issuerResponseDTO, Transaction transaction){

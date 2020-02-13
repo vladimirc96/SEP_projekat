@@ -1,5 +1,6 @@
 package com.sep.bankservice.client;
 
+import com.sep.bankservice.dto.PaymentIdDTO;
 import com.sep.bankservice.dto.PaymentRequestDTO;
 import com.sep.bankservice.dto.RedirectDTO;
 import com.sep.bankservice.model.Customer;
@@ -16,6 +17,7 @@ public class BankClient {
 
     private static final String bankUrl = "https://localhost:8450/bank/check-payment-request";
     private static final String returnUrl = "https://localhost:8500/bank-service/bank/transaction";
+    private static final String updateTransactionUrl = "https://localhost:8450/bank/transaction-failed";
 
     @Autowired
     RestTemplate restTemplate;
@@ -29,5 +31,11 @@ public class BankClient {
         ResponseEntity<RedirectDTO> responseEntity = restTemplate.exchange(this.bankUrl, HttpMethod.PUT, entity, RedirectDTO.class);
         return responseEntity;
     }
+
+    public void updateTransaction(PaymentIdDTO paymentIdDTO){
+        HttpEntity<PaymentIdDTO> httpEntity = new HttpEntity<>(paymentIdDTO);
+        ResponseEntity<?> responseEntity = restTemplate.exchange(this.updateTransactionUrl, HttpMethod.PUT, httpEntity, String.class);
+    }
+
 
 }

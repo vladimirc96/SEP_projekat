@@ -8,15 +8,17 @@ public class PaymentMethodDTO {
     private long id;
     private String name;
     private String registrationLink;
+    private String serviceBaseUrl;
     private boolean registerSuccess;
 
     public PaymentMethodDTO() {
     }
 
-    public PaymentMethodDTO(long id, String name, String registrationLink, boolean registerSuccess) {
+    public PaymentMethodDTO(long id, String name, String registrationLink, String serviceBaseUrl, boolean registerSuccess) {
         this.id = id;
         this.name = name;
         this.registrationLink = registrationLink;
+        this.serviceBaseUrl = serviceBaseUrl;
         this.registerSuccess = registerSuccess;
     }
 
@@ -27,6 +29,7 @@ public class PaymentMethodDTO {
             PaymentMethodDTO pmDTO = new PaymentMethodDTO(pm.getPaymentMethod().getId(),
                     pm.getPaymentMethod().getName(),
                     pm.getPaymentMethod().getRegistrationUrl(),
+                    pm.getPaymentMethod().getServiceBaseUrl(),
                     pm.isRegistrationSuccess());
             return pmDTO;
         }
@@ -62,5 +65,13 @@ public class PaymentMethodDTO {
 
     public void setRegistrationLink(String registrationLink) {
         this.registrationLink = registrationLink;
+    }
+
+    public String getServiceBaseUrl() {
+        return serviceBaseUrl;
+    }
+
+    public void setServiceBaseUrl(String serviceBaseUrl) {
+        this.serviceBaseUrl = serviceBaseUrl;
     }
 }

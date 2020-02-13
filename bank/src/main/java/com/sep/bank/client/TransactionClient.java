@@ -8,6 +8,8 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import javax.xml.ws.Response;
+
 @Service
 public class TransactionClient {
 
@@ -21,5 +23,18 @@ public class TransactionClient {
         ResponseEntity responseEntity = restTemplate.exchange(payment.getReturnUrl(), HttpMethod.PUT, httpEntity, String.class);
     }
 
+    public void updateTransactionIssuer(String url, Long transactionId){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<HttpHeaders> entity = new HttpEntity<>(headers);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(url + "/" + transactionId,HttpMethod.PUT, entity, String.class);
+    }
+
+    public void updateTransactionPcc(String url, Long transactionId){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<HttpHeaders> entity = new HttpEntity<>(headers);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(url + "/" + transactionId,HttpMethod.PUT, entity, String.class);
+    }
 
 }

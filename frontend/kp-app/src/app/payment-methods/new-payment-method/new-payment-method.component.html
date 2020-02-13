@@ -1,0 +1,28 @@
+<div class="wrapper d-flex justify-content-center">
+        <form [formGroup]="paymentMethodForm" *ngIf="!isRegistered">
+            <span class="d-flex justify-content-center"> <h3>Dodajte nov servis za plaćanje</h3></span>
+            <hr>
+            <div class="form-group">
+                <label>Naziv servisa *</label>
+                <input class="form-control" formControlName="serviceName">
+            </div>
+            <div class="form-group">
+                <label>URL servisa *</label>
+                <input class="form-control" formControlName="serviceBaseUrl">
+            </div>
+            <div class="form-group">
+                <p style="color:red"> Napomena: servis mora implementirati metodu za proveru statusa plaćanja koja će se nalaziti na sledećem linku <strong> *link* </strong>  </p>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary" style="width:100%" (click)="onSubmit()">Potvrdi</button>
+            </div>
+    </form>
+
+    <div style="margin-top:15%" *ngIf="isRegistered"> 
+        <h3>Uspešno ste dodali nov servis za plaćanje!</h3>
+        <br>
+        <div class="d-flex justify-content-center">
+            <button class="btn btn-primary" (click)="goHome()">Nazad na početnu</button>
+        </div>
+    </div>
+</div>

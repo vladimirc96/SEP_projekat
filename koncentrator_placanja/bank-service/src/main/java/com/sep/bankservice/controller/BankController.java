@@ -41,6 +41,7 @@ public class BankController {
 
         String merchantPasswordDecrypted = cryptoService.decrypt(customer.getMerchantPassword());
         ResponseEntity<RedirectDTO> responseEntity = bankClient.forwardPaymentRequest(transaction, customer, merchantPasswordDecrypted);
+        transaction = transactionService.setPaymentId(transaction, responseEntity.getBody().getPaymentId());
         return responseEntity;
     }
 
@@ -51,7 +52,6 @@ public class BankController {
         Transaction transaction = transactionService.findOneById(paymentStatusDTO.getId());
         transaction.setPaymentStatus(paymentStatusDTO.getPaymentStatus());
         transaction = transactionService.save(transaction);
-        System.out.println(transaction);
         return new ResponseEntity<>("Transakcija azurirana.", HttpStatus.OK);
     }
 
