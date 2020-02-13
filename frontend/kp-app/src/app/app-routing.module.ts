@@ -26,6 +26,8 @@ import { SubscriptionPlanComponent } from './subscription-plan/subscription-plan
 import { CancelPaymentComponent } from './paypal/cancel/cancel-payment/cancel-payment.component';
 import { CancelPlanComponent } from './paypal/cancel/cancel-plan/cancel-plan.component';
 import { PlanListComponent } from './paypal/billingPlans/plan-list/plan-list.component';
+import { PaymentMethodsComponent } from './payment-methods/payment-methods.component';
+import { NewPaymentMethodComponent } from './payment-methods/new-payment-method/new-payment-method.component';
 
 const appRoutes: Routes = [
 	{ path: '', redirectTo: '/centrala', pathMatch: 'full'},
@@ -56,7 +58,11 @@ const appRoutes: Routes = [
 	]
 	},
 	{ path: 'reg/:sellerId', component: SellerRegistrationComponent },
-	{ path: 'subscriptions/:id', component: SubscriptionPlanComponent}
+	{ path: 'subscriptions/:id', component: SubscriptionPlanComponent},
+	
+	{ path: 'payment-methods', component: PaymentMethodsComponent, children: [
+		{ path: 'new', component: NewPaymentMethodComponent }
+	]}
 ]
 
 @NgModule({
