@@ -2,13 +2,14 @@ import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { SellersService } from 'src/app/services/sellers.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { IRegistrationComponent } from 'src/app/interfaces/i-registration.component';
 
 @Component({
     selector: "app-bank-registration",
     templateUrl: "./bank-registration.component.html",
     styleUrls: ["./bank-registration.component.css"]
 })
-export class BankRegistrationComponent implements OnInit {
+export class BankRegistrationComponent implements OnInit, IRegistrationComponent {
 
     
     @Input() sellerId: any;

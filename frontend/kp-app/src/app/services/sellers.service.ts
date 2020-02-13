@@ -1,12 +1,9 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Router } from '@angular/router';
-import { ReturnStatement } from '@angular/compiler';
-
+import { Router } from "@angular/router";
 
 @Injectable()
 export class SellersService {
-
     private ENDPOINT_URI: string = "api/sellers";
 
     public paymentMethods = [
@@ -22,11 +19,15 @@ export class SellersService {
             id: 3,
             name: "Bitcoin"
         }
-    ]
+    ];
 
-    constructor(private http: HttpClient, private router: Router) { }
+   
 
-    getSeller(id: number) { 
+    constructor(private http: HttpClient, private router: Router) {
+       
+    }
+
+    getSeller(id: number) {
         return this.http.get(this.ENDPOINT_URI + "/sellers/" + id);
     }
 
@@ -39,11 +40,15 @@ export class SellersService {
     }
 
     getActivePlan(id) {
-        return this.http.get(this.ENDPOINT_URI.concat("/sellers/getActivePlan/").concat(id));
+        return this.http.get(
+            this.ENDPOINT_URI.concat("/sellers/getActivePlan/").concat(id)
+        );
     }
 
     removeActivePlan(id) {
-        return this.http.get(this.ENDPOINT_URI.concat("/sellers/removeActivePlan/").concat(id), {responseType: 'text'});
+        return this.http.get(
+            this.ENDPOINT_URI.concat("/sellers/removeActivePlan/").concat(id),
+            { responseType: "text" }
+        );
     }
-
 }

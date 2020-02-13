@@ -18,18 +18,13 @@ public class PaymentMethod {
     @Column
     private String registrationUrl;
 
+    @Column
+    private String serviceBaseUrl;
 
     @OneToMany(mappedBy = "paymentMethod", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<SellerPaymentMethod> sellerPaymentMethods = new ArrayList<>();
 
     public PaymentMethod() {
-    }
-
-    public PaymentMethod(long id, String name, String registrationUrl, List<SellerPaymentMethod> sellerPaymentMethods) {
-        this.id = id;
-        this.name = name;
-        this.registrationUrl = registrationUrl;
-        this.sellerPaymentMethods = sellerPaymentMethods;
     }
 
     public String getName() {
@@ -62,5 +57,13 @@ public class PaymentMethod {
 
     public void setRegistrationUrl(String registrationUrl) {
         this.registrationUrl = registrationUrl;
+    }
+
+    public String getServiceBaseUrl() {
+        return serviceBaseUrl;
+    }
+
+    public void setServiceBaseUrl(String serviceBaseUrl) {
+        this.serviceBaseUrl = serviceBaseUrl;
     }
 }

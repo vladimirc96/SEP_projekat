@@ -38,6 +38,9 @@ import { SubscriptionPlanComponent } from './subscription-plan/subscription-plan
 import { CancelPaymentComponent } from './paypal/cancel/cancel-payment/cancel-payment.component';
 import { CancelPlanComponent } from './paypal/cancel/cancel-plan/cancel-plan.component';
 import { PlanListComponent } from './paypal/billingPlans/plan-list/plan-list.component';
+import { PmDirective } from './directives/pm.directive';
+import { IRegistrationComponent } from 'src/app/interfaces/i-registration.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -67,6 +70,7 @@ import { PlanListComponent } from './paypal/billingPlans/plan-list/plan-list.com
     CancelPaymentComponent,
     CancelPlanComponent,
     PlanListComponent,
+    PmDirective
   ],
   imports: [
     BrowserModule,
@@ -77,6 +81,11 @@ import { PlanListComponent } from './paypal/billingPlans/plan-list/plan-list.com
     AngularFontAwesomeModule,
     NgxSpinnerModule,
     BrowserAnimationsModule
+  ],
+  entryComponents: [
+    BankRegistrationComponent,
+    PaypalRegistrationComponent,
+    BitcoinRegistrationComponent
   ],
   providers: [SellersService, PaypalService, BankService],
   bootstrap: [AppComponent]

@@ -3,13 +3,14 @@ import { Params, ActivatedRoute } from '@angular/router';
 import { SellersService } from 'src/app/services/sellers.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { IRegistrationComponent } from 'src/app/interfaces/i-registration.component';
 
 @Component({
     selector: "app-bitcoin-registration",
     templateUrl: "./bitcoin-registration.component.html",
     styleUrls: ["./bitcoin-registration.component.css"]
 })
-export class BitcoinRegistrationComponent implements OnInit {
+export class BitcoinRegistrationComponent implements OnInit, IRegistrationComponent {
 
     @Input() sellerId: any;
     @Input() registrationLink: any;

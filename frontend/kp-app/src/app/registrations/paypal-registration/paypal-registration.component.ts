@@ -2,13 +2,14 @@ import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { SellersService } from 'src/app/services/sellers.service';
 import { Validators, FormBuilder } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { IRegistrationComponent } from 'src/app/interfaces/i-registration.component';
 
 @Component({
     selector: "app-paypal-registration",
     templateUrl: "./paypal-registration.component.html",
     styleUrls: ["./paypal-registration.component.css"]
 })
-export class PaypalRegistrationComponent implements OnInit {
+export class PaypalRegistrationComponent implements OnInit, IRegistrationComponent {
    
 	
     @Input() sellerId: any;
