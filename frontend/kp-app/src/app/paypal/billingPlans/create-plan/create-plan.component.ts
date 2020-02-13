@@ -89,7 +89,7 @@ export class CreatePlanComponent implements OnInit {
       cycles: this.myForm.value.cycles,
       amount: this.myForm.value.amount,
       currency: this.myForm.value.currency,
-      amountStart: this.myForm.value.amountStart,
+      amountStart: this.myForm.value.amount,
       merchantId: this.rad.sellerId
     }
 

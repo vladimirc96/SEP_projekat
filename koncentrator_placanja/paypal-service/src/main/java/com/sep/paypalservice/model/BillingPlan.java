@@ -1,6 +1,8 @@
 package com.sep.paypalservice.model;
 
 import javax.persistence.*;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 public class BillingPlan {
@@ -47,6 +49,9 @@ public class BillingPlan {
 
     @Column(name = "seller_id")
     private long sellerId;
+
+    @OneToMany(mappedBy = "billingPlan", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<PPAgreement> agreements;
 
 
     public BillingPlan() {

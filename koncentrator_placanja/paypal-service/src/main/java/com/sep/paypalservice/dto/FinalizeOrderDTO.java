@@ -3,6 +3,7 @@ package com.sep.paypalservice.dto;
 
 import com.sep.paypalservice.enums.Enums;
 
+import javax.persistence.Column;
 import java.util.Date;
 
 public class FinalizeOrderDTO {
@@ -11,15 +12,17 @@ public class FinalizeOrderDTO {
     private Enums.OrderStatus orderStatus;
     private long ncOrderId;
     private Date finalDate;
+    private long agreementID;
 
     public FinalizeOrderDTO() {
     }
 
-    public FinalizeOrderDTO(long activeOrderId, Enums.OrderStatus orderStatus, long ncOrderId, Date finalDate) {
+    public FinalizeOrderDTO(long activeOrderId, Enums.OrderStatus orderStatus, long ncOrderId, Date finalDate, long agreementID) {
         this.activeOrderId = activeOrderId;
         this.orderStatus = orderStatus;
         this.ncOrderId = ncOrderId;
         this.finalDate = finalDate;
+        this.agreementID = agreementID;
     }
 
     public Date getFinalDate() {
@@ -52,5 +55,13 @@ public class FinalizeOrderDTO {
 
     public void setNcOrderId(long ncOrderId) {
         this.ncOrderId = ncOrderId;
+    }
+
+    public long getAgreementID() {
+        return agreementID;
+    }
+
+    public void setAgreementID(long agreementID) {
+        this.agreementID = agreementID;
     }
 }

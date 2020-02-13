@@ -13,6 +13,8 @@ export class PlanListComponent implements OnInit {
   pribavio: boolean = false;
   imaPlanova: boolean = false;
 
+  lclhst: string = "http://localhost:4204";
+
   constructor(private paypalService: PaypalService, private route: ActivatedRoute) {
     this.route.params.subscribe(
       (params: Params) => {
@@ -38,7 +40,21 @@ export class PlanListComponent implements OnInit {
   }
 
   goHome() {
-    window.location.href = "http://localhost:4201";
+    window.location.href = this.lclhst;
+  }
+
+  onCancelPlan(id, seller) {
+    this.paypalService.cancelBillingPlan(id, seller).subscribe(
+      res => {
+        if(res === "done") {
+          let i = this.billingPlans.findIndex(plan => plan.id === id);
+          this.billingPlans.splice(i, 1);
+          alert("Plan removed!");
+        }
+      }, err => {
+        alert("error canceling billing plan");
+      }
+    );
   }
 
 }

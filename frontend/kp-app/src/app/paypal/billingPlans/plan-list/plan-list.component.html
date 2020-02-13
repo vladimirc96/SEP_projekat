@@ -10,7 +10,7 @@
                 <p>Naplata: {{ plan.cycles}} puta, na {{ plan.freqInterval}} {{ plan.frequency}} </p>
             </div>
             <div class="left-side d-flex justify-content-end">
-                <button class="btn btn-primary d-flex flex-row-reverse"> Some action </button>
+                <button class="btn btn-primary d-flex flex-row-reverse" (click)="onCancelPlan(plan.id, plan.sellerId)">Cancel plan</button>
             </div>
         </div>
     </div>

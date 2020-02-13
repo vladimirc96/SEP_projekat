@@ -10,8 +10,9 @@ public class ShowPlansDTO {
     private double amount;
     private String currency;
     private double amountStart;
+    private long sellerId;
 
-    public ShowPlansDTO(long id, String name, String frequency, String freqInterval, String cycles, double amount, String currency, double amountStart) {
+    public ShowPlansDTO(long id, String name, String frequency, String freqInterval, String cycles, double amount, String currency, double amountStart, long sellerId) {
         this.id = id;
         this.name = name;
         this.frequency = frequency;
@@ -20,6 +21,7 @@ public class ShowPlansDTO {
         this.amount = amount;
         this.currency = currency;
         this.amountStart = amountStart;
+        this.sellerId = sellerId;
     }
 
     public void setId(long id) {
@@ -31,7 +33,15 @@ public class ShowPlansDTO {
     }
 
     public void setFrequency(String frequency) {
-        this.frequency = frequency;
+        if(frequency.equals("YEAR")) {
+            this.frequency = "Godinu/a";
+        } else if (frequency.equals("MONTH")) {
+            this.frequency = "Mesec/i";
+        } else if (frequency.equals("WEEK")) {
+            this.frequency = "Nedelju/e";
+        } else {
+            this.frequency = "Dan/a";
+        }
     }
 
     public void setFreqInterval(String freqInterval) {
@@ -84,5 +94,13 @@ public class ShowPlansDTO {
 
     public double getAmountStart() {
         return amountStart;
+    }
+
+    public long getSellerId() {
+        return sellerId;
+    }
+
+    public void setSellerId(long sellerId) {
+        this.sellerId = sellerId;
     }
 }

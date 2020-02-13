@@ -40,6 +40,9 @@ public class ActiveOrder {
     @Column
     private long paymentMethodId;
 
+    @Column
+    private String username;
+
     public ActiveOrder() {
     }
 
@@ -121,5 +124,13 @@ public class ActiveOrder {
 
     public void setPaymentMethodId(long paymentMethodId) {
         this.paymentMethodId = paymentMethodId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

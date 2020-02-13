@@ -1,5 +1,7 @@
 package com.sep.paypalservice.model;
 
+import com.paypal.api.payments.Billing;
+
 import javax.persistence.*;
 
 @Entity
@@ -29,9 +31,6 @@ public class PPAgreement {
     private String status;
 
     @Column
-    private String planId;
-
-    @Column
     private String tokenn;
 
     @Column
@@ -39,6 +38,12 @@ public class PPAgreement {
 
     @Column
     private long activeOrderId;
+
+    @Column
+    private String username;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private BillingPlan billingPlan;
 
     public PPAgreement() {
     }
@@ -107,12 +112,12 @@ public class PPAgreement {
         this.status = status;
     }
 
-    public String getPlanId() {
-        return planId;
+    public BillingPlan getBillingPlan() {
+        return billingPlan;
     }
 
-    public void setPlanId(String planId) {
-        this.planId = planId;
+    public void setBillingPlan(BillingPlan billingPlan) {
+        this.billingPlan = billingPlan;
     }
 
     public long getSellerId() {
@@ -129,5 +134,13 @@ public class PPAgreement {
 
     public void setActiveOrderId(long activeOrderId) {
         this.activeOrderId = activeOrderId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

@@ -13,6 +13,7 @@ import com.sep.paypalservice.model.PPClient;
 import com.sep.paypalservice.model.PPTransaction;
 import com.sep.paypalservice.repository.ClientsRepository;
 import com.sep.paypalservice.repository.TransactionRepository;
+import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.MalformedURLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
@@ -159,10 +161,31 @@ public class PaypalService {
         return "done";
     }
 
-    public String cancelPlan(String token) {
+    public String cancelSubscription(String token) {
         PPAgreement ag = agreementService.findOneByTokenn(token);
         ag.setStatus("canceled");
         agreementService.save(ag);
+        return "done";
+    }
+
+    public String cancelBillingPlan(long planID, long sellerId) throws PayPalRESTException {
+        BillingPlan plan = billingPlanService.findOneById(planID);
+        Plan p = new Plan();
+        p.setId(plan.getPlanId());
+        APIContext apiContext = getContextAndMerchant(sellerId);
+
+        List<Patch> patchRequestList = new ArrayList<>();
+        Map<String, String> value = new HashMap<>();
+        value.put("state", "INACTIVE");
+
+        Patch patch = new Patch();
+        patch.setOp("replace");
+        patch.setValue(value);
+        patch.setPath("/");
+        patchRequestList.add(patch);
+
+        p.update(apiContext, patchRequestList);
+        billingPlanService.remove(plan.getId());
         return "done";
     }
 
@@ -214,17 +237,18 @@ public class PaypalService {
         return "PlanNotCreated";
     }
 
-    public String agreement(ShippingDTO dto) {
+    public String agreement(ShippingDTO dto, String username) {
         logger.logInfo("PP_AGREEMENT");
         BillingPlan bp = billingPlanService.findOneById(dto.getPlanId());
         try {
             Agreement agreement = createAgreement(dto, bp.getPlanId());
             PPAgreement agr = new PPAgreement();
-            agr.setPlanId(agreement.getPlan().getId());
+            agr.setBillingPlan(bp);
             agr.setTokenn(agreement.getToken());
             agr.setSellerId(bp.getSellerId());
             agr.setStatus("created");
             agr.setActiveOrderId(dto.getActiveOrderId());
+            agr.setUsername(username);
             agr = agreementService.save(agr);
             final PPAgreement agriment = agr;
 
@@ -246,6 +270,7 @@ public class PaypalService {
                                     FinalizeOrderDTO foDTO = new FinalizeOrderDTO();
                                     foDTO.setOrderStatus(convertStatus(pa.getStatus()));
                                     foDTO.setActiveOrderId(pa.getActiveOrderId());
+                                    foDTO.setAgreementID(pa.getId());
                                     try {
                                         foDTO.setFinalDate(new SimpleDateFormat("yyyy-MM-dd").parse(pa.getFinalPaymentDate().split("T")[0]));
                                     } catch (Exception e) {
@@ -454,8 +479,10 @@ public class PaypalService {
         ArrayList<ShowPlansDTO> planovi = new ArrayList<>();
         List<BillingPlan> bilplans = billingPlanService.findBySeller(sellerID);
         for(BillingPlan bp : bilplans) {
-            ShowPlansDTO temp = new ShowPlansDTO(bp.getId(), bp.getName(), bp.getFrequency(), bp.getFreqInterval(), bp.getCycles(), bp.getAmount(), bp.getCurrency(), bp.getAmountStart());
-            planovi.add(temp);
+            if(bp.getState().equals("ACTIVE")) {
+                ShowPlansDTO temp = new ShowPlansDTO(bp.getId(), bp.getName(), bp.getFrequency(), bp.getFreqInterval(), bp.getCycles(), bp.getAmount(), bp.getCurrency(), bp.getAmountStart(), sellerID);
+                planovi.add(temp);
+            }
         }
 
         return planovi;
@@ -466,18 +493,94 @@ public class PaypalService {
         APIContext apiContext = getContextAndMerchant(sellerID);
 
         Map<String, String> value = new HashMap<>();
-        value.put("page_size", "10");
+        value.put("page_size", "20");
+        value.put("total_required", "yes");
+        value.put("status", "ACTIVE");
         PlanList planList = Plan.list(apiContext, value);
         for(Plan plan1 : planList.getPlans()) {
             Plan plan = Plan.get(apiContext, plan1.getId());
-            ShowPlansDTO s = new ShowPlansDTO((long) -1, plan.getName(), plan.getPaymentDefinitions().get(0).getFrequency(), plan.getPaymentDefinitions().get(0).getFrequencyInterval(),
+            BillingPlan ppp = billingPlanService.findByPlanId(plan.getId());
+            ShowPlansDTO s = new ShowPlansDTO(ppp.getId(), plan.getName(), plan.getPaymentDefinitions().get(0).getFrequency(), plan.getPaymentDefinitions().get(0).getFrequencyInterval(),
                     plan.getPaymentDefinitions().get(0).getCycles(), Double.parseDouble(plan.getPaymentDefinitions().get(0).getAmount().getValue()),
-                    plan.getPaymentDefinitions().get(0).getAmount().getCurrency(), Double.parseDouble(plan.getMerchantPreferences().getSetupFee().getValue()));
+                    plan.getPaymentDefinitions().get(0).getAmount().getCurrency(), Double.parseDouble(plan.getMerchantPreferences().getSetupFee().getValue()), sellerID);
             planovi.add(s);
         }
 
         return planovi;
     }
+
+
+    public AgreementListDTO getUserAgreements(String korisnik) throws ParseException, PayPalRESTException {
+        List<AgreementDTO> lista = new ArrayList<>();
+        List<PPAgreement> agrimenti = agreementService.findAllByUsername(korisnik);
+        for(PPAgreement a : agrimenti) {
+            APIContext apiContext = getContextAndMerchant(a.getSellerId());
+            Agreement agrmnt = Agreement.get(apiContext, a.getActiveAgreementId());
+            if(agrmnt.getState().equals("Cancelled") || agrmnt.getState().equals("Expired")) {
+                a.setStatus(agrmnt.getState());
+                a = agreementService.save(a);
+            }
+            if(a.getStatus().equals("approved")) {
+                AgreementDTO dto = new AgreementDTO();
+                dto.setId(a.getId());
+                dto.setAmount(String.valueOf(a.getBillingPlan().getAmount()));
+                dto.setCurrency(a.getBillingPlan().getCurrency());
+                dto.setCycles(a.getBillingPlan().getCycles());
+                String SD1[] = a.getStartDate().split("T");
+                String SD = SD1[0];
+                dto.setStartDate(SD);
+                dto.setStatus(a.getStatus());
+                dto.setFrequency(a.getBillingPlan().getFrequency());
+                dto.setFreqInterval(a.getBillingPlan().getFreqInterval());
+                dto.setName(a.getBillingPlan().getName());
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                final String NEW_FORMAT = "yyyy-MM-dd";
+                String FD1[] = a.getFinalPaymentDate().split("T");
+                String FD = FD1[0];
+                Date finalPayment=formatter.parse(FD);
+                Date newDate;
+                String finalni;
+                if(a.getBillingPlan().getFrequency().equals("MONTH")) {
+                    newDate = DateUtils.addMonths(finalPayment, 1);
+                    finalni = formatter.format(newDate);
+                } else if (a.getBillingPlan().getFrequency().equals("YEAR")) {
+                    newDate = DateUtils.addYears(finalPayment, 1);
+                    finalni = formatter.format(newDate);
+                } else if (a.getBillingPlan().getFrequency().equals("WEEK")) {
+                    newDate = DateUtils.addWeeks(finalPayment, 1);
+                    finalni = formatter.format(newDate);
+                } else {
+                    newDate = DateUtils.addDays(finalPayment, 1);
+                    finalni = formatter.format(newDate);
+                }
+                dto.setEndDate(finalni);
+                lista.add(dto);
+            }
+        }
+        AgreementListDTO ret = new AgreementListDTO(lista);
+        return ret;
+    }
+
+    public String cancelAgreement(long agrID) throws PayPalRESTException {
+        PPAgreement a = agreementService.findOneById(agrID);
+        APIContext apiContext = getContextAndMerchant(a.getSellerId());
+        Agreement agrmnt = Agreement.get(apiContext, a.getActiveAgreementId());
+        if(agrmnt.getState().equals("Cancelled") || agrmnt.getState().equals("Expired")) {
+            a.setStatus(agrmnt.getState());
+            a = agreementService.save(a);
+        }
+        if(a.getStatus().equals("approved")) {
+            AgreementStateDescriptor asd = new AgreementStateDescriptor();
+            asd.setNote("Cancel the contract");
+            agrmnt.cancel(apiContext, asd);
+            a.setStatus("Cancelled");
+            agreementService.save(a);
+            return "done";
+        }
+        return "error";
+    }
+
+
 
     private Enums.OrderStatus convertStatus(String status) {
         if (status.equals("approved")) {

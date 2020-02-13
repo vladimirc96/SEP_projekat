@@ -34,7 +34,7 @@ public class ActiveOrderService {
         ActiveOrder activeOrder = activeOrderRepo.findOneById(id);
         return new ActiveOrderDTO(activeOrder.getId(),activeOrder.getNc_order_id(),activeOrder.getTitle(), activeOrder.getCurrency(), activeOrder.getSeller_id(),
                 activeOrder.getAmount(), activeOrder.getReturn_url(), activeOrder.getOrderType(),
-                activeOrder.getOrderStatus(), activeOrder.getPaymentMethodId());
+                activeOrder.getOrderStatus(), activeOrder.getPaymentMethodId(), activeOrder.getUsername());
     }
 
     public InitOrderResponseDTO create(InitOrderRequestDTO initOrderRequestDTO){
@@ -47,12 +47,12 @@ public class ActiveOrderService {
         activeOrder.setTitle(initOrderRequestDTO.getTitle());
         activeOrder.setSeller_id(initOrderRequestDTO.getSellerId());
         activeOrder.setReturn_url(initOrderRequestDTO.getReturnUrl());
+        activeOrder.setUsername(initOrderRequestDTO.getUsername());
 
         activeOrder = activeOrderRepo.save(activeOrder);
 
         setTimerForCheckingOrderStatus(activeOrder.getId());
 
-        System.out.println("orderType: " + initOrderRequestDTO.getOrderType());
         if(initOrderRequestDTO.getOrderType().toString() == "ORDER_SUBSCRIPTION") {
             System.out.println("USAO U REDIRECT SUB URL: " + redirectSubUrl + activeOrder.getId());
             return new InitOrderResponseDTO(redirectSubUrl + activeOrder.getId());

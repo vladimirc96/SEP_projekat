@@ -12,10 +12,11 @@ public class InitOrderRequestDTO {
     private String returnUrl;
     private Enums.OrderType orderType;
     private Enums.OrderStatus orderStatus;
+    private String username;
 
     public InitOrderRequestDTO(){}
 
-    public InitOrderRequestDTO(Long ncOrderId, String title, String currency, Long sellerId, double amount, String returnUrl, Enums.OrderType orderType, Enums.OrderStatus orderStatus) {
+    public InitOrderRequestDTO(Long ncOrderId, String title, String currency, Long sellerId, double amount, String returnUrl, Enums.OrderType orderType, Enums.OrderStatus orderStatus, String username) {
         this.ncOrderId = ncOrderId;
         this.title = title;
         this.currency = currency;
@@ -24,6 +25,7 @@ public class InitOrderRequestDTO {
         this.returnUrl = returnUrl;
         this.orderType = orderType;
         this.orderStatus = orderStatus;
+        this.username = username;
     }
 
     public Long getNcOrderId() {
@@ -88,5 +90,13 @@ public class InitOrderRequestDTO {
 
     public void setOrderStatus(Enums.OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

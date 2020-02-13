@@ -14,6 +14,7 @@ export class SubscriptionPlanComponent implements OnInit {
     NC: string = "http://localhost:4201";
     ppizbor: any;
     PayPalPlans: any;
+    mesecnaCena: any;
 
     imaPPPlanova: boolean = false;
     seller: any = null;
@@ -44,6 +45,7 @@ export class SubscriptionPlanComponent implements OnInit {
         this.activeOrderService.getActiveOrder(this.id).subscribe(
             success => {
                 this.activeOrder = success;
+                this.mesecnaCena = this.activeOrder.amount + (this.activeOrder.amount)/2;
                 this.getPayPalSubscriptions(this.activeOrder.sellerId);
             },
             error => alert(error.error)

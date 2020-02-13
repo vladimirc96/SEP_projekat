@@ -89,7 +89,7 @@ export class ShippingAdressComponent implements OnInit {
       id: this.activeOrder.sellerId
     }
     console.log(shippingDTO);
-    this.palService.createAgreement(shippingDTO).subscribe(
+    this.palService.createAgreement(shippingDTO, this.activeOrder.username).subscribe(
       (data) => {
         this.ret = data;
         window.location.href = this.ret;

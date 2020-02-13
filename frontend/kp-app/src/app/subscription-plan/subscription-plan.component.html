@@ -4,7 +4,7 @@
         <div class="row">
             <div class="col-md-10">
                 <h5>Pretplata na časopis</h5>
-                <span>(Ovde napisati i cenu i to sve sta god)</span>
+                <span><b>{{activeOrder.title}}</b> mesečni plan, cena: {{mesecnaCena}} {{activeOrder.currency}}</span>
             </div>
             <div class="col-md-2">
                 <button class="btn btn-primary" (click)="onRegularSub()">Izaberi</button>
