@@ -1,13 +1,9 @@
 <div class="container pt-5">
-    {{ activeOrder.title }}
+  <h4 class="mt-5">Vaša porudžbina:</h4>
+      Naslov: <strong> {{ activeOrder.title }} </strong>
+      <br>
+      Cena: <strong> {{ activeOrder.amount }} </strong> {{activeOrder.currency}}
     <br>
-    {{ activeOrder.orderType }}
-    <br>
-    {{ activeOrder.orderStatus }}
-    <br>
-    {{ activeOrder.amount }} {{ activeOrder.currency }}
-    <br>
-    
     <button class="btn btn-primary mt-5" (click)="redirect()">Nastavi sa placanjem</button>
   
     <ngx-spinner
@@ -16,7 +12,7 @@
     color="#fff"
     type="ball-scale-multiple"
   >
-    <p style="font-size: 20px; color: white">Loading...</p>
+    <p style="font-size: 20px; color: white">Obrada...</p>
   </ngx-spinner>
   
   </div>

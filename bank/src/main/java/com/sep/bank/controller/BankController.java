@@ -24,7 +24,6 @@ public class BankController {
 
     public Logging logger = new Logging(this);
 
-
     @Autowired
     private BankAccountService bankAccountService;
 
@@ -69,7 +68,6 @@ public class BankController {
                     transaction.getTimestamp(), transaction.getPaymentStatus()), HttpStatus.CONFLICT);
         }
 
-        ResponseEntity<IssuerResponseDTO> responseEntity = null;
         try {
             bankAccountDTO = bankAccountService.parseDate(bankAccountDTO);
         } catch (ParseException e) {
@@ -77,16 +75,18 @@ public class BankController {
         }
         // ako nisu iste banke, prosledi zahtev PCC-u
         if(!bankAccountService.isBankSame(transaction, transaction.getCustomer().getBankAccount(), bankAccountDTO)){
-            responseEntity = pccClient.forward(transaction, bankAccountDTO, payment);
-        }
-        // obrada transakcije - ako ima issuer banka
-        if(responseEntity != null){
-            payment.setIssuerOrderId(responseEntity.getBody().getIssuerOrderId());
-            payment.setPccUrlUpdate(responseEntity.getBody().getIssuerUpdateUrl());
-            return transactionService.issuerProcessTransaction(responseEntity.getBody(), payment);
+            try{
+                ResponseEntity<IssuerResponseDTO> responseEntity = pccClient.forward(transaction, bankAccountDTO, payment);
+                return transactionService.issuerProcessTransaction(responseEntity.getBody(), payment);
+            }catch(Exception e){
+                e.printStackTrace();
+                transaction.setPaymentStatus(PaymentStatus.FAILURE);
+                transaction = transactionService.save(transaction);
+                return transactionService.processTransaction(transaction, payment);
+            }
         }
         BankAccount bankAccount = bankAccountService.findOneByPan(bankAccountDTO.getPan());
-        transaction = bankAccountService.acquirerValidateAndReserve(transaction,bankAccount,bankAccountDTO,payment);
+        transaction = bankAccountService.acquirerValidateAndReserve(transaction, bankAccount, bankAccountDTO,payment);
         return transactionService.processTransaction(transaction, payment);
     }
 
@@ -101,8 +101,7 @@ public class BankController {
         }
         Customer customer = customerService.findOneByPan(bankAccountDTO.getPan());
         Transaction transaction = transactionService.create(pccRequestDTO, Long.parseLong(id), customer);
-        BankAccount bankAccount = bankAccountService.findOneByPan(bankAccountDTO.getPan());
-        return bankAccountService.issuerValidateAndReserve(transaction, bankAccount, pccRequestDTO);
+        return bankAccountService.issuerValidateAndReserve(transaction, customer.getBankAccount(), pccRequestDTO);
     }
 
 

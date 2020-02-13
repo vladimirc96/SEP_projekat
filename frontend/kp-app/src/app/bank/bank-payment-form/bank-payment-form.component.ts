@@ -3,6 +3,7 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { BankService } from 'src/app/services/bank.service';
 import { NgxSpinnerService } from 'ngx-spinner';
+import Swal from 'sweetalert2'
 
 @Component({
   selector: 'app-bank-payment-form',
@@ -65,13 +66,13 @@ export class BankPaymentFormComponent implements OnInit {
           this.router.navigate(['/bank/' + this.transactionId + '/failure']);
         }
         if(error.status == '400'){
-          alert("Podaci nisu validni");
+          Swal.fire({
+            icon: "error",
+            title: 'Greška',
+            text: 'Podaci koje ste uneli nisu validni. Pokušajte ponovo.'
+          });
         }
-
       }
     )
-    
-
   }
-
 }
