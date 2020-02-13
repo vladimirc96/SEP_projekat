@@ -31,10 +31,6 @@ public class PccClient {
         payment.setPccOrderId(responseEntity.getBody().getPccOrderId());
         payment.setPccUrlUpdate(responseEntity.getBody().getPccUpdateUrl());
         payment = paymentService.save(payment);
-        System.out.println("***********************************");
-        System.out.println("Payment objekat: ");
-        System.out.println(payment.toString());
-        System.out.println("***********************************");
         return responseEntity;
     }
 

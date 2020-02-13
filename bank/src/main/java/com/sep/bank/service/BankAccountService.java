@@ -69,38 +69,6 @@ public class BankAccountService {
         return transaction;
     }
 
-    public Transaction acquirerValidate(Transaction transaction, BankAccount bankAccount, BankAccountDTO bankAccountDTO, Payment payment){
-        logger.logInfo("INFO: Validacija podataka kartice. Transcation: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
-        try {
-            validation(bankAccountDTO, bankAccount, transaction);
-        } catch (Exception e) {
-            logger.logError("ERROR: " + e.getMessage() + ". Transaction: " + transaction.toString());
-            e.printStackTrace();
-            transactionClient.updateTransactionBankService(new PaymentStatusDTO(payment.getMerchantOrderId(),transaction.getPaymentStatus()), payment);
-            return transaction;
-        }
-        transaction.setPaymentStatus(PaymentStatus.PROCESSING);
-        transaction = transactionService.save(transaction);
-        logger.logInfo("SUCCESS: Podaci kartice su validni. Transaction: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
-        return transaction;
-    }
-
-    public Transaction acquirerReserveFunds(Transaction transaction, BankAccount bankAccount, BankAccountDTO bankAccountDTO){
-        logger.logInfo("INFO: Rezervacija sredstava. Transcation: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
-        try {
-            reserveFunds(bankAccount, transaction);
-        } catch (Exception e) {
-            logger.logError("ERROR: " + e.getMessage() + ". Transaction: " + transaction.toString());
-            e.printStackTrace();
-            return transaction;
-        }
-        transaction.setPaymentStatus(PaymentStatus.SUCCESS);
-        transaction = transactionService.save(transaction);
-        logger.logInfo("SUCCESS: Zahtev za placanje uspesno obradjen, sredstva su rezervisana. Transaction: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
-        return transaction;
-    }
-
-
     public ResponseEntity<IssuerResponseDTO> issuerValidateAndReserve(Transaction transaction, BankAccount bankAccount, PccRequestDTO pccRequestDTO){
         BankAccountDTO bankAccountDTO = pccRequestDTO.getBankAccountDTO();
         logger.logInfo("INFO: Validacija podataka kartice. Issuer banka. Transcation: " + transaction.toString() + "; bank account data: " + bankAccountDTO.toString());
@@ -156,18 +124,18 @@ public class BankAccountService {
             // rezervisi sredstva
             bankAccount.setReserved(transaction.getAmount());
             bankAccount = bankAccountRepo.save(bankAccount);
-
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    logger.logInfo("INFO: Rezervacija sredstava. Transaction " + t.toString() + "; bank account data: ");
-                    logger.logInfo("INFO: Stanje racuna:" + ba.getBalance() + ". Transaction " + t.toString() + "; bank account data: ");
-                    logger.logInfo("INFO: Rezervisana sredstva: "+ ba.getReserved() + ". Transaction " + t.toString() + "; bank account data: ");
-                    ba.setBalance(ba.getBalance()-ba.getReserved());
-                    ba.setReserved(0);
-                    bankAccountRepo.save(ba);
-                    logger.logInfo("INFO: Stanje racuna nakon rezervacije: "+ ba.getBalance() + ". Transaction " + t.toString() + "; bank account data: ");
+                    BankAccount bankAccountTemp = bankAccountRepo.findOneById(ba.getId());
+                    logger.logInfo("INFO: Rezervacija sredstava. Transaction " + t.toString() + "; bank account data: " + bankAccountTemp.toString());
+                    logger.logInfo("INFO: Stanje racuna:" + bankAccountTemp.getBalance() + ". Transaction " + t.toString() + "; bank account data: "+ bankAccountTemp.toString());
+                    logger.logInfo("INFO: Rezervisana sredstva: "+ bankAccountTemp.getReserved() + ". Transaction " + t.toString() + "; bank account data: "+ bankAccountTemp.toString());
+                    bankAccountTemp.setBalance(bankAccountTemp.getBalance()-bankAccountTemp.getReserved());
+                    bankAccountTemp.setReserved(0);
+                    bankAccountTemp = bankAccountRepo.save(bankAccountTemp);
+                    logger.logInfo("INFO: Stanje racuna nakon rezervacije: "+ bankAccountTemp.getBalance() + ". Transaction " + t.toString() + "; bank account data: "+ bankAccountTemp.toString());
                     timer.cancel();
                 }
             }, 10000);
@@ -175,8 +143,10 @@ public class BankAccountService {
     }
 
     public void addFunds(BankAccount bankAccount, Transaction transaction){
+        logger.logInfo("INFO: Dodavanja sredstava na racun. Stanje na racunu: " + bankAccount.getBalance() + " BankAccount: " + bankAccount.toString() + "; Transaction: " + transaction.toString());
         bankAccount.setBalance(bankAccount.getBalance() + transaction.getAmount());
         bankAccount = bankAccountRepo.save(bankAccount);
+        logger.logInfo("INFO: Uspesno dodata sredstva. Stanje posle dodavanja: " + bankAccount.getBalance() + ". BankAccount: " + bankAccount.toString() + "; Transaction: " + transaction.toString());
     }
 
 
@@ -224,13 +194,9 @@ public class BankAccountService {
     }
 
     public BankAccountDTO parseDate(BankAccountDTO bankAccountDTO) throws ParseException {
-        System.out.println("********************************************** DATE FORMAT **********************************************");
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         String date = format.format(bankAccountDTO.getExpirationDate());
-        System.out.println("DATE: " + date);
         date = date.concat(" 00:00:00");
-        System.out.println("DATE AND TIME: " + date);
-        System.out.println("********************************************** DATE FORMAT **********************************************");
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date tempDate = simpleDateFormat.parse(date);

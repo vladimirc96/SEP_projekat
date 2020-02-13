@@ -113,4 +113,20 @@ public class ActiveOrderDTO {
     public void setPaymentMethodId(long paymentMethodId) {
         this.paymentMethodId = paymentMethodId;
     }
+
+    @Override
+    public String toString() {
+        return "ActiveOrderDTO{" +
+                "id=" + id +
+                ", ncOrderId=" + ncOrderId +
+                ", title='" + title + '\'' +
+                ", currency='" + currency + '\'' +
+                ", sellerId=" + sellerId +
+                ", amount=" + amount +
+                ", returnUrl='" + returnUrl + '\'' +
+                ", orderType=" + orderType +
+                ", orderStatus=" + orderStatus +
+                ", paymentMethodId=" + paymentMethodId +
+                '}';
+    }
 }

@@ -52,7 +52,6 @@ public class BankController {
         Transaction transaction = transactionService.findOneById(paymentStatusDTO.getId());
         transaction.setPaymentStatus(paymentStatusDTO.getPaymentStatus());
         transaction = transactionService.save(transaction);
-        System.out.println(transaction);
         return new ResponseEntity<>("Transakcija azurirana.", HttpStatus.OK);
     }
 
