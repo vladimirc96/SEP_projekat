@@ -51,4 +51,8 @@ export class SellersService {
             { responseType: "text" }
         );
     }
+
+    createNewPaymentMethod(dto) {
+        return this.http.post(this.ENDPOINT_URI + "/payment-methods/", dto);
+    }
 }

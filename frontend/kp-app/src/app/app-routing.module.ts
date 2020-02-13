@@ -30,7 +30,7 @@ import { PaymentMethodsComponent } from './payment-methods/payment-methods.compo
 import { NewPaymentMethodComponent } from './payment-methods/new-payment-method/new-payment-method.component';
 
 const appRoutes: Routes = [
-	{ path: '', redirectTo: '/centrala', pathMatch: 'full'},
+	{ path: '', redirectTo: '/home', pathMatch: 'full'},
     { path: 'home', component: SellersComponent},
 	{ path: 'paypal/:id', component: PaypalComponent},
 	{ path: 'paypal/success/payment', component: PaymentSuccessComponent},

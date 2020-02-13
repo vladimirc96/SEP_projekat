@@ -39,9 +39,9 @@ import { CancelPaymentComponent } from './paypal/cancel/cancel-payment/cancel-pa
 import { CancelPlanComponent } from './paypal/cancel/cancel-plan/cancel-plan.component';
 import { PlanListComponent } from './paypal/billingPlans/plan-list/plan-list.component';
 import { PmDirective } from './directives/pm.directive';
-import { IRegistrationComponent } from 'src/app/interfaces/i-registration.component';
 import { PaymentMethodsComponent } from './payment-methods/payment-methods.component';
 import { NewPaymentMethodComponent } from './payment-methods/new-payment-method/new-payment-method.component';
+import { NewTestRegistrationComponent } from './registrations/new-test-registration/new-test-registration.component';
 
 @NgModule({
   declarations: [
@@ -74,7 +74,8 @@ import { NewPaymentMethodComponent } from './payment-methods/new-payment-method/
     PlanListComponent,
     PmDirective,
     PaymentMethodsComponent,
-    NewPaymentMethodComponent
+    NewPaymentMethodComponent,
+    NewTestRegistrationComponent
   ],
   imports: [
     BrowserModule,
@@ -89,7 +90,8 @@ import { NewPaymentMethodComponent } from './payment-methods/new-payment-method/
   entryComponents: [
     BankRegistrationComponent,
     PaypalRegistrationComponent,
-    BitcoinRegistrationComponent
+    BitcoinRegistrationComponent,
+    NewTestRegistrationComponent
   ],
   providers: [SellersService, PaypalService, BankService],
   bootstrap: [AppComponent]
