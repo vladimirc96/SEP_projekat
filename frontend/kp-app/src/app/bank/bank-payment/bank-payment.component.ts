@@ -75,7 +75,7 @@ export class BankPaymentComponent implements OnInit {
           text: 'Nije moguće formirati zahtev za plaćanje.'
         });
         this.spinner.hide();
-        this.router.navigate(['']);
+        this.goHome();
       }
     )
 
