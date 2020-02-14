@@ -81,4 +81,11 @@ public class PaypalController {
     public String cancelAgreement(@PathVariable("agrID") long agrID) throws PayPalRESTException {
         return service.cancelAgreement(agrID);
     }
+
+    @RequestMapping(value = "/AgreementExistsOnPP/{agrID}", method = RequestMethod.GET)
+    public String AgreementExistsOnPP(@PathVariable("agrID") long agrID) throws PayPalRESTException {
+        return service.agreementExistsOnPP(agrID);
+    }
+
+
 }

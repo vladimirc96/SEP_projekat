@@ -115,6 +115,7 @@ public class PaypalService {
                                     FinalizeOrderDTO foDTO = new FinalizeOrderDTO();
                                     foDTO.setOrderStatus(convertStatus(t.getStatus()));
                                     foDTO.setActiveOrderId(t.getActiveOrderId());
+                                    foDTO.setAgreementID((long) 0);
                                     orderClient.finalizeOrder(foDTO);
                                     timer.cancel();
                                 }
@@ -396,7 +397,7 @@ public class PaypalService {
         paymentDefinition.setCycles(dto.getCycles());
         paymentDefinition.setAmount(new Currency(dto.getCurrency(), dto.getAmount()));
 
-//        ChargeModels chargeModels = new ChargeModels(); //ZA SHIPPING ITD
+        //  ChargeModels chargeModels = new ChargeModels(); //ZA SHIPPING ITD
 
         MerchantPreferences merchantPreferences = new MerchantPreferences();
         merchantPreferences.setReturnUrl("https://localhost:4200/paypal/execute/plan");
@@ -533,6 +534,7 @@ public class PaypalService {
                 dto.setFrequency(a.getBillingPlan().getFrequency());
                 dto.setFreqInterval(a.getBillingPlan().getFreqInterval());
                 dto.setName(a.getBillingPlan().getName());
+                dto.setSellerId(a.getSellerId());
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
                 final String NEW_FORMAT = "yyyy-MM-dd";
                 String FD1[] = a.getFinalPaymentDate().split("T");
@@ -554,6 +556,13 @@ public class PaypalService {
                     finalni = formatter.format(newDate);
                 }
                 dto.setEndDate(finalni);
+                //TODO PROMENI OVO DOLE ZAKOMENTARISANO
+//                String td = formatter.format(new Date());
+//                Date today = formatter.parse(td);
+//                Date start = formatter.parse(SD);
+//                if(start.compareTo(today) < 0) {
+//                    lista.add(dto);
+//                }
                 lista.add(dto);
             }
         }
@@ -580,6 +589,19 @@ public class PaypalService {
         return "error";
     }
 
+    public String agreementExistsOnPP(long agrID) throws PayPalRESTException {
+        PPAgreement a = agreementService.findOneById(agrID);
+        APIContext apiContext = getContextAndMerchant(a.getSellerId());
+        Agreement agrmnt = Agreement.get(apiContext, a.getActiveAgreementId());
+        if(agrmnt.getState().equals("Cancelled") || agrmnt.getState().equals("Expired")) {
+            if(!a.getStatus().equals("Cancelled") && !a.getStatus().equals("Expired")) {
+                a.setStatus(agrmnt.getState());
+                a = agreementService.save(a);
+            }
+            return "cancelled";
+        }
+        return "exists";
+    }
 
 
     private Enums.OrderStatus convertStatus(String status) {

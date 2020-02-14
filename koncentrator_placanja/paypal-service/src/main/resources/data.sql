@@ -7,3 +7,4 @@ insert into billing_plan values ('1', '27', '15', '2020-01-30T12:54:30.406Z', 'U
 ('2', '25', '15', '2020-02-12T16:52:44.051Z', 'USD', '3', 'Plan pretplate za casopis Nauka generalno iz NC', '1', 'WEEK', 'Nauka generalno PLAN1', 'P-9K508981YN4509736HJIS7EY', '2', 'ACTIVE', '2020-02-12T16:52:44.051Z'),
 ('3', '30', '30', '2020-02-13T17:52:39.482Z', 'USD', '5', 'plan za 1. casopis(Naucni kutak)', '1', 'DAY', 'Nauka generalno PLAN2', 'P-5KY42532AX176332WH6XGQOQ', '2', 'ACTIVE', '2020-02-13T17:52:39.482Z');
 
+insert into ppagreement values ('1', 'I-YMGLBWNP219E', '2', '2020-02-18T10:00:00Z', 'johnfunds@personal.example.com', 'PKHBANKLKEEXN', '2', '2020-02-14T08:00:00Z', 'approved', 'EC-822917128K661210A', 'vule', '3');
