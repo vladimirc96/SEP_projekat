@@ -83,5 +83,4 @@ public class SellerController {
     public @ResponseBody ResponseEntity getPlansLink(@PathVariable("id") long id) {
         return new ResponseEntity("https://localhost:4200/plans/paypal/show/" + id, HttpStatus.OK);
     }
-
 }

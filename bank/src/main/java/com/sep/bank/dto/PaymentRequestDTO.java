@@ -11,7 +11,7 @@ public class PaymentRequestDTO {
     private Date merchantTimestamp; // timestamp transakcije
     private String returnUrl;
 
-    public PaymentRequestDTO(String merchantId, String merchantPassword, double amount, Long merchantOrderId, Date merchantTimestamp, String returnUrl) {
+    public PaymentRequestDTO(String merchantId, String merchantPassword, double amount, Long merchantOrderId, Date merchantTimestamp, String returnUrl, String baseUrl) {
         this.merchantId = merchantId;
         this.merchantPassword = merchantPassword;
         this.amount = amount;
@@ -67,4 +67,5 @@ public class PaymentRequestDTO {
     public void setReturnUrl(String returnUrl) {
         this.returnUrl = returnUrl;
     }
+
 }

@@ -38,6 +38,10 @@ public class TransactionService {
 
     private final long paymentMethodId = 1;
 
+    public Transaction findOneByPaymentId(Long id){
+        return transactionRepo.findOneByPaymentId(id);
+    }
+
     public Transaction findOneById(Long id){
         return transactionRepo.findOneById(id);
     }

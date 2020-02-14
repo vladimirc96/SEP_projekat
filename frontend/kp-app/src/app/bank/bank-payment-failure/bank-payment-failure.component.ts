@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { BankService } from 'src/app/services/bank.service';
+import { ActivatedRoute, Params } from '@angular/router';
 
 @Component({
   selector: 'app-bank-payment-failure',
@@ -7,13 +9,34 @@ import { Component, OnInit } from '@angular/core';
 })
 export class BankPaymentFailureComponent implements OnInit {
 
-  constructor() { }
+  baseUrl: string;
+
+  constructor(private bankService: BankService, private route: ActivatedRoute) {
+
+    this.route.parent.params.subscribe((params: Params) => {
+      const param = +params["id"];
+      console.log(param);
+
+			if (!isNaN(param)) {
+        this.bankService.getBaseUrl(param).subscribe(
+          (response) => {
+            this.baseUrl = response;
+            console.log(this.baseUrl);
+          }
+        ),
+        (error) => { console.log(error.message) }
+      }
+      
+		});
+
+
+   }
 
   ngOnInit() {
   }
 
   goHome() {
-    window.location.href = "http://localhost:4201";
+    window.location.href = this.baseUrl;
   }
 
 }

@@ -26,7 +26,8 @@ export class BankService {
         return this.http.put("https://localhost:8450/bank/confirm-payment-issuer/" + transactionId, bankAccountDTO);
     }
 
-    
-
+    getBaseUrl(paymentId){
+        return this.http.get('/api/bank-service/bank/get-base-url/'.concat(paymentId), {responseType:'text'});
+    }
 
 }
