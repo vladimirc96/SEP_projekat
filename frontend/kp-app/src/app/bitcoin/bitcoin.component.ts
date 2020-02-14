@@ -4,7 +4,7 @@ import { BitcoinService } from '../services/bitcoin.service';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { SellersService } from '../services/sellers.service';
 import { ActiveOrderService } from '../services/active-order.service';
-import Swal from 'sweetalert2';
+import Swal from 'sweetalert2'
 
 @Component({
   selector: "app-bitcoin",
@@ -114,7 +114,11 @@ export class BitcoinComponent implements OnInit {
 	}
 
 	orderProcessedByAnotherServiceError() {
-		alert('Order is beeing processed by another service.');
+		Swal.fire({
+			icon: "error",
+			title: 'Greška',
+			text: 'Porudžbina se obrađuje od strane drugog servisa.'
+		  });
 		this.goHome();
 	}
 

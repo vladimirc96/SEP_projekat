@@ -121,6 +121,7 @@ public class TransactionService implements ITransactionService {
                             FinalizeOrderDTO foDTO = new FinalizeOrderDTO();
                             foDTO.setOrderStatus(convertStatus(tDTO.getStatus()));
                             foDTO.setActiveOrderId(t.getActiveOrderId());
+                            foDTO.setAgreementId((long) 0);
                             orderClient.finalizeOrder(foDTO);
                             timer.cancel();
 
@@ -132,6 +133,7 @@ public class TransactionService implements ITransactionService {
                         FinalizeOrderDTO foDTO = new FinalizeOrderDTO();
                         foDTO.setOrderStatus(Enums.OrderStatus.FAILED);
                         foDTO.setActiveOrderId(transaction.getActiveOrderId());
+                        foDTO.setAgreementId((long) 0);
                         orderClient.finalizeOrder(foDTO);
                         timer.cancel();
                     }
