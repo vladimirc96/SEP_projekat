@@ -96,6 +96,7 @@ public class TransactionService {
                             FinalizeOrderDTO finalizeOrderDTO = new FinalizeOrderDTO();
                             finalizeOrderDTO.setActiveOrderId(transactionTemp.getActiveOrderId());
                             finalizeOrderDTO.setOrderStatus(convertStatus(transactionTemp.getPaymentStatus()));
+                            finalizeOrderDTO.setAgreementId((long) 0);
                             orderClient.finalizeOrder(finalizeOrderDTO);
                             timer.cancel();
                         }
@@ -105,6 +106,7 @@ public class TransactionService {
                             FinalizeOrderDTO finalizeOrderDTO = new FinalizeOrderDTO();
                             finalizeOrderDTO.setActiveOrderId(transactionTemp.getActiveOrderId());
                             finalizeOrderDTO.setOrderStatus(convertStatus(transactionTemp.getPaymentStatus()));
+                            finalizeOrderDTO.setAgreementId((long) 0);
                             orderClient.finalizeOrder(finalizeOrderDTO);
                             timer.cancel();
                         }
@@ -118,6 +120,7 @@ public class TransactionService {
                             FinalizeOrderDTO finalizeOrderDTO = new FinalizeOrderDTO();
                             finalizeOrderDTO.setActiveOrderId(transactionTemp.getActiveOrderId());
                             finalizeOrderDTO.setOrderStatus(convertStatus(transactionTemp.getPaymentStatus()));
+                            finalizeOrderDTO.setAgreementId((long) 0);
                             orderClient.finalizeOrder(finalizeOrderDTO);
                             timer.cancel();
                         }

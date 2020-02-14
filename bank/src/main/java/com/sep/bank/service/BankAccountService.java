@@ -176,8 +176,13 @@ public class BankAccountService {
     }
 
 
-    public boolean isExpired(Date expirationDate){
+    public boolean isExpired(Date expirationDate) throws ParseException {
         Date today = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        String expDate = formatter.format(expirationDate);
+        String todayDate = formatter.format(today);
+        today = formatter.parse(todayDate);
+        expirationDate = formatter.parse(expDate);
         if(today.after(expirationDate)){
             return true;
         }else{

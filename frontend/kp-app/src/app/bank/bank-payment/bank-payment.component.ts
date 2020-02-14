@@ -74,7 +74,7 @@ export class BankPaymentComponent implements OnInit {
     Swal.fire({
       icon: "error",
       title: 'Greška',
-      text: 'Porudžbinu se obrađuje od strane drugog servisa.'
+      text: 'Porudžbina se obrađuje od strane drugog servisa.'
     });
 		this.goHome();
 	}
