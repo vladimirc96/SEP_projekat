@@ -28,12 +28,21 @@
                     />
                 </div>
                 <div class="form-group mt-4">
-                    <label for="email">Lozinka *</label>
+                    <label for="password">Lozinka *</label>
                     <input
                         type="password"
                         class="form-control"
                         placeholder="Unesite lozinku koju ćete koristi pri registraciji servisa plaćanja"
                         formControlName="password"
+                    />
+                </div>
+                <div class="form-group mt-4">
+                    <label for="baseWebsiteUrl">Website link *</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Unesite link početne stranice vašeg website-a"
+                        formControlName="baseWebsiteUrl"
                     />
                 </div>
                 <div class="form-group mt-4">
@@ -107,7 +116,7 @@
                 </div>
 
                 <div class="mt-5">
-                    <a class="btn btn-dark" href="http://localhost:4201/homepage/editor">Povratak na NC</a>
+                    <a class="btn btn-dark" (click)="onHome()">Povratak na NC</a>
                 </div>
             </div>
         </div>

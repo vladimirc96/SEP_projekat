@@ -31,8 +31,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `seller` WRITE;
 /*!40000 ALTER TABLE `seller` DISABLE KEYS */;
-INSERT INTO `seller` (`id`, `email`, `name`, `organization`, `password`, `registration_status_callback_url`) VALUES (1,'jove@jove.com','Vukasin Jovic','org','$2a$10$TVu9nfgu.9gXTvpVTu.SXeT6PKMVLXlcjzGEqylYWW6imtEubxf8C','https://localhost:8600/kp/registration/status'),
-(2,'flylivedrve@gmail.com','Vukasin Jovic','vule','$2a$10$89qh8mtfZ8NkJ2bpwELvKOYi8c3m1/yOUxQaHrnql.UbaSTDLB0/C','https://localhost:8601/kp/registration/status');
+INSERT INTO `seller` (`id`, `email`, `name`, `organization`, `password`, `registration_status_callback_url`, `base_website_url`) VALUES (1,'jove@jove.com','Vukasin Jovic','org','$2a$10$TVu9nfgu.9gXTvpVTu.SXeT6PKMVLXlcjzGEqylYWW6imtEubxf8C','https://localhost:8600/kp/registration/status', 'http://localhost:4203'),
+(2,'flylivedrve@gmail.com','Vukasin Jovic','vule','$2a$10$89qh8mtfZ8NkJ2bpwELvKOYi8c3m1/yOUxQaHrnql.UbaSTDLB0/C','https://localhost:8601/kp/registration/status', 'http://localhost:4202');
 
 /*!40000 ALTER TABLE `seller` ENABLE KEYS */;
 UNLOCK TABLES;

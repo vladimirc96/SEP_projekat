@@ -6,6 +6,7 @@ import { CentralaService } from 'src/app/services/centrala.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ActiveOrderService } from 'src/app/services/active-order.service';
 import Swal from 'sweetalert2'
+import { SellersService } from 'src/app/services/sellers.service';
 
 @Component({
   selector: 'app-bank-payment',
@@ -17,8 +18,9 @@ export class BankPaymentComponent implements OnInit {
   rad: any = null;
   id: any;
   activeOrder: any;
+  websiteURL: string;
 
-  constructor(private activeOrderSerivce: ActiveOrderService, private route: ActivatedRoute, private router: Router, private bankService: BankService, private spinner: NgxSpinnerService) { 
+  constructor(private activeOrderSerivce: ActiveOrderService, private sellersService: SellersService, private route: ActivatedRoute, private router: Router, private bankService: BankService, private spinner: NgxSpinnerService) { 
 
     this.route.params.subscribe((params: Params) => {
 			const param = +params["id"];
@@ -31,6 +33,17 @@ export class BankPaymentComponent implements OnInit {
               this.orderProcessedByAnotherServiceError();
             }
             this.activeOrder = response;
+            this.sellersService.getWebsiteURL(this.activeOrder.sellerId).subscribe(
+              res => {
+                this.websiteURL = res;
+              }, err => {
+                Swal.fire({
+                  icon: "error",
+                  title: 'Greška',
+                  text: 'Nije moguće dobaviti website link.'
+                });
+              }
+            );
           },
           (error) => {
             alert(error.message);
@@ -80,7 +93,7 @@ export class BankPaymentComponent implements OnInit {
 	}
 
 	goHome() {
-		window.location.href = "http://localhost:4201/";
+		window.location.href = this.websiteURL;
 	}
 
 }

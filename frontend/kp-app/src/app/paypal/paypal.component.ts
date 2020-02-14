@@ -3,6 +3,7 @@ import { PaypalService } from '../services/paypal.service';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { ActiveOrderService } from '../services/active-order.service';
 import Swal from 'sweetalert2';
+import { SellersService } from '../services/sellers.service';
 
 @Component({
   selector: 'app-paypal',
@@ -18,8 +19,9 @@ export class PaypalComponent implements OnInit {
   opis: boolean = false;
   orderId: any;
   activeOrder: any = null;
+  websiteURL: string;
 
-  constructor(private palService: PaypalService, private route: ActivatedRoute, private router: Router, private aoService: ActiveOrderService) {
+  constructor(private palService: PaypalService, private sellersService: SellersService, private route: ActivatedRoute, private router: Router, private aoService: ActiveOrderService) {
     this.route.params.subscribe(
       (params: Params) => {
         this.orderId = params['id'];
@@ -34,6 +36,17 @@ export class PaypalComponent implements OnInit {
 					this.orderProcessedByAnotherServiceError();
 				}
         this.activeOrder = response;
+        this.sellersService.getWebsiteURL(this.activeOrder.sellerId).subscribe(
+					res => {
+					  this.websiteURL = res;
+					}, err => {
+					  Swal.fire({
+						icon: "error",
+						title: 'Greška',
+						text: 'Nije moguće dobaviti website link.'
+					  });
+					}
+				  );
       },
       (error) => {
         Swal.fire({
@@ -54,7 +67,7 @@ export class PaypalComponent implements OnInit {
 	}
 
 	goHome() {
-		window.location.href = "http://localhost:4201/";
+		window.location.href = this.websiteURL;
 	}
 
   onProcceed() {

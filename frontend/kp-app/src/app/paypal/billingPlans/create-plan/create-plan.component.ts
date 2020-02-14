@@ -17,6 +17,7 @@ export class CreatePlanComponent implements OnInit {
   rad: any = null;
   id: any;
   status: boolean = false;
+  websiteURL: string;
 
   myForm: FormGroup;
   name: FormControl;
@@ -47,9 +48,23 @@ export class CreatePlanComponent implements OnInit {
         this.rad = data;
         this.createFormControls();
         this.createForm();
-        console.log(this.rad);
+        this.sellersService.getWebsiteURL(this.rad.sellerId).subscribe(
+					res => {
+					  this.websiteURL = res;
+					}, err => {
+					  Swal.fire({
+						icon: "error",
+						title: 'Greška',
+						text: 'Nije moguće dobaviti website link.'
+					  });
+					}
+				);
       }, (error) => {
-          alert("error getting active plan");
+        Swal.fire({
+          icon: "error",
+          title: 'Greška',
+          text: 'Nije moguće dobaviti aktivan plan.'
+          });
       }
     );
     
@@ -105,7 +120,7 @@ export class CreatePlanComponent implements OnInit {
                   title: 'Uspešno',
                   text: 'Novi plan je kreiran.'
                 });
-                window.location.href = "http://localhost:4201/";
+                window.location.href = this.websiteURL;
               }, (error) => {
                 Swal.fire({
                   icon: "error",

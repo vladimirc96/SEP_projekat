@@ -12,7 +12,7 @@ import Swal from 'sweetalert2';
 })
 export class SubscriptionPlanComponent implements OnInit {
     id: any;
-    NC: string = "http://localhost:4201";
+    websiteURL: string;
     ppizbor: any;
     PayPalPlans: any;
     mesecnaCena: any;
@@ -26,7 +26,8 @@ export class SubscriptionPlanComponent implements OnInit {
         private sellerService: SellersService,
         private paypalService: PaypalService,
         private route: ActivatedRoute,
-        private router: Router
+        private router: Router,
+        private sellersService: SellersService
     ) {
         this.route.params.subscribe((params: Params) => {
             const param = +params["id"];
@@ -35,7 +36,11 @@ export class SubscriptionPlanComponent implements OnInit {
                 this.id = param;
                 this.getActiveOrder();
             } else {
-                window.location.href = this.NC;
+                Swal.fire({
+                    icon: "error",
+                    title: 'Greška',
+                    text: 'Nije moguće dobaviti aktivnu porudžbinu.'
+                });
             }
         });
     }
@@ -48,6 +53,17 @@ export class SubscriptionPlanComponent implements OnInit {
                 this.activeOrder = success;
                 this.mesecnaCena = this.activeOrder.amount + (this.activeOrder.amount)/2;
                 this.getPayPalSubscriptions(this.activeOrder.sellerId);
+                this.sellersService.getWebsiteURL(this.activeOrder.sellerId).subscribe(
+                    res => {
+                      this.websiteURL = res;
+                    }, err => {
+                      Swal.fire({
+                      icon: "error",
+                      title: 'Greška',
+                      text: 'Nije moguće dobaviti website link.'
+                      });
+                    }
+                  );
             },
             error => {
                 Swal.fire({

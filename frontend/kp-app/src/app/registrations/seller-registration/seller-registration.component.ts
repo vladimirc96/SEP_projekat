@@ -32,6 +32,7 @@ export class SellerRegistrationComponent implements OnInit {
         password: ["", Validators.required],
         name: [""],
         organization: [""],
+        baseWebsiteUrl: [""],
         paymentMethods: this.fb.array
     });
 
@@ -107,7 +108,8 @@ export class SellerRegistrationComponent implements OnInit {
             email: this.registrationForm.get("email").value,
             password: this.registrationForm.get("password").value,
             organization: this.registrationForm.get("organization").value,
-            name: this.registrationForm.get("name").value
+            name: this.registrationForm.get("name").value,
+            baseWebsiteUrl: this.registrationForm.get("baseWebsiteUrl").value
             // paymentMethods: this.getSelectedItems(this.registrationForm.get('paymentMethods').value)
         };
 
@@ -209,7 +211,11 @@ export class SellerRegistrationComponent implements OnInit {
 		);
 		
 		return retVal;
-	}
+    }
+    
+    onHome() {
+        window.location.href = this.registerResponse.baseWebsiteUrl;
+    }
 
 	
 	@ViewChild(PmDirective, {static: true}) appPm: PmDirective;

@@ -6,6 +6,7 @@ import { FormGroup, FormControl, Validators, NgForm } from '@angular/forms';
 import { isNgTemplate } from '@angular/compiler';
 import { ActiveOrderService } from 'src/app/services/active-order.service';
 import Swal from 'sweetalert2';
+import { SellersService } from 'src/app/services/sellers.service';
 
 @Component({
   selector: 'app-shipping-adress',
@@ -19,7 +20,7 @@ export class ShippingAdressComponent implements OnInit {
   ret: any;
   activeId: any;
   planId: any;
-  NC: string = "http://localhost:4201";
+  websiteURL: string;
   activeOrder: any;
   
   myForm: FormGroup;
@@ -29,7 +30,7 @@ export class ShippingAdressComponent implements OnInit {
   postalCode: FormControl;
   countryCode: FormControl;
 
-  constructor(private palService: PaypalService, private activeOrderService: ActiveOrderService, private router: Router, private route: ActivatedRoute) {
+  constructor(private palService: PaypalService, private sellersService: SellersService, private activeOrderService: ActiveOrderService, private router: Router, private route: ActivatedRoute) {
     this.route.params.subscribe((params: Params) => {
       const plan = +params["pl"];
       const activeId = +params["id"]
@@ -39,7 +40,11 @@ export class ShippingAdressComponent implements OnInit {
         this.planId = plan;
         this.getActiveOrder(activeId);
 			} else {
-				window.location.href = this.NC;
+				Swal.fire({
+          icon: "error",
+          title: 'Greška',
+          text: 'Nije moguće dobaviti aktivnu porudžbinu.'
+          });
 			}
 		});
   }
@@ -53,6 +58,17 @@ export class ShippingAdressComponent implements OnInit {
 		this.activeOrderService.getActiveOrder(id).subscribe(
 			(success) => {
         this.activeOrder = success;
+        this.sellersService.getWebsiteURL(this.rad.sellerId).subscribe(
+          res => {
+            this.websiteURL = res;
+          }, err => {
+            Swal.fire({
+            icon: "error",
+            title: 'Greška',
+            text: 'Nije moguće dobaviti website link.'
+            });
+          }
+        );
 			},
       error => {
         Swal.fire({

@@ -51,4 +51,10 @@ export class SellersService {
             { responseType: "text" }
         );
     }
+
+    getWebsiteURL(sellerID) {
+        return this.http.get(
+            this.ENDPOINT_URI.concat("/sellers/getWebsiteURL/").concat(sellerID), { responseType: "text" }
+        );
+    }
 }

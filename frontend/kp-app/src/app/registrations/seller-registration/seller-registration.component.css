@@ -2,3 +2,12 @@
     width: 200px;
     text-align: left;
 }
+
+.btn-dark {
+    color: white;
+}
+
+.btn-dark:hover {
+    background-color: black;
+    color: white;
+}

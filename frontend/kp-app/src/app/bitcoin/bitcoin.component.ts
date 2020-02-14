@@ -4,6 +4,7 @@ import { BitcoinService } from '../services/bitcoin.service';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { SellersService } from '../services/sellers.service';
 import { ActiveOrderService } from '../services/active-order.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: "app-bitcoin",
@@ -18,7 +19,7 @@ export class BitcoinComponent implements OnInit {
 	btcPrice = null;
 	desc: string = "";
 	math = Math;
-
+	websiteURL: string;
 	transaction: any = null;
 
 
@@ -27,7 +28,7 @@ export class BitcoinComponent implements OnInit {
 	redirectMessage: boolean = false;
 	errorMessage = null;
 
-	constructor(private aoService: ActiveOrderService, private bitcoinService: BitcoinService, private router: Router, private route: ActivatedRoute) {
+	constructor(private aoService: ActiveOrderService, private sellersService: SellersService, private bitcoinService: BitcoinService, private router: Router, private route: ActivatedRoute) {
 		
 		this.route.params.subscribe((params: Params) => {
 			
@@ -56,6 +57,17 @@ export class BitcoinComponent implements OnInit {
 				}
 				this.activeOrder = res;
 				this.convertPrice();
+				this.sellersService.getWebsiteURL(this.activeOrder.sellerId).subscribe(
+					res => {
+					  this.websiteURL = res;
+					}, err => {
+					  Swal.fire({
+						icon: "error",
+						title: 'Greška',
+						text: 'Nije moguće dobaviti website link.'
+					  });
+					}
+				  );
 			}, err => console.log(err.error)
 		)
 	}
@@ -107,7 +119,7 @@ export class BitcoinComponent implements OnInit {
 	}
 
 	goHome() {
-		window.location.href = "http://localhost:4201/";
+		window.location.href = this.websiteURL;
 	}
 	
 
