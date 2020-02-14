@@ -8,14 +8,16 @@ public class FinalizeOrderDTO {
     private long activeOrderId;
     private Enums.OrderStatus orderStatus;
     private long ncOrderId;
+    private long agreementId;
 
     public FinalizeOrderDTO() {
     }
 
-    public FinalizeOrderDTO(long activeOrderId, Enums.OrderStatus orderStatus, long ncOrderId) {
+    public FinalizeOrderDTO(long activeOrderId, Enums.OrderStatus orderStatus, long ncOrderId, long agreementId) {
         this.activeOrderId = activeOrderId;
         this.orderStatus = orderStatus;
         this.ncOrderId = ncOrderId;
+        this.agreementId = agreementId;
     }
 
     public long getActiveOrderId() {
@@ -40,5 +42,13 @@ public class FinalizeOrderDTO {
 
     public void setNcOrderId(long ncOrderId) {
         this.ncOrderId = ncOrderId;
+    }
+
+    public long getAgreementId() {
+        return agreementId;
+    }
+
+    public void setAgreementId(long agreementId) {
+        this.agreementId = agreementId;
     }
 }

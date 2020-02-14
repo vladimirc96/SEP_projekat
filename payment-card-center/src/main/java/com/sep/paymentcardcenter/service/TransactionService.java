@@ -2,6 +2,7 @@ package com.sep.paymentcardcenter.service;
 
 import com.sep.paymentcardcenter.dto.IssuerResponseDTO;
 import com.sep.paymentcardcenter.dto.PccRequestDTO;
+import com.sep.paymentcardcenter.model.PaymentStatus;
 import com.sep.paymentcardcenter.model.Transaction;
 import com.sep.paymentcardcenter.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +51,10 @@ public class TransactionService {
         transaction.setPaymentStatus(issuerResponseDTO.getPaymentStatus());
         transaction = transactionRepo.save(transaction);
         return transaction;
+    }
+
+    public List<Transaction> findAllByPaymentStatus(PaymentStatus paymentStatus){
+        return transactionRepo.findAllByPaymentStatus(paymentStatus);
     }
 
 }

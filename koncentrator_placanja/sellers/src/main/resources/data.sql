@@ -31,7 +31,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `seller` WRITE;
 /*!40000 ALTER TABLE `seller` DISABLE KEYS */;
-INSERT INTO `seller` (`id`, `email`, `name`, `organization`, `password`, `registration_status_callback_url`) VALUES (1,'jove@jove.com','Vukasin Jovic','org','$2a$10$TVu9nfgu.9gXTvpVTu.SXeT6PKMVLXlcjzGEqylYWW6imtEubxf8C','https://localhost:8600/kp/registration/status');
+INSERT INTO `seller` (`id`, `email`, `name`, `organization`, `password`, `registration_status_callback_url`) VALUES (1,'jove@jove.com','Vukasin Jovic','org','$2a$10$TVu9nfgu.9gXTvpVTu.SXeT6PKMVLXlcjzGEqylYWW6imtEubxf8C','https://localhost:8600/kp/registration/status'), (2, "naucni.kutak@mail.com", "Milica Makaric", "Naucni kutak", "$2a$10$aYTn742eySAc3rm70F2JzeVAW.u9CRI65MR7t9q86qssZSJG9Vidq", "https://localhost:8600/kp/registration/status");
 /*!40000 ALTER TABLE `seller` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -41,7 +41,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `seller_payment_method` WRITE;
 /*!40000 ALTER TABLE `seller_payment_method` DISABLE KEYS */;
-INSERT INTO `seller_payment_method` (`id`, `registration_success`, `payment_method_id`, `seller_id`) VALUES (1,0,1,1),(2,1,2,1),(3,1,3,1);
+INSERT INTO `seller_payment_method` (`id`, `registration_success`, `payment_method_id`, `seller_id`) VALUES (1,0,1,1),(2,1,2,1),(3,1,3,1), (4, 1, 1, 2), (5, 0, 2, 2), (6, 0, 3, 2);
 /*!40000 ALTER TABLE `seller_payment_method` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
