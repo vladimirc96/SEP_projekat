@@ -155,18 +155,31 @@ public class PaypalService {
         return RETURL;
     }
 
-    public String cancelPayment(String token) {
+    public TextLinkDTO cancelPayment(String token) {
         PPTransaction tr = transacRepo.findOneByPaymentToken(token);
         tr.setStatus("canceled");
         transacRepo.save(tr);
-        return "done";
+
+        long sellerID = tr.getClient().getId();
+        ResponseEntity response = restTemplate.getForEntity("https://localhost:8500/sellers/sellers/getWebsiteURL/" + sellerID,
+                String.class);
+
+        String link = (String) response.getBody();
+        TextLinkDTO ret = new TextLinkDTO("done", link);
+        return ret;
     }
 
-    public String cancelSubscription(String token) {
+    public TextLinkDTO cancelSubscription(String token) {
         PPAgreement ag = agreementService.findOneByTokenn(token);
         ag.setStatus("canceled");
         agreementService.save(ag);
-        return "done";
+
+        ResponseEntity response = restTemplate.getForEntity("https://localhost:8500/sellers/sellers/getWebsiteURL/" + ag.getSellerId(),
+                String.class);
+
+        String link = (String) response.getBody();
+        TextLinkDTO ret = new TextLinkDTO("done", link);
+        return ret;
     }
 
     public String cancelBillingPlan(long planID, long sellerId) throws PayPalRESTException {
@@ -206,7 +219,7 @@ public class PaypalService {
             System.out.println(payment.toJSON());
             if (payment.getState().equals("approved")) {
                 logger.logInfo("PP_CONFIRM_SUCCESS");
-                return "https://localhost:4200/paypal/success/payment";
+                return "https://localhost:4200/paypal/success/payment/" + tran.getClient().getId();
             }
         } catch (PayPalRESTException e) {
             logger.logError("PP_CONFIRM_ERR: " + e.getMessage());
@@ -215,12 +228,21 @@ public class PaypalService {
         return RETURL;
     }
 
-    public String checkStatus(String id) {
+    public TextLinkDTO checkStatus(String id) {
         PPTransaction t = transacRepo.findOneByOrderId(id);
+        TextLinkDTO ret = new TextLinkDTO();
+
+        ResponseEntity response = restTemplate.getForEntity("https://localhost:8500/sellers/sellers/getWebsiteURL/" + t.getClient().getId(),
+                String.class);
+
+        String link = (String) response.getBody();
+        ret.setWebsiteLink(link);
         if(t.getStatus().equals("suspended")) {
-            return "invalid";
+            ret.setText("invalid");
+            return ret;
         }
-        return "valid";
+        ret.setText("valid");
+        return ret;
     }
 
     public String plan(PlanDTO dto) {
@@ -323,9 +345,10 @@ public class PaypalService {
         return RETURL;
     }
 
-    public String executePlan(String token) {
+    public TextLinkDTO executePlan(String token) {
         Agreement agreement =  new Agreement();
         agreement.setToken(token);
+        TextLinkDTO retVal = new TextLinkDTO();
         PPAgreement agr = agreementService.findOneByTokenn(token);
         try {
             logger.logInfo("PP_EXEPLAN");
@@ -339,12 +362,21 @@ public class PaypalService {
             agr.setStartDate(activeAgreement.getStartDate());
             agr.setFinalPaymentDate(activeAgreement.getAgreementDetails().getFinalPaymentDate());
             agreementService.save(agr);
-            return "success";
+
+            ResponseEntity response = restTemplate.getForEntity("https://localhost:8500/sellers/sellers/getWebsiteURL/" + agr.getSellerId(),
+                    String.class);
+
+            String link = (String) response.getBody();
+
+            retVal.setText("success");
+            retVal.setWebsiteLink(link);
+            return retVal;
         } catch (PayPalRESTException e) {
             logger.logError("PP_EXEPLAN_ERR: " + e.getMessage());
             System.out.println(e.getMessage());
         }
-        return "error";
+        retVal.setText("error");
+        return retVal;
     }
 
     private APIContext getContextAndMerchant(Long id) {

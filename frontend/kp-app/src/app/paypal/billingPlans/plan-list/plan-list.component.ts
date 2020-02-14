@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { PaypalService } from 'src/app/services/paypal.service';
 import Swal from 'sweetalert2';
+import { SellersService } from 'src/app/services/sellers.service';
 
 @Component({
   selector: 'app-plan-list',
@@ -9,30 +10,41 @@ import Swal from 'sweetalert2';
   styleUrls: ['./plan-list.component.css']
 })
 export class PlanListComponent implements OnInit {
-  magazineId: any;
+  sellerId: any;
   billingPlans: any = null;
   pribavio: boolean = false;
   imaPlanova: boolean = false;
 
-  lclhst: string = "http://localhost:4204";
+  websiteURL: string;
 
-  constructor(private paypalService: PaypalService, private route: ActivatedRoute) {
+  constructor(private paypalService: PaypalService, private sellersService: SellersService, private route: ActivatedRoute) {
     this.route.params.subscribe(
       (params: Params) => {
-        this.magazineId = params['id'];
+        this.sellerId = params['id'];
       }
     );
     
   }
 
   ngOnInit() {
-    this.paypalService.getAllPlans(this.magazineId).subscribe(
+    this.paypalService.getAllPlans(this.sellerId).subscribe(
       (response) => {
         this.pribavio = true;
         this.billingPlans = response;
         if(this.billingPlans.length != 0) {
           this.imaPlanova = true;
         }
+        this.sellersService.getWebsiteURL(this.sellerId).subscribe(
+          res => {
+            this.websiteURL = res;
+          }, err => {
+            Swal.fire({
+              icon: "error",
+              title: 'Greška',
+              text: 'Nije moguće dobaviti website link.'
+            });
+          }
+        );
       },
       (error) => {
         Swal.fire({
@@ -45,7 +57,7 @@ export class PlanListComponent implements OnInit {
   }
 
   goHome() {
-    window.location.href = this.lclhst;
+    window.location.href = this.websiteURL;
   }
 
   onCancelPlan(id, seller) {

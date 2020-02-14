@@ -12,6 +12,7 @@ export class CancelPaymentComponent implements OnInit {
 
   ref: any;
   ret: any;
+  websiteURL: string;
 
   constructor(private router: Router, private palService: PaypalService) {
     this.ref = this.router.url;
@@ -27,6 +28,7 @@ export class CancelPaymentComponent implements OnInit {
     this.palService.cancelPayment(token).subscribe(
       (data) => {
         this.ret = data;
+        this.websiteURL = this.ret.websiteLink;
       }, (error) => {
         Swal.fire({
           icon: "error",
@@ -38,7 +40,7 @@ export class CancelPaymentComponent implements OnInit {
   }
 
   goHome() {
-    window.location.href = "http://localhost:4201/";
+    window.location.href = this.websiteURL;
   }
 
 }

@@ -16,6 +16,7 @@ export class LoadingPaymentComponent implements OnInit {
   payment: any;
   payer: any;
   showInvalid: boolean = false;
+  websiteURL: string;
 
   constructor(private router: Router, private palService: PaypalService) {
   }
@@ -32,7 +33,8 @@ export class LoadingPaymentComponent implements OnInit {
     this.palService.checkStatus(this.payment).subscribe(
       (data) => {
         this.validna = data;
-        if(this.validna === "valid") {
+        this.websiteURL = this.validna.websiteLink;
+        if(this.validna.text === "valid") {
           this.pass();
         } else {
           this.showInvalid = true;
@@ -63,7 +65,7 @@ export class LoadingPaymentComponent implements OnInit {
   }
 
   goHome() {
-    window.location.href = "http://localhost:4201";
+    window.location.href = this.websiteURL;
   }
 
 }

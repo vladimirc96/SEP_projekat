@@ -137,7 +137,7 @@ export class BitcoinComponent implements OnInit {
 					this.loadingMessage = false;
 					this.redirectMessage = true;
 					setTimeout(() => {
-						this.router.navigate(['/success']);
+						this.router.navigate(['/success/'.concat(this.transaction.seller.id)]);
 					}, 3000)
 				} else if (this.transaction.status == "invalid" || this.transaction.status == "canceled") {
 					clearInterval(this.transaction.interval);
