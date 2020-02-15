@@ -71,6 +71,7 @@ public class PaypalService {
             orderClient.setActiveOrderStatus(new ActiveOrderDTO(orderDTO.getActiveOrderId(), Enums.OrderStatus.PENDING,
                     this.paymentMethodId));
         } catch (HttpClientErrorException ex) {
+            logger.logWarning("PP_PAYMENT - Active order status is already PENDING.");
             throw new IllegalStateException("Active order status is already PENDING.");
         }
 
@@ -156,6 +157,7 @@ public class PaypalService {
     }
 
     public TextLinkDTO cancelPayment(String token) {
+        logger.logInfo("PP_PAYMENT_CANCEL");
         PPTransaction tr = transacRepo.findOneByPaymentToken(token);
         tr.setStatus("canceled");
         transacRepo.save(tr);
@@ -166,11 +168,13 @@ public class PaypalService {
 
         String link = (String) response.getBody();
         TextLinkDTO ret = new TextLinkDTO("done", link);
+        logger.logInfo("PP_PAYMENT_CANCEL_SUCCESS");
         return ret;
     }
 
     public TextLinkDTO cancelSubscription(String token) {
         PPAgreement ag = agreementService.findOneByTokenn(token);
+        logger.logInfo("PP_SUBSCRIPTION_CANCEL - cancel made by user with username '" + ag.getUsername() + "'");
         ag.setStatus("canceled");
         agreementService.save(ag);
 
@@ -179,10 +183,12 @@ public class PaypalService {
 
         String link = (String) response.getBody();
         TextLinkDTO ret = new TextLinkDTO("done", link);
+        logger.logInfo("PP_SUBSCRIPTION_CANCEL_SUCCESS");
         return ret;
     }
 
     public String cancelBillingPlan(long planID, long sellerId) throws PayPalRESTException {
+        logger.logInfo("PP_PLAN_CANCEL");
         BillingPlan plan = billingPlanService.findOneById(planID);
         Plan p = new Plan();
         p.setId(plan.getPlanId());
@@ -200,11 +206,12 @@ public class PaypalService {
 
         p.update(apiContext, patchRequestList);
         billingPlanService.remove(plan.getId());
+        logger.logInfo("PP_PLAN_CANCEL_SUCCESS");
         return "done";
     }
 
     public String successPay(String paymentId, String payerId) {
-        logger.logInfo("PP_CONFIRM");
+        logger.logInfo("PP_PAY_CONFIRM");
         try {
             Payment payment = executePayment(paymentId, payerId);
 
@@ -370,6 +377,7 @@ public class PaypalService {
 
             retVal.setText("success");
             retVal.setWebsiteLink(link);
+            logger.logInfo("PP_EXEPLAN_SUCCESS");
             return retVal;
         } catch (PayPalRESTException e) {
             logger.logError("PP_EXEPLAN_ERR: " + e.getMessage());
@@ -588,14 +596,12 @@ public class PaypalService {
                     finalni = formatter.format(newDate);
                 }
                 dto.setEndDate(finalni);
-                //TODO PROMENI OVO DOLE ZAKOMENTARISANO
-//                String td = formatter.format(new Date());
-//                Date today = formatter.parse(td);
-//                Date start = formatter.parse(SD);
-//                if(start.compareTo(today) < 0) {
-//                    lista.add(dto);
-//                }
-                lista.add(dto);
+                String td = formatter.format(new Date());
+                Date today = formatter.parse(td);
+                Date start = formatter.parse(SD);
+                if(start.compareTo(today) < 0) {
+                    lista.add(dto);
+                }
             }
         }
         AgreementListDTO ret = new AgreementListDTO(lista);
