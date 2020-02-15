@@ -7,6 +7,7 @@ import { isNgTemplate } from '@angular/compiler';
 import { ActiveOrderService } from 'src/app/services/active-order.service';
 import Swal from 'sweetalert2';
 import { SellersService } from 'src/app/services/sellers.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-shipping-adress',
@@ -22,6 +23,7 @@ export class ShippingAdressComponent implements OnInit {
   planId: any;
   websiteURL: string;
   activeOrder: any;
+  errorEscape: boolean = false;
   
   myForm: FormGroup;
   street: FormControl;
@@ -30,7 +32,7 @@ export class ShippingAdressComponent implements OnInit {
   postalCode: FormControl;
   countryCode: FormControl;
 
-  constructor(private palService: PaypalService, private sellersService: SellersService, private activeOrderService: ActiveOrderService, private router: Router, private route: ActivatedRoute) {
+  constructor(private palService: PaypalService, private spinner: NgxSpinnerService, private sellersService: SellersService, private activeOrderService: ActiveOrderService, private router: Router, private route: ActivatedRoute) {
     this.route.params.subscribe((params: Params) => {
       const plan = +params["pl"];
       const activeId = +params["id"]
@@ -111,20 +113,24 @@ export class ShippingAdressComponent implements OnInit {
       activeOrderId: this.activeOrder.id,
       id: this.activeOrder.sellerId
     }
-    console.log(shippingDTO);
-    this.palService.createAgreement(shippingDTO, this.activeOrder.username).subscribe(
-      (data) => {
-        this.ret = data;
-        window.location.href = this.ret;
-        // window.open(this.ret, '_blank', 'toolbar=no,top=100,left=500,width=600,height=550');
-      }, (error) => {
-        Swal.fire({
-          icon: "error",
-          title: 'Greška',
-          text: 'Došlo je do greške prilikom inicijalizacije pretplate.'
-        });
-      }
-    );
+    if(this.checkEscapeOK(shippingDTO)) {
+      this.spinner.show();
+      this.palService.createAgreement(shippingDTO, this.activeOrder.username).subscribe(
+        (data) => {
+          this.ret = data;
+          this.spinner.hide();
+          window.location.href = this.ret;
+          // window.open(this.ret, '_blank', 'toolbar=no,top=100,left=500,width=600,height=550');
+        }, (error) => {
+          this.spinner.hide();
+          Swal.fire({
+            icon: "error",
+            title: 'Greška',
+            text: 'Došlo je do greške prilikom inicijalizacije pretplate.'
+          });
+        }
+      );
+    }
   }
 
   onKeydown(e) {
@@ -133,6 +139,27 @@ export class ShippingAdressComponent implements OnInit {
       || e.keyCode == 8 || e.keyCode == 37 || e.keyCode == 39 || e.keyCode == 9)) {
         return false;
     }
+  }
+
+  checkEscapeOK(dto) {
+    if(dto.street.includes("'") || dto.street.includes("\"")) {
+      this.errorEscape = true;
+      return false;
+    } else if(dto.city.includes("'") || dto.city.includes("\"")) {
+      this.errorEscape = true;
+      return false;
+    } else if(dto.state.includes("'") || dto.state.includes("\"")) {
+      this.errorEscape = true;
+      return false;
+    } else if(dto.postalCode.includes("'") || dto.postalCode.includes("\"")) {
+      this.errorEscape = true;
+      return false;
+    } else if(dto.countryCode.includes("'") || dto.countryCode.includes("\"")) {
+      this.errorEscape = true;
+      return false;
+    }
+    this.errorEscape = false;
+    return true;
   }
 
 }

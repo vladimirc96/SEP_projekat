@@ -1,7 +1,15 @@
 <div class="container" [ngClass]="status ? 'wait' : 'point'">
+    <ngx-spinner
+    bdColor="rgba(51,51,51,0.8)"
+    size="medium"
+    color="#fff"
+    type="ball-scale-multiple">
+    <p style="font-size: 20px; color: white">Obrada...</p>
+  </ngx-spinner>
     <div class="forma">
         <div class="centar">
             <h4>Adresa</h4>
+            <span *ngIf="errorEscape" class="error">U poljima ne smeju postojati karakteri " i '</span>
         </div>
         <form [formGroup]="myForm" (ngSubmit)="onSubmitAdress(f)" #f="ngForm">
             <div class="form-group polje">
