@@ -3,6 +3,8 @@ import { PaypalService } from '../services/paypal.service';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { ActiveOrderService } from '../services/active-order.service';
 import Swal from 'sweetalert2';
+import { SellersService } from '../services/sellers.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-paypal',
@@ -18,8 +20,10 @@ export class PaypalComponent implements OnInit {
   opis: boolean = false;
   orderId: any;
   activeOrder: any = null;
+  websiteURL: string;
+  errorEscape: boolean = false;
 
-  constructor(private palService: PaypalService, private route: ActivatedRoute, private router: Router, private aoService: ActiveOrderService) {
+  constructor(private palService: PaypalService, private spinner: NgxSpinnerService, private sellersService: SellersService, private route: ActivatedRoute, private router: Router, private aoService: ActiveOrderService) {
     this.route.params.subscribe(
       (params: Params) => {
         this.orderId = params['id'];
@@ -34,6 +38,17 @@ export class PaypalComponent implements OnInit {
 					this.orderProcessedByAnotherServiceError();
 				}
         this.activeOrder = response;
+        this.sellersService.getWebsiteURL(this.activeOrder.sellerId).subscribe(
+					res => {
+					  this.websiteURL = res;
+					}, err => {
+					  Swal.fire({
+						icon: "error",
+						title: 'Greška',
+						text: 'Nije moguće dobaviti website link.'
+					  });
+					}
+				  );
       },
       (error) => {
         Swal.fire({
@@ -54,7 +69,7 @@ export class PaypalComponent implements OnInit {
 	}
 
 	goHome() {
-		window.location.href = "http://localhost:4201/";
+		window.location.href = this.websiteURL;
 	}
 
   onProcceed() {
@@ -69,17 +84,31 @@ export class PaypalComponent implements OnInit {
       activeOrderId: this.activeOrder.id
     }
 
-    this.palService.pay(orderDTO).subscribe(
-      (data) => {
-        this.ret = data;
-        window.location.href = this.ret;
-      }, (error) => {
-        Swal.fire({
-          icon: "error",
-          title: 'Greška',
-          text: 'Došlo je do greške prilikom plaćanja.'
-        });
-      }
-    )
+    if(this.checkEscapeOK(this.desc)) {
+      this.spinner.show();
+      this.palService.pay(orderDTO).subscribe(
+        (data) => {
+          this.ret = data;
+          this.spinner.hide();
+          window.location.href = this.ret;
+        }, (error) => {
+          this.spinner.hide();
+          Swal.fire({
+            icon: "error",
+            title: 'Greška',
+            text: 'Došlo je do greške prilikom plaćanja.'
+          });
+        }
+      )
+    }
+  }
+
+  checkEscapeOK(desc) {
+    if(desc.includes("'") || desc.includes("\"")) {
+      this.errorEscape = true;
+      return false;
+    }
+    this.errorEscape = false;
+    return true;
   }
 }

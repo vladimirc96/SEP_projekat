@@ -64,6 +64,11 @@ public class SellerController {
         return new ResponseEntity(sellerService.createPlan(dto), HttpStatus.CREATED);
     }
 
+    @GetMapping(value = "/getWebsiteURL/{id}")
+    public @ResponseBody ResponseEntity getWebsiteURL(@PathVariable("id") long sellerID) {
+        return new ResponseEntity(sellerService.getWebsiteURL(sellerID), HttpStatus.OK);
+    }
+
     @GetMapping(value = "/getActivePlan/{id}")
     public @ResponseBody ResponseEntity initRegistration(@PathVariable("id") long id) {
         return new ResponseEntity(sellerService.getActivePlan(id), HttpStatus.OK);
@@ -78,5 +83,4 @@ public class SellerController {
     public @ResponseBody ResponseEntity getPlansLink(@PathVariable("id") long id) {
         return new ResponseEntity("https://localhost:4200/plans/paypal/show/" + id, HttpStatus.OK);
     }
-
 }

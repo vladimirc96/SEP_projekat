@@ -33,7 +33,7 @@ const appRoutes: Routes = [
 	{ path: '', redirectTo: '/home', pathMatch: 'full'},
     { path: 'home', component: SellersComponent},
 	{ path: 'paypal/:id', component: PaypalComponent},
-	{ path: 'paypal/success/payment', component: PaymentSuccessComponent},
+	{ path: 'paypal/success/payment/:id', component: PaymentSuccessComponent},
 	{ path: 'payment/verifying', component: LoadingPaymentComponent},
 	{ path: 'paypal/plan/:id', component: CreatePlanComponent},
 	{ path: 'paypal/plan/subscribe/:pl/:id', component: ShippingAdressComponent},
@@ -47,7 +47,7 @@ const appRoutes: Routes = [
 	{ path: 'sellers/:id', component: SellerMethodsComponent},
 	{ path: 'bitcoin/:id', component: BitcoinComponent },
 	{ path: 'bank', component: BankComponent },
-	{ path: 'success', component: SucccessComponent },
+	{ path: 'success/:id', component: SucccessComponent },
 	{ path: 'cancel', component: CancelComponent },
 
 	{ path: 'bank/:id', component: BankComponent, children: [

@@ -11,32 +11,26 @@ export class PaypalService {
 
     pay(orderDTO) {
         return this.http.post("api/paypal-service/paypal", orderDTO, {responseType: 'text'});
-        // return this.http.post("http://localhost:8443/paypal", orderDTO, {responseType: 'text'});
     }
 
     checkStatus(payment) {
-        return this.http.get("api/paypal-service/paypal/status/".concat(payment), {responseType: 'text'});
-        // return this.http.get("http://localhost:8443/paypal/status/".concat(payment), {responseType: 'text'});
+        return this.http.get("api/paypal-service/paypal/status/".concat(payment));
     }
 
     completePayment(paymentID, payerID) {
         return this.http.get("api/paypal-service/paypal/success/"+ paymentID + "/" + payerID, {responseType: 'text'});
-        // return this.http.get("http://localhost:8443/paypal/success/"+ paymentID + "/" + payerID, {responseType: 'text'});
     }
 
     createPlan(planDTO) {
         return this.http.post("api/paypal-service/paypal/plan", planDTO, {responseType: 'text'});
-        // return this.http.post("http://localhost:8443/paypal/plan", planDTO, {responseType: 'text'});
     }
 
     createAgreement(dto, username) {
         return this.http.post("api/paypal-service/paypal/plan/agreement/" + username, dto, {responseType: 'text'});
-        // return this.http.post("http://localhost:8443/paypal/plan/agreement", dto, {responseType: 'text'});
     }
 
     executePlan(token) {
         return this.http.get("api/paypal-service/paypal/plan/execute/".concat(token), {responseType: 'text'});
-        // return this.http.get("http://localhost:8443/paypal/plan/execute/".concat(token), {responseType: 'text'});
     }
 
     getPaypalSubscriptionPlans(id) {
@@ -44,11 +38,11 @@ export class PaypalService {
     }
 
     cancelPayment(token) {
-        return this.http.get("api/paypal-service/paypal/cancelPayment/".concat(token), {responseType: 'text'});
+        return this.http.get("api/paypal-service/paypal/cancelPayment/".concat(token));
     }
 
     cancelSubscription(token) {
-        return this.http.get("api/paypal-service/paypal/cancelSubscription/".concat(token), {responseType: 'text'});
+        return this.http.get("api/paypal-service/paypal/cancelSubscription/".concat(token));
     }
 
     getAllPlans(selId) {

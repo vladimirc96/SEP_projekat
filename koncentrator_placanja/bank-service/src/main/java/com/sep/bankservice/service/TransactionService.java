@@ -38,6 +38,10 @@ public class TransactionService {
 
     private final long paymentMethodId = 1;
 
+    public Transaction findOneByPaymentId(Long id){
+        return transactionRepo.findOneByPaymentId(id);
+    }
+
     public Transaction findOneById(Long id){
         return transactionRepo.findOneById(id);
     }
@@ -96,6 +100,7 @@ public class TransactionService {
                             FinalizeOrderDTO finalizeOrderDTO = new FinalizeOrderDTO();
                             finalizeOrderDTO.setActiveOrderId(transactionTemp.getActiveOrderId());
                             finalizeOrderDTO.setOrderStatus(convertStatus(transactionTemp.getPaymentStatus()));
+                            finalizeOrderDTO.setAgreementId((long) 0);
                             orderClient.finalizeOrder(finalizeOrderDTO);
                             timer.cancel();
                         }
@@ -105,6 +110,7 @@ public class TransactionService {
                             FinalizeOrderDTO finalizeOrderDTO = new FinalizeOrderDTO();
                             finalizeOrderDTO.setActiveOrderId(transactionTemp.getActiveOrderId());
                             finalizeOrderDTO.setOrderStatus(convertStatus(transactionTemp.getPaymentStatus()));
+                            finalizeOrderDTO.setAgreementId((long) 0);
                             orderClient.finalizeOrder(finalizeOrderDTO);
                             timer.cancel();
                         }
@@ -118,6 +124,7 @@ public class TransactionService {
                             FinalizeOrderDTO finalizeOrderDTO = new FinalizeOrderDTO();
                             finalizeOrderDTO.setActiveOrderId(transactionTemp.getActiveOrderId());
                             finalizeOrderDTO.setOrderStatus(convertStatus(transactionTemp.getPaymentStatus()));
+                            finalizeOrderDTO.setAgreementId((long) 0);
                             orderClient.finalizeOrder(finalizeOrderDTO);
                             timer.cancel();
                         }

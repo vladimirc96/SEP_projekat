@@ -10,3 +10,7 @@
 .wait {
     cursor: wait;
 }
+
+.error {
+    color: red;
+}

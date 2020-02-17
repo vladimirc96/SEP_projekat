@@ -71,6 +71,7 @@ public class PaypalService {
             orderClient.setActiveOrderStatus(new ActiveOrderDTO(orderDTO.getActiveOrderId(), Enums.OrderStatus.PENDING,
                     this.paymentMethodId));
         } catch (HttpClientErrorException ex) {
+            logger.logWarning("PP_PAYMENT - Active order status is already PENDING.");
             throw new IllegalStateException("Active order status is already PENDING.");
         }
 
@@ -115,6 +116,7 @@ public class PaypalService {
                                     FinalizeOrderDTO foDTO = new FinalizeOrderDTO();
                                     foDTO.setOrderStatus(convertStatus(t.getStatus()));
                                     foDTO.setActiveOrderId(t.getActiveOrderId());
+                                    foDTO.setAgreementID((long) 0);
                                     orderClient.finalizeOrder(foDTO);
                                     timer.cancel();
                                 }
@@ -154,21 +156,39 @@ public class PaypalService {
         return RETURL;
     }
 
-    public String cancelPayment(String token) {
+    public TextLinkDTO cancelPayment(String token) {
+        logger.logInfo("PP_PAYMENT_CANCEL");
         PPTransaction tr = transacRepo.findOneByPaymentToken(token);
         tr.setStatus("canceled");
         transacRepo.save(tr);
-        return "done";
+
+        long sellerID = tr.getClient().getId();
+        ResponseEntity response = restTemplate.getForEntity("https://localhost:8500/sellers/sellers/getWebsiteURL/" + sellerID,
+                String.class);
+
+        String link = (String) response.getBody();
+        TextLinkDTO ret = new TextLinkDTO("done", link);
+        logger.logInfo("PP_PAYMENT_CANCEL_SUCCESS");
+        return ret;
     }
 
-    public String cancelSubscription(String token) {
+    public TextLinkDTO cancelSubscription(String token) {
         PPAgreement ag = agreementService.findOneByTokenn(token);
+        logger.logInfo("PP_SUBSCRIPTION_CANCEL - cancel made by user with username '" + ag.getUsername() + "'");
         ag.setStatus("canceled");
         agreementService.save(ag);
-        return "done";
+
+        ResponseEntity response = restTemplate.getForEntity("https://localhost:8500/sellers/sellers/getWebsiteURL/" + ag.getSellerId(),
+                String.class);
+
+        String link = (String) response.getBody();
+        TextLinkDTO ret = new TextLinkDTO("done", link);
+        logger.logInfo("PP_SUBSCRIPTION_CANCEL_SUCCESS");
+        return ret;
     }
 
     public String cancelBillingPlan(long planID, long sellerId) throws PayPalRESTException {
+        logger.logInfo("PP_PLAN_CANCEL");
         BillingPlan plan = billingPlanService.findOneById(planID);
         Plan p = new Plan();
         p.setId(plan.getPlanId());
@@ -186,11 +206,12 @@ public class PaypalService {
 
         p.update(apiContext, patchRequestList);
         billingPlanService.remove(plan.getId());
+        logger.logInfo("PP_PLAN_CANCEL_SUCCESS");
         return "done";
     }
 
     public String successPay(String paymentId, String payerId) {
-        logger.logInfo("PP_CONFIRM");
+        logger.logInfo("PP_PAY_CONFIRM");
         try {
             Payment payment = executePayment(paymentId, payerId);
 
@@ -205,7 +226,7 @@ public class PaypalService {
             System.out.println(payment.toJSON());
             if (payment.getState().equals("approved")) {
                 logger.logInfo("PP_CONFIRM_SUCCESS");
-                return "https://localhost:4200/paypal/success/payment";
+                return "https://localhost:4200/paypal/success/payment/" + tran.getClient().getId();
             }
         } catch (PayPalRESTException e) {
             logger.logError("PP_CONFIRM_ERR: " + e.getMessage());
@@ -214,12 +235,21 @@ public class PaypalService {
         return RETURL;
     }
 
-    public String checkStatus(String id) {
+    public TextLinkDTO checkStatus(String id) {
         PPTransaction t = transacRepo.findOneByOrderId(id);
+        TextLinkDTO ret = new TextLinkDTO();
+
+        ResponseEntity response = restTemplate.getForEntity("https://localhost:8500/sellers/sellers/getWebsiteURL/" + t.getClient().getId(),
+                String.class);
+
+        String link = (String) response.getBody();
+        ret.setWebsiteLink(link);
         if(t.getStatus().equals("suspended")) {
-            return "invalid";
+            ret.setText("invalid");
+            return ret;
         }
-        return "valid";
+        ret.setText("valid");
+        return ret;
     }
 
     public String plan(PlanDTO dto) {
@@ -322,9 +352,10 @@ public class PaypalService {
         return RETURL;
     }
 
-    public String executePlan(String token) {
+    public TextLinkDTO executePlan(String token) {
         Agreement agreement =  new Agreement();
         agreement.setToken(token);
+        TextLinkDTO retVal = new TextLinkDTO();
         PPAgreement agr = agreementService.findOneByTokenn(token);
         try {
             logger.logInfo("PP_EXEPLAN");
@@ -338,12 +369,22 @@ public class PaypalService {
             agr.setStartDate(activeAgreement.getStartDate());
             agr.setFinalPaymentDate(activeAgreement.getAgreementDetails().getFinalPaymentDate());
             agreementService.save(agr);
-            return "success";
+
+            ResponseEntity response = restTemplate.getForEntity("https://localhost:8500/sellers/sellers/getWebsiteURL/" + agr.getSellerId(),
+                    String.class);
+
+            String link = (String) response.getBody();
+
+            retVal.setText("success");
+            retVal.setWebsiteLink(link);
+            logger.logInfo("PP_EXEPLAN_SUCCESS");
+            return retVal;
         } catch (PayPalRESTException e) {
             logger.logError("PP_EXEPLAN_ERR: " + e.getMessage());
             System.out.println(e.getMessage());
         }
-        return "error";
+        retVal.setText("error");
+        return retVal;
     }
 
     private APIContext getContextAndMerchant(Long id) {
@@ -396,7 +437,7 @@ public class PaypalService {
         paymentDefinition.setCycles(dto.getCycles());
         paymentDefinition.setAmount(new Currency(dto.getCurrency(), dto.getAmount()));
 
-//        ChargeModels chargeModels = new ChargeModels(); //ZA SHIPPING ITD
+        //  ChargeModels chargeModels = new ChargeModels(); //ZA SHIPPING ITD
 
         MerchantPreferences merchantPreferences = new MerchantPreferences();
         merchantPreferences.setReturnUrl("https://localhost:4200/paypal/execute/plan");
@@ -533,6 +574,7 @@ public class PaypalService {
                 dto.setFrequency(a.getBillingPlan().getFrequency());
                 dto.setFreqInterval(a.getBillingPlan().getFreqInterval());
                 dto.setName(a.getBillingPlan().getName());
+                dto.setSellerId(a.getSellerId());
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
                 final String NEW_FORMAT = "yyyy-MM-dd";
                 String FD1[] = a.getFinalPaymentDate().split("T");
@@ -554,7 +596,12 @@ public class PaypalService {
                     finalni = formatter.format(newDate);
                 }
                 dto.setEndDate(finalni);
-                lista.add(dto);
+                String td = formatter.format(new Date());
+                Date today = formatter.parse(td);
+                Date start = formatter.parse(SD);
+                if(start.compareTo(today) < 0) {
+                    lista.add(dto);
+                }
             }
         }
         AgreementListDTO ret = new AgreementListDTO(lista);
@@ -580,6 +627,19 @@ public class PaypalService {
         return "error";
     }
 
+    public String agreementExistsOnPP(long agrID) throws PayPalRESTException {
+        PPAgreement a = agreementService.findOneById(agrID);
+        APIContext apiContext = getContextAndMerchant(a.getSellerId());
+        Agreement agrmnt = Agreement.get(apiContext, a.getActiveAgreementId());
+        if(agrmnt.getState().equals("Cancelled") || agrmnt.getState().equals("Expired")) {
+            if(!a.getStatus().equals("Cancelled") && !a.getStatus().equals("Expired")) {
+                a.setStatus(agrmnt.getState());
+                a = agreementService.save(a);
+            }
+            return "cancelled";
+        }
+        return "exists";
+    }
 
 
     private Enums.OrderStatus convertStatus(String status) {

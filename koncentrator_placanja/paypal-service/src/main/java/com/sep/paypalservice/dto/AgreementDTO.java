@@ -12,6 +12,15 @@ public class AgreementDTO {
     private String amount;
     private String currency;
     private String name;
+    private long sellerId;
+
+    public long getSellerId() {
+        return sellerId;
+    }
+
+    public void setSellerId(long sellerId) {
+        this.sellerId = sellerId;
+    }
 
     public long getId() {
         return id;

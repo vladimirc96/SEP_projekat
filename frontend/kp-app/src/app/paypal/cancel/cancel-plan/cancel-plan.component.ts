@@ -11,6 +11,7 @@ import Swal from 'sweetalert2';
 export class CancelPlanComponent implements OnInit {
   ref: any;
   ret: any;
+  websiteURL: string;
 
   constructor(private router: Router, private palService: PaypalService) {
     this.ref = this.router.url;
@@ -26,6 +27,7 @@ export class CancelPlanComponent implements OnInit {
     this.palService.cancelSubscription(token).subscribe(
       (data) => {
         this.ret = data;
+        this.websiteURL = this.ret.websiteLink;
       }, (error) => {
         Swal.fire({
           icon: "error",
@@ -37,6 +39,6 @@ export class CancelPlanComponent implements OnInit {
   }
 
   goHome() {
-    window.location.href = "http://localhost:4201/";
+    window.location.href = this.websiteURL;
   }
 }

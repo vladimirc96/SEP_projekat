@@ -18,6 +18,7 @@ public class SellerDTO {
     private String password;
     private String name;
     private String organization;
+    private String baseWebsiteUrl;
 
     public SellerDTO() {
     }
@@ -31,6 +32,7 @@ public class SellerDTO {
             sDTO.setEmail(s.getEmail());
             sDTO.setName(s.getName());
             sDTO.setOrganization(s.getOrganization());
+            sDTO.setBaseWebsiteUrl(s.getBaseWebsiteUrl());
             sDTO.setPaymentMethods(s.getPaymentMethods()
                     .stream()
                     .map(p -> PaymentMethodDTO.formDto(p)).collect(Collectors.toList()));
@@ -88,5 +90,11 @@ public class SellerDTO {
         this.organization = organization;
     }
 
+    public String getBaseWebsiteUrl() {
+        return baseWebsiteUrl;
+    }
 
+    public void setBaseWebsiteUrl(String baseWebsiteUrl) {
+        this.baseWebsiteUrl = baseWebsiteUrl;
+    }
 }

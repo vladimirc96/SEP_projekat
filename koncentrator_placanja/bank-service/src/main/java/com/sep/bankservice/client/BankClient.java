@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Service
 public class BankClient {
 
@@ -22,10 +24,13 @@ public class BankClient {
     @Autowired
     RestTemplate restTemplate;
 
-    public ResponseEntity<RedirectDTO> forwardPaymentRequest(Transaction transaction, Customer customer, String merchantPasswordDecrypted){
+    public ResponseEntity<RedirectDTO> forwardPaymentRequest(Transaction transaction, Customer customer, String merchantPasswordDecrypted, String baseUrl){
+        System.out.println("******************************");
+        System.out.println("BASE URL: " + baseUrl);
+        System.out.println("******************************");
         PaymentRequestDTO paymentRequestDTO = new PaymentRequestDTO(customer.getMerchantId(),
                 merchantPasswordDecrypted,
-                transaction.getAmount(), transaction.getId(), transaction.getTimestamp(), this.returnUrl);
+                transaction.getAmount(), transaction.getId(), transaction.getTimestamp(), this.returnUrl, baseUrl);
         // poslati zahtev banci
         HttpEntity<PaymentRequestDTO> entity = new HttpEntity<>(paymentRequestDTO);
         ResponseEntity<RedirectDTO> responseEntity = restTemplate.exchange(this.bankUrl, HttpMethod.PUT, entity, RedirectDTO.class);
@@ -36,6 +41,5 @@ public class BankClient {
         HttpEntity<PaymentIdDTO> httpEntity = new HttpEntity<>(paymentIdDTO);
         ResponseEntity<?> responseEntity = restTemplate.exchange(this.updateTransactionUrl, HttpMethod.PUT, httpEntity, String.class);
     }
-
 
 }

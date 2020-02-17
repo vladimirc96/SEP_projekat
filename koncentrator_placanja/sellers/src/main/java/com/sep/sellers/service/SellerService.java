@@ -70,7 +70,7 @@ public class SellerService {
         s.setPassword(hashPass(sDTO.getPassword()));
         s.setName(sDTO.getName());
         s.setOrganization(sDTO.getOrganization());
-
+        s.setBaseWebsiteUrl(sDTO.getBaseWebsiteUrl());
 
         s = _sellerRepo.save(s);
 
@@ -115,6 +115,11 @@ public class SellerService {
             return retUrl + plan.getId();
         }
         return "noPP";
+    }
+
+    public String getWebsiteURL(long sellerID) {
+        Seller seller = _sellerRepo.findById(sellerID).get();
+        return seller.getBaseWebsiteUrl();
     }
 
     public ActiveBillingPlanDTO getActivePlan(long id) {

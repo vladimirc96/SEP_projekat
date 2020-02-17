@@ -13,6 +13,7 @@ export class ExecutePlanComponent implements OnInit {
   ref: any;
   ret: any;
   showInvalid: boolean = false;
+  websiteURL: string;
 
   constructor(private router: Router, private palService: PaypalService) {
     this.ref = this.router.url;
@@ -28,19 +29,21 @@ export class ExecutePlanComponent implements OnInit {
     this.palService.executePlan(token).subscribe(
       (data) => {
         this.ret = data;
-        if(this.ret === "success") {
+        this.websiteURL = this.ret.websiteLink;
+        if(this.ret.text === "success") {
           Swal.fire({
             icon: "success",
             title: 'Uspešno',
             text: 'Pretplaćeni ste na plan.'
           });
-          window.location.href = "http://localhost:4201";
+          window.location.href = this.ret.websiteLink;
         } else {
           Swal.fire({
             icon: "error",
             title: 'Greška',
             text: 'Došlo je do greške prilikom izvršavanja pretplate.'
           });
+          window.location.href = this.ret.websiteLink;
         }
       }, (error) => {
         Swal.fire({
@@ -48,13 +51,12 @@ export class ExecutePlanComponent implements OnInit {
           title: 'Greška',
           text: 'Došlo je do greške prilikom izvršavanja pretplate.'
         });
-        window.location.href = "http://localhost:4201";
       }
     )
   }
 
   goHome() {
-    window.location.href = "http://localhost:4201";
+    window.location.href = this.websiteURL;
   }
 
 }

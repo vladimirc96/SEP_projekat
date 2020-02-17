@@ -32,17 +32,21 @@ public class Seller {
     @Column
     private String registrationStatusCallbackUrl;
 
+    @Column
+    private String baseWebsiteUrl;
+
 
     public Seller() {
     }
 
-    public Seller(String email, String password, String name, String organization, List<SellerPaymentMethod> paymentMethods, String registrationStatusCallbackUrl) {
+    public Seller(String email, String password, String name, String organization, List<SellerPaymentMethod> paymentMethods, String registrationStatusCallbackUrl, String BaseWebsiteUrl) {
         this.email = email;
         this.password = password;
         this.name = name;
         this.organization = organization;
         this.paymentMethods = paymentMethods;
         this.registrationStatusCallbackUrl = registrationStatusCallbackUrl;
+        this.baseWebsiteUrl = BaseWebsiteUrl;
     }
 
     public String getRegistrationStatusCallbackUrl() {
@@ -103,4 +107,11 @@ public class Seller {
         this.paymentMethods = paymentMethods;
     }
 
+    public String getBaseWebsiteUrl() {
+        return baseWebsiteUrl;
+    }
+
+    public void setBaseWebsiteUrl(String baseWebsiteUrl) {
+        this.baseWebsiteUrl = baseWebsiteUrl;
+    }
 }

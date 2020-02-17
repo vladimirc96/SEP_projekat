@@ -24,7 +24,7 @@ export class BankPaymentFormComponent implements OnInit {
   issuerSuccess: boolean = false;
 
   responseDto: any;
-  transactionId: any;
+  paymentId: any;
   paymentConfirmation: boolean = false;
   
   
@@ -34,7 +34,7 @@ export class BankPaymentFormComponent implements OnInit {
 			const param = +params["id"];
 
 			if (!isNaN(param)) {
-				this.transactionId = param;
+				this.paymentId = param;
 			} else {
 				this.router.navigate(["/"]);
 			}
@@ -54,16 +54,16 @@ export class BankPaymentFormComponent implements OnInit {
       expirationDate: this.infoForm.value.expirationDate
     }
 
-    this.bankService.payment(bankAccountDTO, this.transactionId).subscribe(
+    this.bankService.payment(bankAccountDTO, this.paymentId).subscribe(
       (response: any) => {
         this.spinner.hide();
-        this.router.navigate(['/bank/' + this.transactionId + '/success']);
+        this.router.navigate(['/bank/' + this.paymentId + '/success']);
 
       },
       (error: any) => {
         this.spinner.hide();
         if(error.status == '409'){
-          this.router.navigate(['/bank/' + this.transactionId + '/failure']);
+          this.router.navigate(['/bank/' + this.paymentId + '/failure']);
         }
         if(error.status == '400'){
           Swal.fire({

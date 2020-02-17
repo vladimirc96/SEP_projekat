@@ -55,4 +55,10 @@ export class SellersService {
     createNewPaymentMethod(dto) {
         return this.http.post(this.ENDPOINT_URI + "/payment-methods/", dto);
     }
+    
+    getWebsiteURL(sellerID) {
+        return this.http.get(
+            this.ENDPOINT_URI.concat("/sellers/getWebsiteURL/").concat(sellerID), { responseType: "text" }
+        );
+    }
 }

@@ -28,7 +28,7 @@ public class PaypalController {
     }
 
     @RequestMapping(value = "/status/{paymentId}", method = RequestMethod.GET)
-    public String paymentStatus(@PathVariable("paymentId") String payment) {
+    public TextLinkDTO paymentStatus(@PathVariable("paymentId") String payment) {
         return service.checkStatus(payment);
     }
 
@@ -43,7 +43,7 @@ public class PaypalController {
     }
 
     @RequestMapping(value = "/plan/execute/{tokenn}", method = RequestMethod.GET)
-    public String executeAgreement(@PathVariable("tokenn") String tokenn) {
+    public TextLinkDTO executeAgreement(@PathVariable("tokenn") String tokenn) {
         return service.executePlan(tokenn);
     }
 
@@ -53,7 +53,7 @@ public class PaypalController {
     }
 
     @RequestMapping(value = "/cancelPayment/{token}", method = RequestMethod.GET)
-    public String cancelPayment(@PathVariable("token") String token) {
+    public TextLinkDTO cancelPayment(@PathVariable("token") String token) {
         return service.cancelPayment(token);
     }
 
@@ -73,7 +73,7 @@ public class PaypalController {
     }
 
     @RequestMapping(value = "/cancelSubscription/{token}", method = RequestMethod.GET)
-    public String cancelPlan(@PathVariable("token") String token) {
+    public TextLinkDTO cancelPlan(@PathVariable("token") String token) {
         return service.cancelSubscription(token);
     }
 
@@ -81,4 +81,11 @@ public class PaypalController {
     public String cancelAgreement(@PathVariable("agrID") long agrID) throws PayPalRESTException {
         return service.cancelAgreement(agrID);
     }
+
+    @RequestMapping(value = "/AgreementExistsOnPP/{agrID}", method = RequestMethod.GET)
+    public String AgreementExistsOnPP(@PathVariable("agrID") long agrID) throws PayPalRESTException {
+        return service.agreementExistsOnPP(agrID);
+    }
+
+
 }

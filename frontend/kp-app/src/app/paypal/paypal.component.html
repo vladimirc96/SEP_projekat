@@ -6,8 +6,14 @@
     </p>
     <p class="error" *ngIf="opis">Opis transakcije je obavezan.</p>
     <label for="description">Opis transakcije</label>
+    <span *ngIf="errorEscape" class="error">U opisu ne smeju postojati karakteri ' i "</span>
     <input type="text" id="description" [(ngModel)] = 'desc' class="form-control" name="description" placeholder="Opis...">
 
     <button class="btn btn-primary polja" (click)="onProcceed()" [ngClass]="status ? 'wait' : 'point'"><i class="fa fa-paypal"></i> Checkout</button>
-
+    <ngx-spinner
+    bdColor="rgba(51,51,51,0.8)"
+    size="medium"
+    color="#fff"
+    type="ball-scale-multiple">
+    <p style="font-size: 20px; color: white">Obrada...</p>
 </div>
