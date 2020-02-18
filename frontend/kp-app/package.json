@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --port 4200 --proxy-config proxy.conf.json --ssl true --ssl-cert ssl/server.crt --ssl-key ssl/server.key",
+    "start": "ng serve --host 192.168.43.124 --port 4200 --proxy-config proxy.conf.json --ssl true --ssl-cert ssl/server.crt --ssl-key ssl/server.key",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",

@@ -59,6 +59,7 @@ export class BitcoinComponent implements OnInit {
 				this.convertPrice();
 				this.sellersService.getWebsiteURL(this.activeOrder.sellerId).subscribe(
 					res => {
+						console.log(res);
 					  this.websiteURL = res;
 					}, err => {
 					  Swal.fire({
@@ -74,7 +75,12 @@ export class BitcoinComponent implements OnInit {
 
 	convertPrice() {
 		this.bitcoinService.getRate("USD", "BTC").subscribe(
-			(success:any) => this.btcPrice = success.rate * this.activeOrder.amount,
+			(success:any) => {
+				this.btcPrice = success.rate * this.activeOrder.amount
+				console.log(success.rate);
+				console.log(this.activeOrder.amount);
+				
+			},
 			error => console.log(error)
 		)
 	}

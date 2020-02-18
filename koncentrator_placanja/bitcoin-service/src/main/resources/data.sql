@@ -1,1 +1,1 @@
-INSERT INTO `seller_` (`id`,`auth_token`) VALUES (1,'IaXauPizTfW51yghD7d9Kw==:JiRQDUVBRRdxVCuESXu3/e33muGuGOzq2Q0qQ6AmNUXvsJtA6i2XreO9G5S4LvSy');
+INSERT INTO `seller_` (`id`,`auth_token`) VALUES (1,'IaXauPizTfW51yghD7d9Kw==:JiRQDUVBRRdxVCuESXu3/e33muGuGOzq2Q0qQ6AmNUXvsJtA6i2XreO9G5S4LvSy'),(4,'oPvSuX8FynPtq5U1He1rrA==:hbbixP+mqdUh4zrJtN7OIiWQN8c4Q3NxbXmo5RNrlX49Zz/RsxQ9OPAnLGHPfk/E');

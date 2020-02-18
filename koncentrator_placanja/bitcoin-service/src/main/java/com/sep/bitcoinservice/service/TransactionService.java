@@ -181,19 +181,21 @@ public class TransactionService implements ITransactionService {
     @Override
     public RateDTO getExchangeRate(String from, String to) {
 
-        try {
-            RestTemplate restTemplate = new RestTemplate(this.requestFactory);
+        return new RateDTO(0.00009315);
 
-
-            ResponseEntity<Double> response = restTemplate.exchange(this.CoinGateExchangeRateAPI + "/" + from +
-                            "/" + to,
-                    HttpMethod.GET, HttpEntity.EMPTY,
-                    Double.class);
-
-            return new RateDTO(response.getBody().doubleValue());
-        } catch (Exception ex) {
-            return new RateDTO(0.00009315);
-        }
+//        try {
+//            RestTemplate restTemplate = new RestTemplate(this.requestFactory);
+//
+//
+//            ResponseEntity<Double> response = restTemplate.exchange(this.CoinGateExchangeRateAPI + "/" + from +
+//                            "/" + to,
+//                    HttpMethod.GET, HttpEntity.EMPTY,
+//                    Double.class);
+//
+//            return new RateDTO(response.getBody().doubleValue());
+//        } catch (Exception ex) {
+//            return new RateDTO(0.00009315);
+//        }
 
     }
 

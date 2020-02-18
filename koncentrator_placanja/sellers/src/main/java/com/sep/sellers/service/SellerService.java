@@ -35,7 +35,7 @@ public class SellerService {
     @Autowired
     ActiveBillingPlanRepository planRepo;
 
-    private final String  REG_PAGE_REDIRECT_URL = "https://localhost:4200/reg/";
+    private final String  REG_PAGE_REDIRECT_URL = "https://192.168.43.124:4200/reg/";
 
     public SellerDTO getSeller(long id) {
         System.out.println("\nID: " + id + "\n");

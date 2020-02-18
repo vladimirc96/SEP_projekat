@@ -8,6 +8,7 @@ import com.sep.bitcoinservice.model.Seller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -21,9 +22,10 @@ public class RegistrationClient {
     private final long paymentMethodId = 3;
 
     @Autowired
-    RestTemplate restTemplate;
+    HttpComponentsClientHttpRequestFactory factory;
 
     public void approveRegistration(SellerDTO sDTO) throws AccessDeniedException {
+        RestTemplate restTemplate = new RestTemplate(factory);
 
         ApproveDTO approveDTO = new ApproveDTO(sDTO.getId(), sDTO.getPassword(), this.paymentMethodId);
 

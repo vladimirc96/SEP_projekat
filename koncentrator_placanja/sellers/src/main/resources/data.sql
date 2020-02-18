@@ -21,7 +21,7 @@
 
 LOCK TABLES `payment_method` WRITE;
 /*!40000 ALTER TABLE `payment_method` DISABLE KEYS */;
-INSERT INTO `payment_method` (`id`, `name`, `registration_url`) VALUES (1,'Credit/Debit Card','https://localhost:8500/bank-service/registration/'),(2,'PayPal','https://localhost:8500/paypal-service/registration/'),(3,'Bitcoin','https://localhost:8500/bitcoin-service/registration/');
+INSERT INTO `payment_method` (`id`, `name`, `registration_url`) VALUES (1,'Credit/Debit Card','https://192.168.43.124:8500/bank-service/registration/'),(2,'PayPal','https://192.168.43.124:8500/paypal-service/registration/'),(3,'Bitcoin','https://192.168.43.124:8500/bitcoin-service/registration/');
 /*!40000 ALTER TABLE `payment_method` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -32,8 +32,10 @@ UNLOCK TABLES;
 LOCK TABLES `seller` WRITE;
 /*!40000 ALTER TABLE `seller` DISABLE KEYS */;
 INSERT INTO `seller` (`id`, `email`, `name`, `organization`, `password`, `registration_status_callback_url`, `base_website_url`) VALUES (1,'jove@jove.com','Vukasin Jovic','org','$2a$10$TVu9nfgu.9gXTvpVTu.SXeT6PKMVLXlcjzGEqylYWW6imtEubxf8C','https://localhost:8600/kp/registration/status', 'http://localhost:4203'),
-(2,'flylivedrve@gmail.com','Vukasin Jovic','vule','$2a$10$89qh8mtfZ8NkJ2bpwELvKOYi8c3m1/yOUxQaHrnql.UbaSTDLB0/C','https://localhost:8601/kp/registration/status', 'http://localhost:4202'),
-(3, 'naucni.kutak@mail.com', 'Milica Makaric', 'Naucni kutak', '$2a$10$aYTn742eySAc3rm70F2JzeVAW.u9CRI65MR7t9q86qssZSJG9Vidq', 'https://localhost:8600/kp/registration/status', 'http://localhost:4201');
+(2,'flylivedrve@gmail.com','Vukasin Jovic','vule','$2a$10$89qh8mtfZ8NkJ2bpwELvKOYi8c3m1/yOUxQaHrnql.UbaSTDLB0/C','https://192.168.43.86:8601/kp/registration/status', 'http://192.168.43.86:4202'),
+(3, 'naucni.kutak@mail.com', 'Milica Makaric', 'Naucni kutak', '$2a$10$aYTn742eySAc3rm70F2JzeVAW.u9CRI65MR7t9q86qssZSJG9Vidq', 'https://192.168.43.134:8600/kp/registration/status', 'http://192.168.43.134:4201');
+
+INSERT INTO `seller` (`id`,`base_website_url`,`email`,`name`,`organization`,`password`,`registration_status_callback_url`) VALUES (4,'https://192.168.43.124:4203/','construzioni@gmail.com','','org','$2a$10$iliDqdZUhrGmep0jsi4GkOCe1in/Z/gXqHmM/e2XrCRnnPl/kRM1S','https://localhost:8602/api/casopisi/registration/status');
 /*!40000 ALTER TABLE `seller` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -43,7 +45,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `seller_payment_method` WRITE;
 /*!40000 ALTER TABLE `seller_payment_method` DISABLE KEYS */;
-INSERT INTO `seller_payment_method` (`id`, `registration_success`, `payment_method_id`, `seller_id`) VALUES (1,0,1,1),(2,1,2,1),(3,1,3,1),  (4,0,1,2),(5,1,2,2),(6,0,3,2), (7, 1, 1, 3), (8, 0, 2, 3), (9, 0, 3, 3);
+INSERT INTO `seller_payment_method` (`id`, `registration_success`, `payment_method_id`, `seller_id`) VALUES (1,0,1,1),(2,1,2,1),(3,1,3,1),  (4,0,1,2),(5,1,2,2),(6,0,3,2), (7, 1, 1, 3), (8, 0, 2, 3), (9, 0, 3, 3),(10, 0, 1, 4), (11, 0, 2, 4), (12, 1, 3, 4);
 /*!40000 ALTER TABLE `seller_payment_method` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
