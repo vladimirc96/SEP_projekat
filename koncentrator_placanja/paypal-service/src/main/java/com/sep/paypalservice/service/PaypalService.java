@@ -58,7 +58,11 @@ public class PaypalService {
 
     private Logging logger = new Logging(this);
 
-    private static String RETURL = "http://localhost:4201";
+    private static String RETURL = "http://192.168.43.86:4201";
+
+    private static String kpAppUrl = "https://192.168.43.124:4200";
+
+
 
 
     private final long paymentMethodId = 2;
@@ -226,7 +230,7 @@ public class PaypalService {
             System.out.println(payment.toJSON());
             if (payment.getState().equals("approved")) {
                 logger.logInfo("PP_CONFIRM_SUCCESS");
-                return "https://localhost:4200/paypal/success/payment/" + tran.getClient().getId();
+                return this.kpAppUrl +  "/paypal/success/payment/" + tran.getClient().getId();
             }
         } catch (PayPalRESTException e) {
             logger.logError("PP_CONFIRM_ERR: " + e.getMessage());
@@ -414,8 +418,8 @@ public class PaypalService {
         payment.setPayer(payer);
         payment.setTransactions(transactions);
         RedirectUrls redirectUrls = new RedirectUrls();
-        redirectUrls.setCancelUrl("https://localhost:4200/cancel/payment/paypal");
-        redirectUrls.setReturnUrl("https://localhost:4200/payment/verifying");
+        redirectUrls.setCancelUrl(this.kpAppUrl + "/cancel/payment/paypal");
+        redirectUrls.setReturnUrl(this.kpAppUrl  + "/payment/verifying");
         payment.setRedirectUrls(redirectUrls);
 
         APIContext apiContext = getContextAndMerchant(id);
@@ -440,8 +444,8 @@ public class PaypalService {
         //  ChargeModels chargeModels = new ChargeModels(); //ZA SHIPPING ITD
 
         MerchantPreferences merchantPreferences = new MerchantPreferences();
-        merchantPreferences.setReturnUrl("https://localhost:4200/paypal/execute/plan");
-        merchantPreferences.setCancelUrl("https://localhost:4200/cancel/paypal/plan");
+        merchantPreferences.setReturnUrl(this.kpAppUrl + "/paypal/execute/plan");
+        merchantPreferences.setCancelUrl(this.kpAppUrl + "/cancel/paypal/plan");
         merchantPreferences.setAutoBillAmount("yes");
         merchantPreferences.setInitialFailAmountAction("CONTINUE");
         merchantPreferences.setMaxFailAttempts("1");

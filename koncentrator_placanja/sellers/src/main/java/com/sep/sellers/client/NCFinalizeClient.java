@@ -13,10 +13,9 @@ import org.springframework.web.client.RestTemplate;
 public class NCFinalizeClient {
 
     @Autowired
-    HttpComponentsClientHttpRequestFactory factory;
+    RestTemplate restTemplate;
 
     public void finalizeOrder(FinalizeOrderDTO finalizeOrderDTO, String returnUrl) {
-        RestTemplate restTemplate = new RestTemplate(factory);
         restTemplate.postForEntity(returnUrl, new HttpEntity<>(finalizeOrderDTO),
                 FinalizeOrderDTO.class);
     }

@@ -36,14 +36,14 @@ export class ExecutePlanComponent implements OnInit {
             title: 'Uspešno',
             text: 'Pretplaćeni ste na plan.'
           });
-          window.location.href = this.ret.websiteLink;
+         // window.location.href = this.ret.websiteLink;
         } else {
           Swal.fire({
             icon: "error",
             title: 'Greška',
             text: 'Došlo je do greške prilikom izvršavanja pretplate.'
           });
-          window.location.href = this.ret.websiteLink;
+         // window.location.href = this.ret.websiteLink;
         }
       }, (error) => {
         Swal.fire({

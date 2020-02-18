@@ -9,21 +9,22 @@ export class BankService {
 
     constructor(private http: HttpClient, private router: Router) { }
 
+    
 
     paymentRequest(paymentDTO){
         return this.http.post("/api/bank-service/bank/payment-request", paymentDTO);
     }
 
     payment(bankAccountDTO, transactionId){
-        return this.http.put("https://localhost:8450/bank/acquirer/payment/" + transactionId, bankAccountDTO);
+        return this.http.put("/bankendpoint/bank/acquirer/payment/" + transactionId, bankAccountDTO);
     }
 
     confirmPaymentAcquirer(bankAccountDTO, transactionId){
-        return this.http.put("https://localhost:8450/bank/confirm-payment-acquirer/" + transactionId, bankAccountDTO);
+        return this.http.put("/bankendpoint/bank/confirm-payment-acquirer/" + transactionId, bankAccountDTO);
     }
 
     confirmPaymentIssuer(bankAccountDTO, transactionId){
-        return this.http.put("https://localhost:8450/bank/confirm-payment-issuer/" + transactionId, bankAccountDTO);
+        return this.http.put("/bankendpoint/bank/confirm-payment-issuer/" + transactionId, bankAccountDTO);
     }
 
     getBaseUrl(paymentId){

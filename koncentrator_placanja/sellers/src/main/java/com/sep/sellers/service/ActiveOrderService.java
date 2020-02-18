@@ -20,8 +20,8 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public class ActiveOrderService {
 
-    private final static String redirectUrl = "https://localhost:4200/sellers/";
-    private final static String redirectSubUrl = "https://localhost:4200/subscriptions/";
+    private final static String redirectUrl = "https://192.168.43.124:4200/sellers/";
+    private final static String redirectSubUrl = "https://192.168.43.124:4200/subscriptions/";
 
 
     @Autowired

@@ -98,10 +98,10 @@ export class SubscriptionPlanComponent implements OnInit {
     }
 
     onPPSub() {
-        window.location.href = "https://localhost:4200/paypal/plan/subscribe/"
+        this.router.navigate(["/paypal/plan/subscribe/"
             .concat(this.ppizbor)
             .concat("/")
-            .concat(this.id);
+            .concat(this.id)]);
 	}
 	
 	onRegularSub() {

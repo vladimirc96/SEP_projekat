@@ -10,12 +10,10 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class NCRegistrationClient {
 
-
     @Autowired
-    HttpComponentsClientHttpRequestFactory factory;
+    RestTemplate restTemplate;
 
     public void informRegistrationStatus(KPRegistrationDTO kprDTO) {
-        RestTemplate restTemplate = new RestTemplate(factory);
         restTemplate.postForEntity(kprDTO.getRegistrationStatusCallbackUrl(), new HttpEntity<>(kprDTO),
                 KPRegistrationDTO.class);
 

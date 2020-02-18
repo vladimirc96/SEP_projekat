@@ -36,6 +36,7 @@ public class SellerService {
     ActiveBillingPlanRepository planRepo;
 
     private final String  REG_PAGE_REDIRECT_URL = "https://192.168.43.124:4200/reg/";
+    private final String kpAppUrl = "https://192.168.43.124:4200";
 
     public SellerDTO getSeller(long id) {
         System.out.println("\nID: " + id + "\n");
@@ -108,7 +109,7 @@ public class SellerService {
             }
         }
         if(imaPP) {
-            String retUrl = "https://localhost:4200/paypal/plan/";
+            String retUrl = this.kpAppUrl + "/paypal/plan/";
             ActiveBillingPlan plan = new ActiveBillingPlan(dto);
             plan = planRepo.save(plan);
             String temp = retUrl + plan.getId();
