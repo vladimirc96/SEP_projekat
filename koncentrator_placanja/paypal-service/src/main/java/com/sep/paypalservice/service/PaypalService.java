@@ -11,6 +11,7 @@ import com.sep.paypalservice.model.BillingPlan;
 import com.sep.paypalservice.model.PPAgreement;
 import com.sep.paypalservice.model.PPClient;
 import com.sep.paypalservice.model.PPTransaction;
+import com.sep.paypalservice.repository.AgreementRepository;
 import com.sep.paypalservice.repository.ClientsRepository;
 import com.sep.paypalservice.repository.TransactionRepository;
 import org.apache.commons.lang.time.DateUtils;
@@ -43,6 +44,10 @@ public class PaypalService {
 
     @Autowired
     private TransactionRepository transacRepo;
+
+    @Autowired
+    private AgreementRepository agreementRepo;
+
 
     @Autowired
     private BillingPlanService billingPlanService;
@@ -275,6 +280,16 @@ public class PaypalService {
         logger.logInfo("PP_AGREEMENT");
         BillingPlan bp = billingPlanService.findOneById(dto.getPlanId());
         try {
+
+            try {
+                orderClient.setActiveOrderStatus(new ActiveOrderDTO(dto.getActiveOrderId(),
+                        Enums.OrderStatus.PENDING,
+                        this.paymentMethodId));
+            } catch (HttpClientErrorException ex) {
+                logger.logWarning("PP_PAYMENT - Active order status is already PENDING.");
+                throw new IllegalStateException("Active order status is already PENDING.");
+            }
+
             Agreement agreement = createAgreement(dto, bp.getPlanId());
             PPAgreement agr = new PPAgreement();
             agr.setBillingPlan(bp);
@@ -545,6 +560,11 @@ public class PaypalService {
         for(Plan plan1 : planList.getPlans()) {
             Plan plan = Plan.get(apiContext, plan1.getId());
             BillingPlan ppp = billingPlanService.findByPlanId(plan.getId());
+
+            if (ppp == null) {
+                continue;
+            }
+
             ShowPlansDTO s = new ShowPlansDTO(ppp.getId(), plan.getName(), plan.getPaymentDefinitions().get(0).getFrequency(), plan.getPaymentDefinitions().get(0).getFrequencyInterval(),
                     plan.getPaymentDefinitions().get(0).getCycles(), Double.parseDouble(plan.getPaymentDefinitions().get(0).getAmount().getValue()),
                     plan.getPaymentDefinitions().get(0).getAmount().getCurrency(), Double.parseDouble(plan.getMerchantPreferences().getSetupFee().getValue()), sellerID);
@@ -654,4 +674,47 @@ public class PaypalService {
         }
     }
 
+    public FinalizeOrderDTO getOrderStatus(long id) throws Exception {
+        Optional<PPTransaction> transaction = transacRepo.findByActiveOrderId(id);
+        Optional<PPAgreement> agreement = agreementRepo.findByActiveOrderId(id);
+
+        FinalizeOrderDTO foDTO = new FinalizeOrderDTO();
+        if (transaction.isPresent()) {
+
+            PPTransaction t = transaction.get();
+            foDTO.setActiveOrderId(t.getActiveOrderId());
+
+            if (t.getStatus().equals("created")) {
+                foDTO.setOrderStatus(Enums.OrderStatus.PENDING);
+                System.out.println("[GetOrderStatus]: returning PENDING");
+            } else if (t.getStatus().equals("approved")) {
+                foDTO.setOrderStatus(Enums.OrderStatus.SUCCESS);
+                System.out.println("[GetOrderStatus]: returning SUCCESS");
+            } else {
+                foDTO.setOrderStatus(Enums.OrderStatus.FAILED);
+                System.out.println("[GetOrderStatus]: returning FAILED");
+            }
+        } else if (transaction.isPresent()) {
+            PPAgreement a = agreement.get();
+            foDTO.setActiveOrderId(a.getActiveOrderId());
+
+
+            if (a.getStatus().equals("created")) {
+                foDTO.setOrderStatus(Enums.OrderStatus.PENDING);
+                System.out.println("[GetOrderStatus]: returning PENDING");
+            } else if (a.getStatus().equals("approved")) {
+                foDTO.setOrderStatus(Enums.OrderStatus.SUCCESS);
+                System.out.println("[GetOrderStatus]: returning SUCCESS");
+            } else {
+                foDTO.setOrderStatus(Enums.OrderStatus.FAILED);
+                System.out.println("[GetOrderStatus]: returning FAILED");
+            }
+
+        } else {
+            throw new Exception("Active order id not found");
+        }
+
+        return foDTO;
+
+    }
 }

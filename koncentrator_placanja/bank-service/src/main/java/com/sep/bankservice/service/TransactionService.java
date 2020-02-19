@@ -162,4 +162,27 @@ public class TransactionService {
         }
         return transaction;
     }
+
+    public FinalizeOrderDTO getOrderStatus(long id) {
+        Transaction t = transactionRepo.findByActiveOrderId(id).get();
+
+        FinalizeOrderDTO foDTO = new FinalizeOrderDTO();
+        foDTO.setActiveOrderId(t.getActiveOrderId());
+        System.out.println("[GetOrderStatus]: activeOrderId: " + t.getActiveOrderId() + ", status: " + t.getPaymentStatus());
+
+        if (t.getPaymentStatus() == PaymentStatus.PROCESSING) {
+            foDTO.setOrderStatus(Enums.OrderStatus.PENDING);
+            System.out.println("[GetOrderStatus]: returning PENDING");
+        } else if (t.getPaymentStatus() == PaymentStatus.SUCCESS) {
+            foDTO.setOrderStatus(Enums.OrderStatus.SUCCESS);
+            System.out.println("[GetOrderStatus]: returning SUCCESS");
+        } else {
+            foDTO.setOrderStatus(Enums.OrderStatus.FAILED);
+            System.out.println("[GetOrderStatus]: returning FAILED");
+        }
+
+        return foDTO;
+
+
+    }
 }

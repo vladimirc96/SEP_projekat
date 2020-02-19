@@ -1,9 +1,6 @@
 package com.sep.bitcoinservice.service.contracts;
 
-import com.sep.bitcoinservice.dto.OrderDTO;
-import com.sep.bitcoinservice.dto.RateDTO;
-import com.sep.bitcoinservice.dto.TransactionDTO;
-import com.sep.bitcoinservice.dto.TransactionStatusDTO;
+import com.sep.bitcoinservice.dto.*;
 
 import javax.management.InstanceAlreadyExistsException;
 import java.util.List;
@@ -19,4 +16,6 @@ public interface ITransactionService {
     TransactionStatusDTO getTransactionStatusDto(long id);
 
     RateDTO getExchangeRate(String from, String to);
+
+    FinalizeOrderDTO getOrderStatus(long activeOrderId);
 }

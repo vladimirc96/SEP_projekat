@@ -4,6 +4,9 @@ import com.paypal.base.rest.PayPalRESTException;
 import com.sep.paypalservice.dto.*;
 import com.sep.paypalservice.service.PaypalService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,8 +46,8 @@ public class PaypalController {
     }
 
     @RequestMapping(value = "/plan/execute/{tokenn}", method = RequestMethod.GET)
-    public TextLinkDTO executeAgreement(@PathVariable("tokenn") String tokenn) {
-        return service.executePlan(tokenn);
+    public ResponseEntity<TextLinkDTO> executeAgreement(@PathVariable("tokenn") String tokenn) {
+        return new ResponseEntity<>(service.executePlan(tokenn), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/getSpecificPlans/{sellerId}", method = RequestMethod.GET)

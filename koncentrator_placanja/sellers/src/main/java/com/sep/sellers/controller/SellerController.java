@@ -23,6 +23,8 @@ public class SellerController {
     @Autowired
     SellerService sellerService;
 
+    private final String kpAppUrl = "https://192.168.43.124:4200";
+
     @GetMapping(value = "/{id}")
     public ResponseEntity<?> getSeller(@PathVariable long id) {
         return new ResponseEntity<>(sellerService.getSeller(id), HttpStatus.OK);
@@ -81,6 +83,6 @@ public class SellerController {
 
     @GetMapping(value = "/getPlans/{id}")
     public @ResponseBody ResponseEntity getPlansLink(@PathVariable("id") long id) {
-        return new ResponseEntity("https://localhost:4200/plans/paypal/show/" + id, HttpStatus.OK);
+        return new ResponseEntity(this.kpAppUrl + "/plans/paypal/show/" + id, HttpStatus.OK);
     }
 }

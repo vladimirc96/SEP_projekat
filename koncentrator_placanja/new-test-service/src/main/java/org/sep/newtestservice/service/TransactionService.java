@@ -1,6 +1,7 @@
 package org.sep.newtestservice.service;
 
 import org.sep.newtestservice.client.OrderClient;
+import org.sep.newtestservice.dto.ActiveOrderDTO;
 import org.sep.newtestservice.dto.FinalizeOrderDTO;
 import org.sep.newtestservice.dto.PaymentDTO;
 import org.sep.newtestservice.enums.Enums;
@@ -10,6 +11,7 @@ import org.sep.newtestservice.repository.SellerRepository;
 import org.sep.newtestservice.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Date;
 import java.util.Timer;
@@ -28,16 +30,28 @@ public class TransactionService {
     @Autowired
     OrderClient orderClient;
 
+    // Ne bi trebalo da se ovako bas zakuca, trebalo bi napraviti neko polje u bazi koje ce dobiti vrednost
+    // ID-a prilikom kreiranja servisa, ali stvarno vise nema vremena
+    private static final int paymentMethodId = 4;
+
 
     public PaymentDTO createPayment(PaymentDTO pDTO) {
 
         Seller s = _sellerRepo.findById(pDTO.getSellerId()).get();
 
+        // Inform Seller-service that status is PENDING
+        try {
+            orderClient.setActiveOrderStatus(new ActiveOrderDTO(pDTO.getActiveOrderId(), Enums.OrderStatus.PENDING,
+                    this.paymentMethodId));
+        } catch (HttpClientErrorException ex) {
+            throw new IllegalStateException("Active order status is already PENDING.");
+        }
+
         Transaction t = new Transaction();
 
         t.setActiveOrderId(pDTO.getActiveOrderId());
         t.setAmount(pDTO.getAmount());
-        t.setCurrency(pDTO.getCurrency());
+        t.setCurrency("USD");
         t.setStatus("created");
         t.setSeller(s);
         t.setCreatedAt(new Date(System.currentTimeMillis()));
@@ -66,7 +80,7 @@ public class TransactionService {
                     timer.cancel();
 
                 }
-            },30000,10000);
+            },3000,10000);
             return "OK";
         });
 
@@ -74,6 +88,31 @@ public class TransactionService {
         return PaymentDTO.formDto(t);
 
 
+
+    }
+
+    public FinalizeOrderDTO getOrderStatus(long id) {
+        Transaction t = _transactionRepo.findByActiveOrderId(id).get();
+
+        FinalizeOrderDTO foDTO = new FinalizeOrderDTO();
+        foDTO.setActiveOrderId(t.getActiveOrderId());
+
+        System.out.println("[GetOrderStatus]: activeOrderId: " + t.getActiveOrderId() + ", status: " + t.getStatus());
+
+
+        if (t.getStatus().equals("created")) {
+            foDTO.setOrderStatus(Enums.OrderStatus.PENDING);
+            System.out.println("[GetOrderStatus]: returning PENDING");
+        } else if (t.getStatus().equals("success")) {
+            foDTO.setOrderStatus(Enums.OrderStatus.SUCCESS);
+            System.out.println("[GetOrderStatus]: returning SUCCESS");
+        } else {
+            foDTO.setOrderStatus(Enums.OrderStatus.FAILED);
+            System.out.println("[GetOrderStatus]: returning FAILED");
+        }
+
+
+        return foDTO;
 
     }
 }

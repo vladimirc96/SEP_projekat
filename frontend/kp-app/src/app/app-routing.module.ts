@@ -28,7 +28,6 @@ import { CancelPlanComponent } from './paypal/cancel/cancel-plan/cancel-plan.com
 import { PlanListComponent } from './paypal/billingPlans/plan-list/plan-list.component';
 import { PaymentMethodsComponent } from './payment-methods/payment-methods.component';
 import { NewPaymentMethodComponent } from './payment-methods/new-payment-method/new-payment-method.component';
-
 const appRoutes: Routes = [
 	{ path: '', redirectTo: '/home', pathMatch: 'full'},
     { path: 'home', component: SellersComponent},
@@ -46,6 +45,8 @@ const appRoutes: Routes = [
 
 	{ path: 'sellers/:id', component: SellerMethodsComponent},
 	{ path: 'bitcoin/:id', component: BitcoinComponent },
+	
+	//{ path: 'new-test/:id', component: NewTestServiceComponent },
 	{ path: 'bank', component: BankComponent },
 	{ path: 'success/:id', component: SucccessComponent },
 	{ path: 'cancel', component: CancelComponent },

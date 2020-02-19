@@ -1,13 +1,17 @@
 package com.sep.sellers.service;
 
 import com.sep.sellers.client.NCFinalizeClient;
+import com.sep.sellers.client.NCOrderStatusClient;
 import com.sep.sellers.dto.ActiveOrderDTO;
 import com.sep.sellers.dto.FinalizeOrderDTO;
 import com.sep.sellers.dto.InitOrderRequestDTO;
 import com.sep.sellers.dto.InitOrderResponseDTO;
 import com.sep.sellers.enums.Enums;
 import com.sep.sellers.model.ActiveOrder;
+import com.sep.sellers.model.PaymentMethod;
+import com.sep.sellers.model.Seller;
 import com.sep.sellers.repository.ActiveOrderRepository;
+import com.sep.sellers.repository.PaymentMethodRepository;
 import net.bytebuddy.dynamic.TypeResolutionStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,12 +27,19 @@ public class ActiveOrderService {
     private final static String redirectUrl = "https://192.168.43.124:4200/sellers/";
     private final static String redirectSubUrl = "https://192.168.43.124:4200/subscriptions/";
 
+    private final static String orderStatusEndpointUrl = "order-status";
 
     @Autowired
     private ActiveOrderRepository activeOrderRepo;
 
     @Autowired
+    private PaymentMethodRepository paymentMethodRepository;
+
+    @Autowired
     private NCFinalizeClient ncFinalizeClient;
+
+    @Autowired
+    private NCOrderStatusClient ncOrderStatusClient;
 
     public ActiveOrderDTO findOneById(Long id){
         ActiveOrder activeOrder = activeOrderRepo.findOneById(id);
@@ -86,14 +97,44 @@ public class ActiveOrderService {
 
                         timer.cancel();
                     } else if (ao.getOrderStatus() == Enums.OrderStatus.PENDING) {
-                        System.out.println("TODO: ask microservice what is happening!!!?");
+
+                        PaymentMethod pm = paymentMethodRepository.findById(ao.getPaymentMethodId()).get();
+                        String endpointUrl = pm.getServiceBaseUrl();
+                        if (!endpointUrl.endsWith("/")) {
+                            endpointUrl = endpointUrl.concat("/");
+                        }
+
+                        endpointUrl = endpointUrl.concat(orderStatusEndpointUrl + "/" + ao.getId());
+
+
+                        try {
+                            FinalizeOrderDTO foDTO = ncOrderStatusClient.getActiveOrderStatus(endpointUrl);
+                            System.out.println("[CheckingOrderStatus]: returned status: " + foDTO.getOrderStatus());
+
+                            if (foDTO.getOrderStatus() == Enums.OrderStatus.SUCCESS
+                                    || foDTO.getOrderStatus() == Enums.OrderStatus.FAILED) {
+                                finalizeOrder(foDTO);
+                                System.out.println("[CheckingOrderStatus]: returned final status: " + foDTO.getOrderStatus() + ", finalizing order.");
+                                timer.cancel();
+                            }
+                        } catch (Exception e) {
+                            FinalizeOrderDTO foDTO = new FinalizeOrderDTO();
+                            foDTO.setOrderStatus(Enums.OrderStatus.FAILED);
+                            foDTO.setActiveOrderId(ao.getId());
+                            finalizeOrder(foDTO);
+                            System.out.println("[CheckingOrderStatus]: exception, setting status to FAILED");
+                        }
+
+
+
+
                     } else {
                         timer.cancel();
                     }
 
 
                 }
-            },600000,300000);
+            },30000,10000);
             return "OK";
         });
     }
@@ -121,7 +162,7 @@ public class ActiveOrderService {
         ncFinalizeClient.finalizeOrder(foDTO, ao.getReturn_url());
     }
 
-    // User for setting status to PENDING and returnin error HTTP status if already PENDING
+    // Used for setting status to PENDING and returnin error HTTP status if already PENDING
     public void setActiveOrderStatus(ActiveOrderDTO aoDTO) throws IllegalStateException{
         ActiveOrder ao = activeOrderRepo.findOneById(aoDTO.getId());
 

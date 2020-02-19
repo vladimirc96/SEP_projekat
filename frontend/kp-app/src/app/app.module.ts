@@ -41,7 +41,6 @@ import { PlanListComponent } from './paypal/billingPlans/plan-list/plan-list.com
 import { PmDirective } from './directives/pm.directive';
 import { PaymentMethodsComponent } from './payment-methods/payment-methods.component';
 import { NewPaymentMethodComponent } from './payment-methods/new-payment-method/new-payment-method.component';
-import { NewTestRegistrationComponent } from './registrations/new-test-registration/new-test-registration.component';
 
 @NgModule({
   declarations: [
@@ -74,8 +73,7 @@ import { NewTestRegistrationComponent } from './registrations/new-test-registrat
     PlanListComponent,
     PmDirective,
     PaymentMethodsComponent,
-    NewPaymentMethodComponent,
-    NewTestRegistrationComponent
+    NewPaymentMethodComponent
   ],
   imports: [
     BrowserModule,
@@ -90,8 +88,7 @@ import { NewTestRegistrationComponent } from './registrations/new-test-registrat
   entryComponents: [
     BankRegistrationComponent,
     PaypalRegistrationComponent,
-    BitcoinRegistrationComponent,
-    NewTestRegistrationComponent
+    BitcoinRegistrationComponent
   ],
   providers: [SellersService, PaypalService, BankService],
   bootstrap: [AppComponent]

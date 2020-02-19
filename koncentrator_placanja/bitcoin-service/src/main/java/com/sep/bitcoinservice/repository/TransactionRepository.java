@@ -8,6 +8,7 @@ import java.util.Optional;
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 
     Optional<Transaction> findByOrderId(Long orderId);
+    Optional<Transaction> findByActiveOrderId(Long activeOrderId);
     boolean existsByOrderId(Long id);
 
 }

@@ -28,6 +28,7 @@ public class CustomerService {
     public CustomerDTO registerCustomer(CustomerDTO customerDTO) throws AccessDeniedException {
 
         Customer customer = new Customer(customerDTO);
+        customer.setId(customerDTO.getId());
         customer.setMerchantPassword(cryptoService.encrypt(customer.getMerchantPassword()));
         customer = customerRepo.save(customer);
 

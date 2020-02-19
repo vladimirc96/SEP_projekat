@@ -118,11 +118,11 @@ public class TransactionService implements ITransactionService {
 
 
                             System.out.println("Loop canceled.");
-                            FinalizeOrderDTO foDTO = new FinalizeOrderDTO();
-                            foDTO.setOrderStatus(convertStatus(tDTO.getStatus()));
-                            foDTO.setActiveOrderId(t.getActiveOrderId());
-                            foDTO.setAgreementId((long) 0);
-                            orderClient.finalizeOrder(foDTO);
+//                            FinalizeOrderDTO foDTO = new FinalizeOrderDTO();
+//                            foDTO.setOrderStatus(convertStatus(tDTO.getStatus()));
+//                            foDTO.setActiveOrderId(t.getActiveOrderId());
+//                            foDTO.setAgreementId((long) 0);
+//                            orderClient.finalizeOrder(foDTO);
                             timer.cancel();
 
                         }
@@ -199,6 +199,34 @@ public class TransactionService implements ITransactionService {
 
     }
 
+    @Override
+    public FinalizeOrderDTO getOrderStatus(long activeOrderId) {
+        Transaction t = transactionRepo.findByActiveOrderId(activeOrderId).get();
+
+        FinalizeOrderDTO foDTO = new FinalizeOrderDTO();
+        foDTO.setActiveOrderId(t.getActiveOrderId());
+
+        System.out.println("[GetOrderStatus]: activeOrderId: " + t.getActiveOrderId() + ", status: " + t.getStatus());
+
+
+        if (t.getStatus().equals("new")
+                || t.getStatus().equals("pending")
+                || t.getStatus().equals("confirming")) {
+
+            foDTO.setOrderStatus(Enums.OrderStatus.PENDING);
+            System.out.println("[GetOrderStatus]: returning PENDING");
+        } else if (t.getStatus().equals("paid")) {
+            foDTO.setOrderStatus(Enums.OrderStatus.SUCCESS);
+            System.out.println("[GetOrderStatus]: returning SUCCESS");
+        } else {
+            foDTO.setOrderStatus(Enums.OrderStatus.FAILED);
+            System.out.println("[GetOrderStatus]: returning FAILED");
+        }
+
+
+        return foDTO;
+    }
+
     private Transaction getTransactionStatus(Transaction t) {
         RestTemplate restTemplate = new RestTemplate(requestFactory);
         HttpEntity<?> request = formGetRequest(t.getSeller().getAuthToken());
@@ -234,6 +262,8 @@ public class TransactionService implements ITransactionService {
 
         return new HttpEntity<>(headers);
     }
+
+
 
 
 }

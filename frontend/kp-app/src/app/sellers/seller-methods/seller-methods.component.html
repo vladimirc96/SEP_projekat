@@ -4,7 +4,7 @@
     <div class="card mt-5" style="width: 18rem;" *ngIf="seller">
         <ul class="list-group list-group-flush">
           <ng-container *ngFor="let pm of seller.paymentMethods" >
-            <li *ngIf="pm.registerSuccess" class="list-group-item" (click)="onClickPM(pm.name)">{{pm.name}}</li>
+            <li *ngIf="pm.registerSuccess" class="list-group-item" (click)="onClickPM(pm.id)">{{pm.name}}</li>
           </ng-container>
           </ul>
       </div>

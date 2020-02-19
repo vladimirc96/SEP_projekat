@@ -39,7 +39,6 @@ export class BitcoinComponent implements OnInit {
 
 			if (!isNaN(param)) {
 				this.activeOrderId = param;
-				console.log("HERE!!!!!!!!");
 				this.fetchActiveOrder();
 			} else {
 				this.router.navigate(["/"]);

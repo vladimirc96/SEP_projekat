@@ -28,27 +28,39 @@ export class ExecutePlanComponent implements OnInit {
   pass(token) {
     this.palService.executePlan(token).subscribe(
       (data) => {
-        this.ret = data;
+        this.ret = JSON.parse(data);
         this.websiteURL = this.ret.websiteLink;
-        if(this.ret.text === "success") {
+        console.log(this.ret);
+        if(this.ret.text == "success") {
           Swal.fire({
             icon: "success",
             title: 'Uspešno',
             text: 'Pretplaćeni ste na plan.'
           });
-         // window.location.href = this.ret.websiteLink;
+          console.log("OK!!!!")
+          setTimeout(() => {
+           window.location.href = this.ret.websiteLink;
+          }, 3000);
         } else {
+          
+          console.log("ELSE 1")
           Swal.fire({
             icon: "error",
-            title: 'Greška',
+            title: 'Greška1',
             text: 'Došlo je do greške prilikom izvršavanja pretplate.'
           });
-         // window.location.href = this.ret.websiteLink;
+          setTimeout(() => {
+            window.location.href = this.ret.websiteLink;
+           }, 3000);
         }
       }, (error) => {
+        
+        setTimeout(() => {
+          window.location.href = this.ret.websiteLink;
+         }, 3000);
         Swal.fire({
           icon: "error",
-          title: 'Greška',
+          title: 'Greška2',
           text: 'Došlo je do greške prilikom izvršavanja pretplate.'
         });
       }

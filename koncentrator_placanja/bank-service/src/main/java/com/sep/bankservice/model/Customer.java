@@ -9,7 +9,6 @@ import java.util.Set;
 public class Customer {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "client_id")
     private Long id;
 

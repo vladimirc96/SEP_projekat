@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { FormGroup, FormControl } from "@angular/forms";
 import { SellersService } from 'src/app/services/sellers.service';
+import { Router } from '@angular/router';
 
 @Component({
     selector: "app-new-payment-method",
@@ -18,7 +19,7 @@ export class NewPaymentMethodComponent implements OnInit {
 		registrationLink: new FormControl(""),
     });
 
-    constructor(private sellersService: SellersService) {}
+    constructor(private sellersService: SellersService, private router: Router) {}
 
     ngOnInit() {}
 
@@ -41,6 +42,6 @@ export class NewPaymentMethodComponent implements OnInit {
     }
 
     goHome() {
-        this.isRegistered = false;
+        this.router.navigate(["/"]);
     }
 }
