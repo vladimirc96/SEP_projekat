@@ -1,0 +1,1 @@
+Student project from master studies (Payment Concentrator) is a system run by a separate company whose business model is to mediate between different payment services and clients who want to support payment but do not want to worry about the security of their functions and their maintenance .
